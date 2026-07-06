@@ -1,0 +1,201 @@
+/*
+ * ===== SIDEBAR COMPONENT STYLES (Kid-Friendly) =====
+ * 
+ * LEGACY BROWSER FALLBACKS:
+ * - Uses plain background colors before gradients
+ * - Includes -webkit- and -moz- vendor prefixes
+ * - Uses rgba() for wider browser support
+ * - Provides fallback font stacks
+ */
+
+/* Ensure sidebar content fits and scrolls */
+#sidebarContent {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 50px;
+    padding-bottom: 20px;
+
+    /* Scrollbar hiding fallback */
+    -ms-overflow-style: none;  /* Hide scrollbar for IE/Edge */
+    scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+
+/* Show custom scrollbar on hover */
+#sidebarContent:hover {
+    -ms-overflow-style: auto;
+    scrollbar-width: thin;
+}
+
+#sidebarContent::-webkit-scrollbar {
+    width: 6px;
+}
+
+#sidebarContent::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 10px;
+}
+
+#sidebarContent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ===== Kid-Friendly Collapsible Buttons (Subjects/Contents) ===== */
+.collapsible {
+    width: 100%;
+
+    /* Legacy fallback */
+    background: #5d0d7c;
+    background: -moz-linear-gradient(135deg, #5b41a3, #995e1f);
+    background: -webkit-linear-gradient(135deg, #5b41a3, #995e1f);
+    background: linear-gradient(135deg, #5b41a3, #995e1f);
+
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    cursor: pointer;
+    padding: 14px 16px;
+    margin: 6px 0;
+    text-align: left;
+    transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+
+    /* Legacy fallback shadow */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.collapsible:hover {
+    /* Legacy fallback */
+    background: #ff8585;
+    background: -moz-linear-gradient(135deg, #ff8585, #ffb86c);
+    background: -webkit-linear-gradient(135deg, #ff8585, #ffb86c);
+    background: linear-gradient(135deg, #ff8585, #ffb86c);
+
+    transform: scale(1.03) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    border-color: #ffd700;
+}
+
+.collapsible:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
+/* Collapsible arrow indicator */
+.collapsible::after {
+    content: ' ▶';
+    font-size: 16px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    color: #2a0c46;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+}
+
+/* Rotate arrow when expanded */
+.collapsible.active::after {
+    transform: rotate(90deg);
+}
+
+/* ===== Subunit Items (Subcontents & Channel names) ===== */
+.subunits {
+    padding: 10px 16px 10px 28px;
+
+    /* Legacy fallback */
+    background: rgba(126, 42, 42, 0.54);
+    background: -moz-linear-gradient(135deg, rgba(147, 51, 234, 0.6), rgba(59, 130, 246, 0.4));
+    background: -webkit-linear-gradient(135deg, rgba(147, 51, 234, 0.6), rgba(59, 130, 246, 0.4));
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.6), rgba(59, 130, 246, 0.4));
+
+    color: #ffffff;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+    word-break: break-word;
+}
+
+.subunits:hover {
+    /* Legacy fallback */
+    background: #745f5f;
+    background: -moz-linear-gradient(135deg, rgba(167, 85, 247, 0.7), rgba(96, 165, 250, 0.5));
+    background: -webkit-linear-gradient(135deg, rgba(167, 85, 247, 0.7), rgba(96, 165, 250, 0.5));
+    background: linear-gradient(135deg, rgba(167, 85, 247, 0.7), rgba(96, 165, 250, 0.5));
+
+    transform: translateX(6px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.subunits:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: 2px;
+}
+
+/* ===== Nested Content Containers ===== */
+.content {
+    display: none;
+    padding-left: 12px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-left: 3px solid rgba(255, 215, 0, 0.2);
+    margin-left: 8px;
+}
+
+/* ===== Scroll-Down Button (shown only when sidebar overflows) ===== */
+.sidebar-scroll-down {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    margin: 0;
+
+    /* Legacy fallback */
+    background: #5a2d7a;
+    background: -moz-linear-gradient(135deg, rgba(101, 1, 132, 0.95), rgba(147, 51, 234, 0.8));
+    background: -webkit-linear-gradient(135deg, rgba(101, 1, 132, 0.95), rgba(147, 51, 234, 0.8));
+    background: linear-gradient(135deg, rgba(101, 1, 132, 0.95), rgba(147, 51, 234, 0.8));
+
+    color: #ffd700;
+    font-size: 22px;
+    line-height: 1;
+    text-align: center;
+
+    border: none;
+    border-top: 3px solid rgba(255, 215, 0, 0.3);
+    border-bottom: 3px solid rgba(255, 215, 0, 0.3);
+    cursor: pointer;
+
+    transition: background 0.3s ease, border-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar-scroll-down:hover {
+    /* Legacy fallback */
+    background: #6a3a8a;
+    background: -moz-linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(167, 85, 247, 0.8));
+    background: -webkit-linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(167, 85, 247, 0.8));
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.95), rgba(167, 85, 247, 0.8));
+
+    border-top-color: #ffd700;
+    border-bottom-color: #ffd700;
+}
+
+.sidebar-scroll-down:active {
+    background: rgba(167, 85, 247, 0.95);
+}
+
+.sidebar-scroll-down:focus-visible {
+    outline: 3px solid #ffd700;
+    outline-offset: -3px;
+}

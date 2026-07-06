@@ -1,0 +1,1135 @@
+/* ==================== Admin Dashboard Styles ==================== */
+/* Matching index page design exactly */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ==================== Top Navbar (Matching Index Page) ==================== */
+
+.navbar-main {
+  background: #1a0a2e;
+  background: -moz-linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+  background: -webkit-linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+  background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid rgba(255, 215, 0, 0.4);
+}
+
+.nav-main-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 215, 0, 0.15);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #ffd700;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 215, 0, 0.25);
+  border-color: #ffd700;
+  transform: scale(1.1);
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(4px, 4px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
+.nav-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.nav-main-center {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 40px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(26, 10, 46, 0.8);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 24px;
+  padding: 8px 16px;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.search-box:focus-within {
+  border-color: #ffd700;
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+  background: rgba(26, 10, 46, 0.95);
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+  outline: none;
+  color: #ffffff;
+}
+
+.search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-main-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.nav-tab:hover {
+  background: rgba(255, 215, 0, 0.15);
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.nav-tab.active {
+  background: #ffd700;
+  color: #1a0a2e;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.btn-logout-icon {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-logout-icon:hover {
+  background: linear-gradient(135deg, #c82333, #a71d2a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+}
+
+/* ==================== Secondary Action Bar ==================== */
+
+.actions-center {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-action {
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a0a2e;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+  min-width: 140px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+.btn-action:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+}
+
+.btn-action.btn-fetch-video {
+  background: linear-gradient(135deg, #ffd700, #ffb347);
+  color: #1a0a2e;
+  border-color: #ffd700;
+}
+
+.btn-action.btn-fetch-video:hover {
+  background: linear-gradient(135deg, #ffb347, #ffa500);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+}
+
+.btn-action.btn-delete-selected {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.btn-action.btn-delete-selected:hover {
+  background: linear-gradient(135deg, #ee5a6f, #c92a2a);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+}
+
+.btn-action.btn-assign-channel {
+  background: linear-gradient(135deg, #51cf66, #37b24d);
+  color: white;
+  border-color: #51cf66;
+}
+
+.btn-action.btn-assign-channel:hover {
+  background: linear-gradient(135deg, #37b24d, #2b8a3e);
+  box-shadow: 0 6px 20px rgba(81, 207, 102, 0.5);
+}
+
+.btn-action.btn-delete-videos {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.btn-action.btn-delete-videos:hover {
+  background: linear-gradient(135deg, #ee5a6f, #c92a2a);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+}
+
+/* ==================== Admin Container ==================== */
+
+.admin-container {
+  display: flex;
+  height: calc(100vh - 120px);
+}
+
+/* ==================== Main Content ==================== */
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.content-section {
+  display: none;
+}
+
+.content-section.active {
+  display: block;
+}
+
+/* ==================== Video Grid (Same as Index) ==================== */
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.video-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.video-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.checkbox-wrapper {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: white;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.video-checkbox,
+.channel-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.video-thumbnail {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.video-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-delete-icon {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: #ff4444;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 5;
+  opacity: 0.8;
+}
+
+.video-delete-icon:hover {
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.duration-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.video-info {
+  padding: 12px;
+}
+
+.video-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+  margin-bottom: 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.video-meta {
+  font-size: 12px;
+  color: #888;
+}
+
+/* ==================== Channel Grid ==================== */
+
+.channel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.channel-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-channel-action {
+  flex: 1;
+  min-width: 70px;
+  padding: 6px 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  text-align: center;
+}
+
+.btn-view-videos {
+  background: white;
+  color: #650184;
+  border-color: #650184;
+}
+
+.btn-view-videos:hover {
+  background: #650184;
+  color: white;
+}
+
+.btn-edit-channel {
+  background: white;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-edit-channel:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-delete-channel {
+  background: white;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-delete-channel:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-inline-delete {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-inline-delete:hover {
+  background: linear-gradient(135deg, #ee5a6f, #c92a2a);
+  transform: translateY(-2px);
+}
+
+.channel-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.channel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.channel-thumbnail {
+  width: 100%;
+  height: 120px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.channel-thumbnail img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.channel-info {
+  padding: 16px;
+}
+
+.channel-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.channel-meta {
+  font-size: 13px;
+  color: #888;
+}
+
+/* ==================== Empty State ==================== */
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-state h2 {
+  font-size: 24px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: #999;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ==================== View Header ==================== */
+
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.view-header h2 {
+  font-size: 24px;
+  color: #1a1a2e;
+}
+
+.btn-back {
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a0a2e;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.btn-back:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+  transform: translateY(-2px);
+}
+
+/* ==================== Tab Header ==================== */
+
+.tab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tab-header h1 {
+  font-size: 24px;
+  color: #1a1a2e;
+}
+
+.tab-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ==================== Buttons ==================== */
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #650184, #2c0123);
+  color: white;
+  box-shadow: 0 4px 12px rgba(101, 1, 132, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(101, 1, 132, 0.5);
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #555;
+}
+
+.btn-secondary:hover {
+  background: #ccc;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+}
+
+.btn-edit {
+  padding: 4px 10px;
+  border: 1px solid #650184;
+  border-radius: 6px;
+  background: white;
+  color: #650184;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #650184, #2c0123);
+  color: white;
+}
+
+.btn-delete {
+  padding: 4px 10px;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  background: white;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.btn-fetch {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.btn-fetch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-add-selected {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 12px;
+  font-family: inherit;
+}
+
+.btn-add-selected:hover {
+  transform: translateY(-2px);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== Tables ==================== */
+
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background: #f9fafb;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.admin-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background: #f9fafb;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 6px;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 14px;
+}
+
+/* ==================== Filter Bar ==================== */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-bar label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+  min-width: 180px;
+}
+
+.form-select:disabled {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* ==================== Modals ==================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-lg {
+  max-width: 600px;
+}
+
+.modal-sm {
+  max-width: 400px;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  font-size: 20px;
+  color: #1a1a2e;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.modal-close:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* ==================== Radio Group ==================== */
+
+.radio-group {
+  display: flex;
+  gap: 16px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ==================== Toast ==================== */
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 3000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease;
+}
+
+.toast.success {
+  background: #059669;
+  color: white;
+}
+
+.toast.error {
+  background: #dc2626;
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ==================== Role Badge ==================== */
+
+.role-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.role-admin {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.role-parent {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ==================== Responsive ==================== */
+
+@media (max-width: 768px) {
+  .navbar-main {
+    padding: 12px 16px;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-main-center {
+    display: none;
+  }
+
+ 
+
+  .btn-action {
+    min-width: 50px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    font-size: 20px;
+    border-radius: 50%;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .btn-icon {
+    font-size: 20px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .actions-center {
+    gap: 20px;
+  }
+
+  .admin-container {
+    flex-direction: column;
+    position: relative;
+  }
+
+  .main-content {
+    padding: 16px;
+    width: 100%;
+  }
+
+  .video-grid,
+  .channel-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-select {
+    min-width: auto;
+  }
+
+  .assignment-container {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-tab {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-grid,
+  .channel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-action {
+    min-width: 45px;
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  .nav-main-right {
+    gap: 6px;
+  }
+
+  .nav-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 769px) {
+  .menu-toggle {
+    display: none;
+  }
+
+  .btn-action {
+    flex: 1;
+    min-width: 140px;
+    width: 160px;
+  }
+
+  .actions-center {
+    justify-content: center;
+  }
+}

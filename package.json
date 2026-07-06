@@ -1,0 +1,40 @@
+{
+  "name": "addis_school",
+  "version": "1.0.0",
+  "description": "Addis School - Modern Fullstack Application",
+  "private": true,
+  "workspaces": [
+    "client",
+    "admin",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:client\" \"npm:dev:admin\" \"npm:dev:server\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:admin": "npm run dev --workspace=admin",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build --workspace=shared",
+    "setup": "npm install && npm run build:shared",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "keywords": [
+    "education",
+    "school",
+    "video-platform",
+    "fullstack"
+  ],
+  "author": "Addis School Team",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thethird81/addis_school.git"
+  },
+  "dependencies": {
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

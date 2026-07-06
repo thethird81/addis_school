@@ -1,0 +1,422 @@
+/*-------------------- play video page ----------------*/
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+
+
+}
+
+.play-container {
+    padding-left: 2%;
+}
+
+.container {
+    background: #1a0a2e;
+    background: -moz-linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+    background: -webkit-linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+    background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%);
+}
+
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-right: 0;
+}
+
+.play-video {
+
+    flex-basis: 79%;
+
+}
+
+.right-sidebar {
+    flex-basis: 20%;
+    height: 100vh;
+    /* Make the sidebar full height */
+    overflow-y: auto;
+    /* Allow scrolling */
+    padding: 10px;
+}
+
+.vid-info {
+    color: #ffffff;
+    font-size: 12px;
+    /* Slightly larger font size */
+    font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    /* Similar to YouTube's font */
+    line-height: 1.5;
+    /* Improve readability */
+}
+
+.vid-info p {
+    color: #ffd700;
+    font-size: 8px;
+    /* YouTube's link color */
+    font-weight: 500;
+    /* Adjust font weight */
+    text-decoration: none;
+    /* Remove underline */
+}
+
+.vid-info .title:hover {
+    text-decoration: underline;
+    /* Add underline on hover */
+}
+
+.iframe-container {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    border-radius: 2%;
+    padding-top: 56.25%
+}
+
+
+#youtube-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px;
+    z-index: 0;
+}
+
+/* Video Menu - three-dot menu for like/report actions */
+.video-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 4;
+}
+
+.video-menu .menu-trigger {
+    font-size: 28px;
+    color: #ffffff;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 2px 8px;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.iframe-container:hover .video-menu .menu-trigger {
+    opacity: 1;
+}
+
+.video-menu .menu-dropdown {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(26, 10, 46, 0.95);
+    border-radius: 6px;
+    padding: 6px 0;
+    min-width: 140px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.video-menu .menu-dropdown.open {
+    display: flex;
+}
+
+.video-menu .menu-item {
+    font-size: 14px;
+    padding: 8px 16px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.video-menu .menu-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffd700;
+}
+
+.video-menu .menu-item.report-btn:hover {
+    color: #ff4444;
+}
+.video-menu .menu-item.favorite-btn:hover {
+    color: #ff4444;
+}
+.delete-btn {
+    font-size: 36px;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.sync-btn {
+    font-size: 36px;
+    cursor: pointer;
+}
+
+.iframe-controls-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.iframe-container:hover .iframe-controls-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+
+.side-video-list {
+
+    margin-bottom: 8px;
+
+}
+
+.side-video-list img {
+    width: 100%;
+    border-radius: 6%;
+}
+
+.side-video-list .small-thumbnail {
+    flex-basis: 49%;
+}
+
+.side-video-list .vid-info {
+    flex-basis: 49%;
+}
+
+
+/* Circular Progress Bar */
+.circular-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.double-bounce1,
+.double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #ffd700;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+    animation-delay: -1.0s;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: scale(0.0);
+    }
+
+    50% {
+        transform: scale(1.0);
+    }
+}
+
+/* ── Custom video controls bar (injected by playerControls.js) ── */
+.custom-video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(transparent 30%, rgba(0, 0, 0, 0.7));
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  padding: 30px 12px 30px;
+  margin-bottom: 8px;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Top row: time display (left) + expand button (right) */
+.custom-video-controls .ctrl-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+  margin-bottom: 12px;
+}
+
+.custom-video-controls .ctrl-top .ctrl-skip-ad {
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  background: #2d1b4e;
+  opacity: 0.5 ;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  margin-right: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.custom-video-controls .ctrl-top .ctrl-skip-ad:hover {
+  background: #cc0000;
+  transform: scale(1.05);
+}
+
+.custom-video-controls.visible .ctrl-top .ctrl-skip-ad {
+  pointer-events: auto;
+}
+
+.custom-video-controls .ctrl-top .ctrl-expand {
+  font-size: 20px;
+  padding: 4px 10px;
+  border-radius: 4px;
+   background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  opacity: 0;
+  pointer-events: none;
+  width: 32px;
+}
+
+.custom-video-controls.visible .ctrl-top .ctrl-expand {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.custom-video-controls .ctrl-top .ctrl-expand:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.custom-video-controls.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.custom-video-controls .ctrl-time {
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  user-select: none;
+  text-align: left;
+  padding: 4px 8px;   
+   background: rgba(0, 0, 0, 0.5);
+   border-radius: 20px;
+}
+
+/* Bottom row: full-width seek bar */
+.custom-video-controls .ctrl-bottom {
+  width: 100%;
+  padding: 0 4px;
+}
+
+.custom-video-controls .ctrl-seek {
+  width: 100%;
+  height: 5px;
+  display: block;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.3);
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  border-radius: 0;
+  transition: height 0.15s;
+}
+
+.custom-video-controls .ctrl-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffd700;
+  border: 2px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.custom-video-controls .ctrl-seek::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffd700;
+  border: 2px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.custom-video-controls .ctrl-seek:hover {
+  height: 7px;
+}
+
+/* For Full Screen Mode */
+.fullscreen-mode .container {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.fullscreen-mode .row {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fullscreen-mode .play-video {
+    flex-basis: 90%;
+}
+
+.fullscreen-mode .nav-left,
+.fullscreen-mode .nav-middle,
+.fullscreen-mode .nav-right,
+.fullscreen-mode .sidebar,
+.fullscreen-mode .right-sidebar {
+    display: none;
+}

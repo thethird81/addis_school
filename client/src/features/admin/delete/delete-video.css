@@ -1,0 +1,5 @@
+.delete-btn {
+    display: none;
+    /* Initially hidden */
+    color: white;
+}

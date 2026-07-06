@@ -1,0 +1,22 @@
+.focus-zone {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+}
+
+button,
+a {
+    display: block;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #000;
+    background-color: #f0f0f0;
+    text-align: center;
+    cursor: pointer;
+}
+
+button.focused,
+a.focused {
+    outline: 2px solid blue;
+    background-color: lightblue;
+}

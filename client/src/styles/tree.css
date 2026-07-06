@@ -1,0 +1,568 @@
+/* ============================
+   Curriculum Tree Component
+   Professional, collapsible tree with smooth transitions
+   ============================ */
+
+/* Tree Root Container */
+.tree-root {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #334155;
+}
+
+/* Tree Section */
+.tree-section {
+  margin-bottom: 16px;
+}
+
+.tree-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Tree Item Wrapper - Base container */
+.tree-item-wrapper {
+  margin-bottom: 2px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.tree-item-wrapper:hover {
+  background-color: #f8fafc;
+}
+
+/* Selected state */
+.tree-item-wrapper.selected {
+  background-color: #eef2ff;
+}
+
+.tree-item-wrapper.selected > .tree-item-header {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+/* Tree Item Header - Clickable area */
+.tree-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  user-select: none;
+  position: relative;
+}
+
+.tree-item-header:hover {
+  background-color: #f1f5f9;
+}
+
+/* Tree Icon */
+.tree-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+/* Tree Label */
+.tree-label {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tree Actions (Edit/Delete buttons) */
+.tree-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tree-item-header:hover .tree-actions {
+  opacity: 1;
+}
+
+.btn-tree-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.btn-tree-action:hover {
+  background-color: #e2e8f0;
+  transform: scale(1.1);
+}
+
+/* Tree Badge (for counts) */
+.tree-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.tree-bge-warning {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+/* Tree Toggle (Chevron) */
+.tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.tree-arrow {
+  display: inline-block;
+  font-size: 0.65rem;
+  color: #64748b;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.tree-item-header:hover .tree-arrow {
+  color: #4f46e5;
+}
+
+/* Expanded state for toggle arrows */
+.tree-toggle.expanded .tree-arrow {
+  transform: rotate(90deg);
+}
+
+/* Tree Children - Collapsible container */
+.tree-children {
+  margin-left: 20px;
+  padding-left: 16px;
+  border-left: 2px solid #e2e8f0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+/* Collapsed state */
+.tree-children.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Expanded state */
+.tree-children.expanded {
+  max-height: 2000px;
+  opacity: 1;
+}
+
+/* Level-specific styling */
+
+/* Grade Level */
+.tree-level-grade > .tree-item-header {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border-left: 3px solid #4f46e5;
+}
+
+.tree-level-grade > .tree-item-header:hover {
+  background-color: #f1f5f9;
+  border-left-color: #4338ca;
+}
+
+.tree-level-grade .tree-icon {
+  font-size: 1.2rem;
+}
+
+/* Subject Level */
+.tree-level-subject > .tree-item-header {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+  margin-left: 0;
+}
+
+.tree-level-subject > .tree-item-header:hover {
+  background-color: #f8fafc;
+}
+
+.tree-level-subject .tree-icon {
+  color: #6366f1;
+}
+
+/* Content Level */
+.tree-level-content > .tree-item-header {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.tree-level-content > .tree-item-header:hover {
+  background-color: #f8fafc;
+}
+
+.tree-level-content .tree-icon {
+  color: #818cf8;
+}
+
+/* Subcontent Level (Leaf node) */
+.tree-level-subcontent > .tree-item-header {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #475569;
+  cursor: pointer;
+}
+
+.tree-level-subcontent > .tree-item-header:hover {
+  background-color: #f1f5f9;
+}
+
+.tree-level-subcontent .tree-icon {
+  color: #a5b4fc;
+}
+
+/* Selectable subcontent (for video fetching) */
+.tree-selectable {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.tree-selectable:hover {
+  background-color: #eef2ff;
+}
+
+.tree-selectable.selected {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  font-weight: 500;
+}
+
+/* Tree Add Input (for creating new items) */
+.tree-add-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  margin-left: 20px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e1;
+}
+
+.tree-add-input .tree-icon {
+  font-size: 0.9rem;
+  color: #10b981;
+}
+
+.tree-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.tree-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.btn-save-tree,
+.btn-cancel-tree {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.btn-save-tree:hover {
+  background-color: #d1fae5;
+  transform: scale(1.1);
+}
+
+.btn-cancel-tree:hover {
+  background-color: #fee2e2;
+  transform: scale(1.1);
+}
+
+/* Tree Channels List */
+.tree-channels-list {
+  margin-left: 20px;
+  padding: 8px 0;
+}
+
+.tree-channels-list .tree-item-wrapper {
+  margin-bottom: 4px;
+}
+
+.tree-channels-list .tree-item-header {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+/* Tree Video List (inline videos in sidebar) */
+.tree-video-list {
+  margin-left: 20px;
+  padding: 8px 0;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+.tree-video-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #64748b;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.tree-video-item:hover {
+  background-color: #f8fafc;
+}
+
+.tree-video-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.tree-video-delete {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.tree-video-delete:hover {
+  background-color: #fee2e2;
+  transform: scale(1.1);
+}
+
+/* Tree Item Input Group (for editing) */
+.tree-item-input-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+}
+
+.tree-item-input-group .tree-input {
+  flex: 1;
+}
+
+/* Hint text */
+.hint {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 12px;
+}
+
+/* Empty state */
+.tree-empty {
+  text-align: center;
+  padding: 24px;
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+/* ============================
+   Responsive Adjustments
+   ============================ */
+
+@media (max-width: 768px) {
+  .tree-root {
+    font-size: 0.85rem;
+  }
+
+  .tree-item-header {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .tree-children {
+    margin-left: 16px;
+    padding-left: 12px;
+  }
+
+  .tree-actions {
+    opacity: 1;
+  }
+
+  .tree-badge {
+    font-size: 0.7rem;
+    padding: 1px 6px;
+  }
+
+  .tree-level-grade > .tree-item-header {
+    font-size: 0.9rem;
+  }
+
+  .tree-level-subject > .tree-item-header {
+    font-size: 0.85rem;
+  }
+
+  .tree-level-content > .tree-item-header {
+    font-size: 0.8rem;
+  }
+
+  .tree-level-subcontent > .tree-item-header {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tree-item-header {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .tree-icon {
+    font-size: 1rem;
+    width: 20px;
+  }
+
+  .tree-children {
+    margin-left: 12px;
+    padding-left: 10px;
+  }
+
+  .tree-label {
+    font-size: 0.8rem;
+  }
+
+  .tree-badge {
+    font-size: 0.65rem;
+    padding: 1px 5px;
+  }
+
+  .tree-actions {
+    gap: 2px;
+  }
+
+  .btn-tree-action {
+    padding: 3px 4px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================
+   Animation for smooth expand/collapse
+   ============================ */
+
+@keyframes slideDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 2000px;
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    max-height: 2000px;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+.tree-children.expanding {
+  animation: slideDown 0.3s ease forwards;
+}
+
+.tree-children.collapsing {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* ============================
+   Accessibility
+   ============================ */
+
+.tree-item-header:focus {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.tree-toggle:focus {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tree-item-wrapper.selected {
+    background-color: #c7d2fe;
+  }
+
+  .tree-children {
+    border-left-color: #4f46e5;
+  }
+
+  .tree-badge {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .tree-children,
+  .tree-arrow,
+  .tree-toggle,
+  .tree-item-wrapper,
+  .btn-tree-action,
+  .tree-video-delete {
+    transition: none;
+  }
+
+  .tree-children.expanding,
+  .tree-children.collapsing {
+    animation: none;
+  }
+}

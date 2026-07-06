@@ -1,0 +1,55 @@
+{
+  "name": "addis-school-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --watch --mode development ",
+    "build": "webpack --mode production"
+  },
+  "browserslist": [
+    "chrome >= 30"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thethird81/addis-school-website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thethird81/addis-school-website/issues"
+  },
+  "homepage": "https://github.com/thethird81/addis-school-website#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.27.0",
+    "@babel/core": "^7.26.10",
+    "@babel/plugin-transform-runtime": "^7.28.3",
+    "@babel/preset-env": "^7.26.9",
+    "@types/postcss-custom-properties": "^12.0.0",
+    "@types/postcss-preset-env": "^7.7.0",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "core-js": "^3.41.0",
+    "css-loader": "^7.1.2",
+    "cssnano": "^7.0.6",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss-custom-properties": "^14.0.4",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-loader": "^8.1.1",
+    "postcss-preset-env": "^10.1.5",
+    "postcss-pxtorem": "^6.1.0",
+    "webpack": "^5.99.6",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@babel/plugin-transform-arrow-functions": "^7.25.9",
+    "@babel/plugin-transform-object-assign": "^7.25.9",
+    "@babel/plugin-transform-template-literals": "^7.26.8",
+    "@babel/runtime": "^7.27.0",
+    "@supabase/supabase-js": "^2.108.2",
+    "dotenv": "^17.2.4"
+  }
+}

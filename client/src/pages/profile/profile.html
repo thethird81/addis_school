@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Profile</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+    <div class="profile-container">
+        <h2>Edit Profile</h2>
+        <div class="profile-pic-wrapper">
+            <img id="profileImg" src="<%= require('@assets/images/profile-pictures/simba.png') %>"
+                alt="Profile Picture">
+            <span id="editIcon">&#9998;</span> <!-- ✎ edit icon -->
+        </div>
+
+        <input type="text" id="usernameInput" placeholder="Enter username">
+        <select id="gradeInput">
+            <option value="">Select Grade</option>
+             <option value="KG">Grade KG</option>
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+        </select>
+        <button id="saveBtn">Save Changes</button>
+        <button id="changePasswordBtn">Change Password</button>
+
+    </div>
+
+    <!-- Profile Pic Popup -->
+    <div id="picPopup" class="popup" display="none">
+        <div class="popup-content">
+            <span class="close-popup" id="closePopup">&times;</span>
+            <h3>Select Profile Picture</h3>
+            <div class="profile-pic-options">
+                <img class="pic-option" src="<%= require('@assets/images/profile-pictures/simba.png') %>" alt="Pic 1">
+                <img class="pic-option" src="<%= require('@assets/images/profile-pictures/bear.png') %>" alt="Pic 2">
+                <img class="pic-option" src="<%= require('@assets/images/profile-pictures/nimo.jpg') %>" alt="Pic 3">
+                <img class="pic-option" src="<%= require('@assets/images/profile-pictures/panda.jpg') %>" alt="Pic 4">
+                <img class="pic-option" src="<%= require('@assets/images/profile-pictures/madagascar.jpg') %>"
+                    alt="Pic 5">
+            </div>
+        </div>
+    </div>
+
+   <!-- Change Password Popup -->
+<div id="changePasswordPopup" class="popup" display="none">
+    <div class="popup-content">
+        <span class="close-popup" id="closeChangePassword">&times;</span>
+        <h3>Change Password</h3>
+
+        <div class="input-group">
+            <input type="password" id="currentPassword" placeholder="Current Password">
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="newPassword" placeholder="New Password">
+        </div>
+        <div class="input-group">
+            <input type="password" id="confirmPassword" placeholder="Confirm New Password">
+        </div>
+        <button class="popup-btn" id="submitNewPassword">Update Password</button>
+    </div>
+</div>
+
+</body>
+
+</html>

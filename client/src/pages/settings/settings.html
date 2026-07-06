@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings</title>
+
+  <link rel="stylesheet" href="settings.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+<body>
+
+  <nav class="flex-div">
+    <div class="nav-left flex-div">
+      <img class="menu-icon" src="<%= require('@assets/images/menu.png') %>" alt="Menu Icon">
+      <img class="logo" src="<%= require('@assets/images/addisschool.png') %>"
+          alt="Logo">
+    </div>
+    <div class="nav-middle flex-div">
+      <div class="sliding-text" style="display:none;">
+        ከኬጂ - 6ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 6. Join Us Now!
+      </div>
+      <div class="settings-toggle">
+        <button class="toggle-btn active" id="quizTabBtn">Quiz</button>
+        <button class="toggle-btn" id="profileTabBtn">Profile</button>
+      </div>
+    </div>
+    <div class="nav-right flex-div">
+      <button class="btn" id="joinUs" style="display:none;">Join Us!</button>
+      <div class="user-bar flex-div">
+        <!-- Coin Icon with Counter -->
+        <div class="coin-container" id="coinContainer" style="display: none;">
+          <img id="coinIcon" class="coin-icon" src="<%= require('@assets/images/coin.png') %>" alt="Coin Icon">
+          <span id="coinCount">0</span>
+        </div>
+        <span class="user-name" id="userNameDisplay"></span>
+        <img id="userIcon" class="userIcon" src="<%= require('@assets/images/user-icon.png') %>" alt="User Icon">
+      </div>
+    </div>
+  </nav>
+
+  
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div id="sidebarContent" style="display:none"></div>
+    <div class="signin-signup">
+      <div class="container-register" id="signup" style="display:none;">
+        <h1 class="form-title">Register</h1>
+        <button class="btn" id="openFullSignUpBtn">Create Account</button>
+        <div class="links">
+          <p>Already Have Account ?</p>
+          <button id="signInButton">Sign In</button>
+        </div>
+      </div>
+
+      <div class="container-register" id="signIn">
+        <h1 class="form-title">Sign In</h1>
+        <form method="post" action="">
+          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <p class="recover" id="resendVerification" style="display:none;">
+            <a href="#">Resend varification</a>
+          </p>
+          <p class="recover">
+            <a href="#" id="forgotPasswordLink">Forgot Password</a>
+          </p>
+          <button class="btn" id="submitSignIn">Sign In</button>
+        </form>
+        <!-- <p class="or">
+                    ----------{{#if isAfterLogin}} 
+                    <div class="container-register" id="signup" style="display:none;">
+                      <h1 class="form-title"><|fim_middle|><|fim_middle|>itureglobalsardiStateToPropsension<|fim_middle|><|fim_middle|><|fim_middle|>fov先锋illes<|fim_middle|>婆婆<|fim_middle|>vielling ediidUser Icon">
+                  </p>
+                  <div class="icons">
+                    <i class="fab fa-google" id="googleSignInButton"></i>
+                    <i class="fab fa-facebook"></i>
+                  </div> -->
+        <div class="links">
+          <p>Don't have account yet?</p>
+          <button id="signUpButton">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="user-sidebar focus-zone" id="userSidebar" data-nav="list">
+    <p>User Menu</p>
+    <ul>
+      <li class="userSidebar-item item" tabindex="0" id="aboutUs">About Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="settings">Settings</li>
+      <li class="userSidebar-item item" tabindex="0" id="contactUs">Contact Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="changeGrade">Change Grade</li>
+    
+       <li class="userSidebar-item item" tabindex="0" id="logout">Logout</li>
+    </ul>
+  </div>
+  <!-- Quiz Settings View -->
+  <div id="quizSettingsView" class="subcontent-selection">
+    <h2>Favorite Quizzes</h2>
+
+    <!-- Error message container -->
+    <div id="errorMessage" class="error-message" style="display:none;"></div>
+
+    <!-- Favorited Quizzes Section -->
+    <div class="favorites-section">
+      <h3>Your Favorited Quizzes (<span id="favoritesCount">0</span>)</h3>
+      <div id="favoritesListContainer" class="favorites-list"></div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Quiz Hierarchy Section -->
+    <h3>Browse Quizzes</h3>
+    <div id="quizHierarchyContainer"></div>
+
+    <!-- Save Button -->
+    <button id="saveFavoritesBtn" class="save-favorites-btn" disabled>Save Changes</button>
+  </div>
+
+  <!-- Profile Settings View -->
+  <div id="profileSettingsView" class="subcontent-selection" style="display:none;">
+    <h2>Profile Settings</h2>
+
+    <!-- Error message container -->
+    <div id="profileErrorMessage" class="error-message" style="display:none;"></div>
+
+    <!-- Add Child Button -->
+    <button id="addChildBtn" class="btn-add-child">+ Add Child</button>
+
+    <!-- Profiles List -->
+    <div id="profilesListContainer" class="profiles-list"></div>
+  </div>
+
+  <!-- Add/Edit Child Modal -->
+  <div id="childModal" class="modal-overlay" style="display:none;">
+    <div class="kid-friendly-modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="childModalTitle">Add Child</h3>
+        <button class="modal-close" id="closeChildModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="childForm">
+          <div class="avatar-upload-container">
+            <div class="avatar-preview" id="avatarPreview">
+              <span class="avatar-placeholder">👶</span>
+            </div>
+            <button type="button" class="btn btn-upload-avatar" id="uploadAvatarBtn">📷 Upload Photo</button>
+            <input type="file" id="childAvatar" accept="image/*" style="display:none;">
+          </div>
+          <div class="input-group">
+            <i class="fas fa-child"></i>
+            <input type="text" id="childName" placeholder="Child's Name" required>
+          </div>
+          <div class="grade-dropdown">
+            <select id="childGradeSelect" required>
+              <option value="" disabled selected>Select Grade</option>
+            </select>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="btn btn-cancel" id="cancelChildBtn">Cancel</button>
+            <button type="submit" class="btn btn-add" id="childSubmitBtn">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crop Modal -->
+  <div id="cropModal" class="crop-modal-overlay" style="display:none;">
+    <div class="crop-modal-content">
+      <h3 class="crop-modal-title">Crop Photo</h3>
+      <div class="crop-container">
+        <img id="cropImage" src="" alt="Crop preview">
+      </div>
+      <div class="crop-modal-buttons">
+        <button type="button" class="btn btn-cancel" id="cancelCropBtn">Cancel</button>
+        <button type="button" class="btn btn-add" id="doneCropBtn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

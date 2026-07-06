@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Addis School</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../features/admin/admin.css">
+  <link rel="stylesheet" href="../../features/admin/sidebar/sidebar.css">
+  <link rel="stylesheet" href="../../features/admin/quiz/quiz.css">
+  <link rel="stylesheet" href="../../features/admin/users/user.css">
+  <link rel="stylesheet" href="../../styles/tree.css">
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar-main">
+    <div class="nav-main-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <span class="nav-title">Admin Panel</span>
+    </div>
+    
+    <div class="nav-main-center">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search...">
+      </div>
+    </div>
+    
+    <div class="nav-main-right">
+      <a href="#" class="nav-tab" data-tab="curriculum">Curriculum</a>
+      <a href="#" class="nav-tab" data-tab="quiz">Quiz</a>
+      <a href="#" class="nav-tab" data-tab="users">Users</a>
+      <button class="btn-logout-icon" id="logoutBtn" title="Logout">🚪</button>
+    </div>
+  </nav>
+
+
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕ Close</button>
+      <div id="sidebarContent">
+        <!-- Dynamic content loaded by sidebarCRUD.js -->
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+      <!-- ===== CURRICULUM VIEWS ===== -->
+      
+      <!-- Subcontent View (Videos) -->
+      <div class="content-section" id="subcontent-view">
+        <div class="view-header">
+          <h2 id="subcontentTitle">Subcontent Videos</h2>
+          <div class="view-actions">
+            <button class="btn btn-danger" id="deleteSelectedVideosBtn" style="display:none;">Delete Selected</button>
+            <button class="btn btn-primary" id="fetchVideosForSubcontentBtn">Fetch Videos</button>
+            <button class="btn btn-success" id="saveFetchedVideosBtn" style="display:none;">Save Videos</button>
+          </div>
+        </div>
+        <div class="video-grid" id="videoGrid">
+          <!-- Videos loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Channels View -->
+      <div class="content-section" id="channels-view" style="display: none;">
+        <div class="view-header">
+          <h2>Channel Management</h2>
+          <button class="btn btn-primary" id="addChannelBtn">+ Add Channel</button>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Filter by Name:</label>
+            <input type="text" id="channelNameFilter" class="form-control" placeholder="Search channels...">
+          </div>
+          <div class="filter-group">
+            <label>Filter by Grade:</label>
+            <select id="channelGradeFilter" class="form-select">
+              <option value="">All Grades</option>
+            </select>
+          </div>
+          <button id="removeSelectedChannelsBtn" class="btn btn-danger" style="display: none; margin-left: 10px;">
+            Remove Selected from Grade
+          </button>
+        </div>
+        <div class="channel-grid" id="channelGrid">
+          <!-- Channels loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Channel Videos View -->
+      <div class="content-section" id="channel-videos-view" style="display: none;">
+        <div class="view-header">
+          <h2 id="channelVideosTitle">Videos from Channel</h2>
+          <button class="btn-back" id="backToChannels">← Back to Channels</button>
+        </div>
+        <div class="video-grid" id="channelVideoGrid">
+          <!-- Channel videos loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Reported Videos View -->
+      <div class="content-section" id="reported-view" style="display: none;">
+        <div class="video-grid" id="reportedVideoGrid">
+          <!-- Reported videos loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="content-section" id="empty-state">
+        <div class="empty-state">
+          <div class="empty-icon">📹</div>
+          <h2>No Content Selected</h2>
+          <p>Select a subcontent, channel, or reported videos from the sidebar</p>
+        </div>
+      </div>
+
+      <!-- ===== QUIZ VIEWS ===== -->
+      
+      <!-- Quiz List Tab -->
+      <div class="content-section" id="quiz-list-view" style="display: none;">
+        <div class="tab-header">
+          <h1>Quiz Management</h1>
+          <div class="tab-actions">
+            <button class="btn btn-primary" id="addQuizBtn">+ Create Quiz</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="admin-table" id="quizzesTable">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Questions</th>
+                <th>General</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="quizzesTableBody"></tbody>
+          </table>
+        </div>
+        <div id="quizzesLoading" class="loading-indicator">Loading...</div>
+      </div>
+
+      <!-- Questions Tab -->
+      <div class="content-section" id="quiz-questions-view" style="display: none;">
+        <div class="tab-header">
+          <h1>Question Management</h1>
+          <button class="btn btn-primary" id="addQuestionBtn">+ Add Question</button>
+        </div>
+        <div class="filter-bar">
+          <label>Select Quiz:</label>
+          <select id="questionQuizFilter" class="form-select">
+            <option value="">-- Select a Quiz --</option>
+          </select>
+        </div>
+        <div class="table-container">
+          <table class="admin-table" id="questionsTable">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Difficulty</th>
+                <th>Image</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="questionsTableBody"></tbody>
+          </table>
+        </div>
+        <div id="questionsLoading" class="loading-indicator">Select a quiz to view questions</div>
+      </div>
+
+      <!-- Quiz Assignments Tab -->
+      <div class="content-section" id="quiz-assignments-view" style="display: none;">
+        <div class="tab-header">
+          <h1>Quiz Assignments</h1>
+        </div>
+        <div class="assignment-container">
+          <div class="assignment-tree-panel">
+            <h3>Curriculum Tree</h3>
+            <div class="filter-bar">
+              <label>Select Grade:</label>
+              <select id="quizAssignmentGradeFilter" class="form-select">
+                <option value="">-- Select a Grade --</option>
+              </select>
+              <label>Subject:</label>
+              <select id="quizAssignmentSubjectFilter" class="form-select" disabled>
+                <option value="">-- Select Subject --</option>
+              </select>
+              <label>Content:</label>
+              <select id="quizAssignmentContentFilter" class="form-select" disabled>
+                <option value="">-- Select Content --</option>
+              </select>
+              <label>Subcontent:</label>
+              <select id="quizAssignmentSubcontentFilter" class="form-select" disabled>
+                <option value="">-- Select Subcontent --</option>
+              </select>
+            </div>
+            <div id="quizAssignmentList" class="assignment-tree">
+              <p class="hint">Select a subcontent to see assigned quizzes</p>
+            </div>
+          </div>
+          <div class="assignment-channel-panel">
+            <h3>Assign Quiz</h3>
+            <div class="filter-bar">
+              <label>Select Quiz:</label>
+              <select id="quizAssignmentQuizSelect" class="form-select">
+                <option value="">-- Select a Quiz --</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="assignQuizBtn" disabled>Assign Quiz</button>
+            <div id="assignedQuizzesList" class="assignment-channel-list">
+              <p class="hint">Select a subcontent above to see assigned quizzes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== USERS VIEW ===== -->
+      <div class="content-section" id="users-view" style="display: none;">
+        <div class="tab-header">
+          <h1>User Management</h1>
+        </div>
+        <div class="table-container">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Role</th>
+                <th>Tier</th>
+                <th>Profiles</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody"></tbody>
+          </table>
+        </div>
+        <div id="usersLoading" class="loading-indicator">Loading...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="editModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="editModalTitle">Edit Item</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label id="editModalLabel">Name:</label>
+          <input type="text" class="form-control" id="editModalInput">
+        </div>
+        <button class="btn-save" id="editModalSave">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fetch Video Modal -->
+  <div class="modal-overlay" id="fetchModal" style="display: none;">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2>Fetch Videos from YouTube</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="searchTerm">Search Term:</label>
+          <input type="text" class="form-control" id="searchTerm" placeholder="Enter search term...">
+        </div>
+        
+        <div class="form-group">
+          <label>Type:</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="videoType" value="curricular" checked>
+              <span>Curricular</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="videoType" value="advert">
+              <span>Advert</span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-fetch" id="fetchBtn">Fetch Videos</button>
+        
+        <div id="fetchResults" style="display: none;">
+          <h3>Results</h3>
+          <div class="video-grid" id="fetchResultsGrid"></div>
+          <button class="btn-add-selected" id="addSelectedBtn">Add Selected Videos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Quiz Modal -->
+  <div class="modal-overlay" id="quizModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="quizModalTitle">Create Quiz</h2>
+        <button class="modal-close" id="quizModalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="quizModalBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="quizModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="quizModalSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question Modal -->
+  <div class="modal-overlay" id="questionModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="questionModalTitle">Create Question</h2>
+        <button class="modal-close" id="questionModalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="questionModalBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="questionModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="questionModalSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assign Channel Modal -->
+  <div class="modal-overlay" id="assignChannelModal" style="display: none;">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="assignChannelTitle">Assign Channel</h2>
+        <button class="modal-close" id="assignChannelModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="assignChannelInfo" style="margin-bottom: 15px; font-weight: 500;"></div>
+        <div class="filter-bar">
+          <label>Grade:</label>
+          <select id="assignChannelGradeSelect" class="form-select">
+            <option value="">-- Select Grade --</option>
+          </select>
+          <label>Subject:</label>
+          <select id="assignChannelSubjectSelect" class="form-select" disabled>
+            <option value="">-- Select Subject --</option>
+          </select>
+          <label>Content:</label>
+          <select id="assignChannelContentSelect" class="form-select" disabled>
+            <option value="">-- Select Content --</option>
+          </select>
+          <label>Subcontent:</label>
+          <select id="assignChannelSubcontentSelect" class="form-select" disabled>
+            <option value="">-- Select Subcontent --</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="assignChannelModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="assignChannelModalSave">Assign Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Videos Modal -->
+  <div class="modal-overlay" id="deleteVideosModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Delete Videos</h2>
+        <button class="modal-close" id="deleteVideosModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Delete by Curriculum Position</label>
+          <p style="font-size:12px;color:#888;margin-bottom:10px;">Select the level at which to delete all assigned videos.</p>
+          <div class="filter-bar">
+            <label>Grade:</label>
+            <select id="deleteGradeSelect" class="form-select">
+              <option value="">-- All Grades --</option>
+            </select>
+            <label>Subject:</label>
+            <select id="deleteSubjectSelect" class="form-select" disabled>
+              <option value="">-- All Subjects --</option>
+            </select>
+            <label>Content:</label>
+            <select id="deleteContentSelect" class="form-select" disabled>
+              <option value="">-- All Contents --</option>
+            </select>
+            <label>Subcontent:</label>
+            <select id="deleteSubcontentSelect" class="form-select" disabled>
+              <option value="">-- All Subcontents --</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Or delete by Channel</label>
+          <select id="deleteChannelSelect" class="form-select">
+            <option value="">-- Select Channel --</option>
+          </select>
+        </div>
+        <div id="deleteResults" class="delete-results" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="deleteVideosModalCancel">Cancel</button>
+        <button class="btn btn-danger" id="deleteVideosModalSave">Delete Videos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Player Modal -->
+  <div class="modal-overlay" id="videoPlayerModal" style="display: none;">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h2 id="videoPlayerTitle">Video Player</h2>
+        <button class="modal-close" id="videoPlayerClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="videoPlayerContainer" style="background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 16px;">
+          <!-- YouTube iframe will be inserted here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
+          <button class="btn btn-danger" id="modalDeleteBtn">🗑️ Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div class="modal-overlay" id="confirmModal" style="display: none;">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h2 id="confirmTitle">Confirm</h2>
+        <button class="modal-close" id="confirmClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmOk">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Channel Modal -->
+  <div class="modal-overlay" id="modalOverlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Channel</h2>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+        <button class="btn btn-primary" id="modalSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" style="display:none;"></div>
+
+  <script type="module" src="../../features/admin/auth/adminAuth.js"></script>
+  <script type="module" src="../../features/admin/services/adminServices.js"></script>
+  <script type="module" src="../../features/admin/sidebar/sidebarCRUD.js"></script>
+  <script type="module" src="../../features/admin/videos/videoListAdmin.js"></script>
+  <script type="module" src="../../features/admin/videos/channelListAdmin.js"></script>
+  <script type="module" src="../../features/admin/videos/reportedVideos.js"></script>
+  <script type="module" src="../../features/admin/modals/fetchVideoModal.js"></script>
+  <script type="module" src="../../features/admin/modals/editModal.js"></script>
+  <script type="module" src="../../features/admin/quiz/quizDashboard.js"></script>
+  <script type="module" src="../../features/admin/users/userDashboard.js"></script>
+  <script type="module" src="../../features/admin/assignments/assignmentDashboard.js"></script>
+  <script type="module" src="../../features/admin/videos/videoDeleterDashboard.js"></script>
+  <script type="module" src="../../features/admin/channels/channelManagement.js"></script>
+  <script type="module" src="../../features/admin/dashboard/dashboardInit.js"></script>
+</body>
+</html>

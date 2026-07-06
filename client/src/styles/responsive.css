@@ -1,0 +1,116 @@
+/* Extra small devices (phones, portrait) */
+@media (max-width: 400px) {
+    .youtube-logo-overlay {
+
+        width: 100%;
+        height: 40px;
+    }
+
+}
+
+@media (max-width: 575.98px) {
+
+    .nav-middle .search-box {
+        display: none;
+    }
+
+    .search-small {
+        display: block;
+    }
+
+    .fullscreen-mode .iframe-container {
+        flex-direction: column;
+        width: 100vw;
+        height: 56vw;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .fullscreen-mode .play-video {
+        width: 100%;
+        height: auto;
+    }
+
+    .fullscreen-mode iframe {
+        width: 100%;
+        height: 56vw;
+        /* Maintains a 16:9 aspect ratio */
+    }
+
+    .nav-left .logo {
+        width: 120px;
+
+    }
+
+
+
+
+}
+
+
+
+/* Small devices (phones, landscape) */
+@media (min-width: 576px) and (max-width: 767.98px) {}
+
+/* Medium devices (tablets, portrait) */
+@media (max-width: 991.98px) {
+    .fullscreen-mode .iframe-container {
+        flex-direction: column;
+        width: 100vw;
+        height: 56vw;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .side-video-list {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+    }
+
+    .container,
+    .large-container {
+        padding-left: 1%;
+        padding-right: 1%
+    }
+
+
+
+
+
+
+
+    .play-video {
+
+        flex-basis: 100%;
+        margin-bottom: 20px;
+    }
+
+    .play-video .iframe-container {
+        width: 100%;
+        height: 30vh;
+
+    }
+
+    .right-sidebar {
+        flex-basis: 100%;
+    }
+
+
+}
+
+@media (min-width: 767.98px) and (max-width: 991.98px) {}
+
+/* Large devices (tablets, landscape / small desktops) */
+@media (min-width: 992px) and (max-width: 1199.98px) {}
+
+/* Extra large devices (desktops) */
+@media (min-width: 1200px) and (max-width: 1399.98px) {}
+
+/* Extra-extra large devices (4K monitors, TVs) */
+@media (min-width: 1400px) {
+
+
+    /* styles for very large screens like TVs */
+}

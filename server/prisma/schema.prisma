@@ -1,0 +1,595 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
+  previewFeatures = ["partialIndexes"]
+  engineType      = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["auth", "public"]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model contents {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subject_id          String                @db.Uuid
+  name                String                @db.VarChar(150)
+  created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channel_assignments channel_assignments[]
+  subjects            subjects              @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quiz_assignments    quiz_assignments[]
+  quiz_mappings       quiz_mappings[]
+  subcontents         subcontents[]
+  video_assignments   video_assignments[]
+
+  @@unique([subject_id, name], map: "contents_subject_name_unique")
+  @@index([subject_id], map: "idx_contents_subject")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model grades {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String                @unique @db.VarChar(50)
+  sort_order          Int                   @unique
+  created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channel_assignments channel_assignments[]
+  grade_channels      grade_channels[]
+  profiles            profiles[]
+  quiz_assignments    quiz_assignments[]
+  quiz_mappings       quiz_mappings[]
+  subjects            subjects[]
+  video_assignments   video_assignments[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model profiles {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String             @db.Uuid
+  grade_id         String             @db.Uuid
+  profile_name     String             @db.VarChar(100)
+  avatar_url       String?
+  is_active        Boolean            @default(true)
+  created_at       DateTime           @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  coins            Int?               @default(30) @db.SmallInt
+  favorite_quizzes favorite_quizzes[]
+  likes            likes[]
+  grades           grades             @relation(fields: [grade_id], references: [id], onUpdate: NoAction)
+  users            users_metadata     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reports          reports[]
+  watch_histories  watch_histories[]
+
+  @@unique([user_id, profile_name], map: "unique_profile_per_user")
+  @@index([user_id], map: "idx_profiles_user")
+  @@schema("public")
+}
+
+model questions {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quiz_id        String   @db.Uuid
+  question_text  String
+  difficulty     String?  @default("easy") @db.VarChar(50)
+  options        Json
+  correct_answer String
+  created_at     DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  question_image String?
+  quizzes        quizzes  @relation(fields: [quiz_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([quiz_id], map: "idx_questions_quiz")
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model quizzes {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title            String             @db.VarChar(255)
+  is_general       Boolean            @default(false)
+  created_at       DateTime           @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  favorite_quizzes favorite_quizzes[]
+  questions        questions[]
+  quiz_assignments quiz_assignments[]
+  quiz_mappings    quiz_mappings[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subcontents {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content_id          String                @db.Uuid
+  name                String                @db.VarChar(150)
+  created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channel_assignments channel_assignments[]
+  quiz_assignments    quiz_assignments[]
+  quiz_mappings       quiz_mappings[]
+  contents            contents              @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  video_assignments   video_assignments[]
+
+  @@unique([content_id, name], map: "subcontents_content_name_unique")
+  @@index([content_id], map: "idx_subcontents_content")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subjects {
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  grade_id            String                @db.Uuid
+  name                String                @db.VarChar(100)
+  created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channel_assignments channel_assignments[]
+  contents            contents[]
+  quiz_assignments    quiz_assignments[]
+  quiz_mappings       quiz_mappings[]
+  subject_channels    subject_channels[]
+  grades              grades                @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  video_assignments   video_assignments[]
+
+  @@unique([grade_id, name], map: "subjects_grade_name_unique")
+  @@index([grade_id], map: "idx_subjects_grade")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model videos {
+  id                String              @id @db.VarChar(50)
+  title             String              @db.VarChar(255)
+  channel_title     String?
+  thumbnails        Json?
+  cached_at         DateTime            @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  published_at      DateTime?           @db.Timestamptz(6)
+  channel_id        String?             @db.VarChar(100)
+  duration          Int                 @default(0)
+  view_count        BigInt              @default(0)
+  likes             likes[]
+  reports           reports[]
+  video_assignments video_assignments[]
+  watch_histories   watch_histories[]
+
+  @@index([channel_id], map: "idx_videos_channel_id")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model channels {
+  id                  String                @id @db.VarChar(100)
+  name                String                @db.VarChar(255)
+  thumbnail_url       Json?
+  created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  type                String                @default("curricular") @db.VarChar(20)
+  channel_assignments channel_assignments[]
+  grade_channels      grade_channels[]
+  subject_channels    subject_channels[]
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model favorite_quizzes {
+  profile_id   String   @db.Uuid
+  quiz_id      String   @db.Uuid
+  favorited_at DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  profiles     profiles @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quizzes      quizzes  @relation(fields: [quiz_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([profile_id, quiz_id])
+  @@index([profile_id], map: "idx_favorite_quizzes_profile")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model grade_channels {
+  grade_id   String   @db.Uuid
+  channel_id String   @db.VarChar(100)
+  channels   channels @relation(fields: [channel_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  grades     grades   @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([grade_id, channel_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subject_channels {
+  subject_id String   @db.Uuid
+  channel_id String   @db.VarChar(100)
+  channels   channels @relation(fields: [channel_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subjects   subjects @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([subject_id, channel_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model channel_assignments {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  channel_id    String       @db.VarChar(100)
+  grade_id      String       @db.Uuid
+  subject_id    String?      @db.Uuid
+  content_id    String?      @db.Uuid
+  subcontent_id String?      @db.Uuid
+  created_at    DateTime     @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channels      channels     @relation(fields: [channel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_channel_assignments_channels")
+  contents      contents?    @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_channel_assignments_contents")
+  grades        grades       @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_channel_assignments_grades")
+  subcontents   subcontents? @relation(fields: [subcontent_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_channel_assignments_subcontents")
+  subjects      subjects?    @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_channel_assignments_subjects")
+
+  @@unique([channel_id, grade_id, subject_id, content_id, subcontent_id], map: "channel_assignments_combination_key")
+  @@index([grade_id], map: "idx_channel_assignments_grade")
+  @@index([channel_id], map: "idx_channel_assignments_channel")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model likes {
+  profile_id String   @db.Uuid
+  video_id   String   @db.VarChar(50)
+  liked_at   DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  profiles   profiles @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  videos     videos   @relation(fields: [video_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([profile_id, video_id])
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model quiz_assignments {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quiz_id       String       @db.Uuid
+  grade_id      String       @db.Uuid
+  subject_id    String?      @db.Uuid
+  content_id    String?      @db.Uuid
+  subcontent_id String?      @db.Uuid
+  created_at    DateTime     @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  contents      contents?    @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  grades        grades       @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quizzes       quizzes      @relation(fields: [quiz_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subcontents   subcontents? @relation(fields: [subcontent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subjects      subjects?    @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([quiz_id, grade_id, subject_id, content_id, subcontent_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model quiz_mappings {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quiz_id       String      @db.Uuid
+  grade_id      String      @db.Uuid
+  subject_id    String      @db.Uuid
+  content_id    String      @db.Uuid
+  subcontent_id String      @db.Uuid
+  contents      contents    @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  grades        grades      @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quizzes       quizzes     @relation(fields: [quiz_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subcontents   subcontents @relation(fields: [subcontent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subjects      subjects    @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([quiz_id, subcontent_id], map: "unique_quiz_topic_mapping")
+  @@index([subcontent_id], map: "idx_quiz_mappings_lookup")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model reports {
+  profile_id  String   @db.Uuid
+  video_id    String   @db.VarChar(50)
+  reported_at DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  profiles    profiles @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  videos      videos   @relation(fields: [video_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([profile_id, video_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users_metadata {
+  id                 String            @id @db.Uuid
+  role               user_role         @default(parent)
+  tier               subscription_tier @default(free)
+  updated_at         DateTime          @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  created_at         DateTime          @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  number_of_profiles Int               @default(1)
+  profiles           profiles[]
+
+  @@index([role, tier], map: "idx_users_metadata_role_tier")
+  @@schema("public")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model video_assignments {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  video_id      String       @db.VarChar(50)
+  grade_id      String       @db.Uuid
+  subject_id    String?      @db.Uuid
+  content_id    String?      @db.Uuid
+  subcontent_id String?      @db.Uuid
+  created_at    DateTime     @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  contents      contents?    @relation(fields: [content_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  grades        grades       @relation(fields: [grade_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subcontents   subcontents? @relation(fields: [subcontent_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subjects      subjects?    @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  videos        videos       @relation(fields: [video_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([video_id, grade_id, subject_id, content_id, subcontent_id])
+  @@index([grade_id, subject_id, content_id, subcontent_id], map: "idx_video_assignments_lookup")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model watch_histories {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profile_id String   @db.Uuid
+  video_id   String   @db.VarChar(50)
+  watched_at DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  profiles   profiles @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  videos     videos   @relation(fields: [video_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([profile_id, video_id], map: "idx_watch_history_composite")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model deleted_videos {
+  video_id   String    @id @db.VarChar
+  deleted_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@schema("public")
+}
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model audit_log_entries {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model custom_oauth_providers {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model flow_state {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model identities {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model instances {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model mfa_amr_claims {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model mfa_challenges {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model mfa_factors {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model oauth_authorizations {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+// model oauth_client_states {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model oauth_clients {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model oauth_consents {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model one_time_tokens {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model refresh_tokens {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model saml_providers {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model saml_relay_states {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model schema_migrations {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model sessions {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+// model sso_domains {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+// model sso_providers {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+// model users {
+// @@schema("auth")
+// }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model webauthn_challenges {
+// @@schema("auth")
+// }
+
+/// We could not retrieve columns for the underlying table. Either it has none or you are missing rights to see them. Please check your privileges.
+// model webauthn_credentials {
+// @@schema("auth")
+// }
+
+enum subscription_tier {
+  free
+  pro
+
+  @@schema("public")
+}
+
+enum user_role {
+  admin
+  parent
+
+  @@schema("public")
+}
+
+enum video_type {
+  advert
+  curricular
+
+  @@schema("public")
+}
+
+enum aal_level {
+  aal1
+  aal2
+  aal3
+
+  @@schema("auth")
+}
+
+enum code_challenge_method {
+  s256
+  plain
+
+  @@schema("auth")
+}
+
+enum factor_status {
+  unverified
+  verified
+
+  @@schema("auth")
+}
+
+enum factor_type {
+  totp
+  webauthn
+  phone
+
+  @@schema("auth")
+}
+
+enum oauth_authorization_status {
+  pending
+  approved
+  denied
+  expired
+
+  @@schema("auth")
+}
+
+enum oauth_client_type {
+  public
+  confidential
+
+  @@schema("auth")
+}
+
+enum oauth_registration_type {
+  dynamic
+  manual
+
+  @@schema("auth")
+}
+
+enum oauth_response_type {
+  code
+
+  @@schema("auth")
+}
+
+enum one_time_token_type {
+  confirmation_token
+  reauthentication_token
+  recovery_token
+  email_change_token_new
+  email_change_token_current
+  phone_change_token
+
+  @@schema("auth")
+}

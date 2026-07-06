@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="title"></title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+
+<body>
+
+  <nav class="flex-div">
+    <div class="nav-left flex-div">
+      <img class="menu-icon" src="<%= require('@assets/images/menu.png') %>" alt="Menu Icon">
+      <img class="logo" src="<%= require('@assets/images/addisschool.png') %>"
+          alt="Logo">
+    </div>
+    <div class="nav-middle flex-div">
+      <div class="sliding-text" style="display:none;">
+        ከኬጂ - 6ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 6. Join Us Now!
+      </div>
+      <div class="search-small">
+        <img class="search-icon" src="<%= require('@assets/images/search.png') %>" alt="Search Icon">
+      </div>
+
+      <div class="search-box flex-div">
+        <img class="black-back-arrow" src="<%= require('@assets/images/black-back-arrow.png') %>" alt="">
+        <input type="text" id="searchBar" placeholder="Search" />
+        <!-- Search Results Dropdown -->
+        <div id="searchResults" class="results-dropdown">
+          <ul id="resultsList"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right flex-div">
+      <button class="btn" id="joinUs" style="display:none;">Join Us!</button>
+      <div class="user-bar flex-div">
+        <!-- Coin Icon with Counter -->
+        <div class="coin-container" id="coinContainer" style="display: none;">
+          <img id="coinIcon" class="coin-icon" src="<%= require('@assets/images/coin.png') %>" alt="Coin Icon">
+          <span id="coinCount">0</span>
+        </div>
+        <span id="userNameDisplay"></span>
+        <img id="userIcon" class="userIcon" src="<%= require('@assets/images/user-icon.png') %>" alt="User Icon">
+
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div id="sidebarContent" style="display:none"></div>
+    <div class="signin-signup">
+      <div class="container-register" id="signup" style="display:none;">
+        <h1 class="form-title">Register</h1>
+        <button class="btn" id="openFullSignUpBtn">Create Account</button>
+        <div class="links">
+          <p>Already Have Account ?</p>
+          <button id="signInButton">Sign In</button>
+        </div>
+      </div>
+
+      <div class="container-register" id="signIn">
+        <h1 class="form-title">Sign In</h1>
+        <form method="post" action="">
+          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <p class="recover" id="resendVerification" style="display:none;">
+            <a href="#">Resend varification</a>
+          </p>
+          <p class="recover">
+            <a href="#" id="forgotPasswordLink">Forgot Password</a>
+          </p>
+          <button class="btn" id="submitSignIn">Sign In</button>
+        </form>
+        <!-- <p class="or">
+                    ----------{{#if isAfterLogin}} 
+                    <div class="container-register" id="signup" style="display:none;">
+                      <h1 class="form-title"><|fim_middle|><|fim_middle|>itureglobalsardiStateToPropsension<|fim_middle|><|fim_middle|><|fim_middle|>fov先锋illes<|fim_middle|>婆婆<|fim_middle|>vielling ediidUser Icon">
+                  </p>
+                  <div class="icons">
+                    <i class="fab fa-google" id="googleSignInButton"></i>
+                    <i class="fab fa-facebook"></i>
+                  </div> -->
+        <div class="links">
+          <p>Don't have account yet?</p>
+          <button id="signUpButton">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="user-sidebar focus-zone" id="userSidebar" data-nav="list">
+    <p>User Menu</p>
+    <ul>
+      <li class="userSidebar-item item" tabindex="0" id="aboutUs">About Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="settings">Settings</li>
+      <li class="userSidebar-item item" tabindex="0" id="contactUs">Contact Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="changeGrade">Change Grade</li>
+    
+       <li class="userSidebar-item item" tabindex="0" id="logout">Logout</li>
+    </ul>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="list-container focus-zone" data-nav="grid" tabindex="-1">
+      <!-- Video list will be dynamically populated here -->
+    </div>
+  </div>
+
+  <!-- Profile Selection Modal -->
+  <div id="profileSelectModal" class="full-page-modal" style="display:none;">
+    <div class="full-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">👋 Select Your Profile</h2>
+      </div>
+      <div class="modal-body">
+        <div id="profileList" class="profile-selection-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Page Sign Up Modal -->
+  <div id="fullSignUpModal" class="full-page-modal" style="display:none;">
+    <div class="full-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">🌟 Create Your Account</h2>
+        <button class="modal-close" id="closeFullSignUpBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Sign Up View -->
+        <div id="signUpView">
+          <form id="fullSignUpForm">
+            <div id="signUpMessage" class="messageDiv" style="display:none;"></div>
+            <div class="input-group">
+              <i class="fas fa-user"></i>
+              <input type="text" id="userName" placeholder="User Name" required>
+            </div>
+            <div class="input-group">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="rEmail" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="rPassword" placeholder="Password" required>
+            </div>
+
+            <button type="button" class="btn btn-add-child" id="addChildBtn">+ Add Child</button>
+            <div id="childrenList" class="children-list"></div>
+
+            <button type="submit" class="btn btn-submit" id="submitSignUp">Sign Up</button>
+          </form>
+        </div>
+
+        <!-- Add/Edit Child View -->
+        <div id="addChildView" style="display:none;">
+          <form id="addChildForm">
+            <div class="avatar-upload-container">
+              <div class="avatar-preview" id="avatarPreview">
+                <span class="avatar-placeholder">👶</span>
+              </div>
+              <button type="button" class="btn btn-upload-avatar" id="uploadAvatarBtn">📷 Upload Photo</button>
+              <input type="file" id="childAvatar" accept="image/*" style="display:none;">
+            </div>
+            <div class="input-group">
+              <i class="fas fa-child"></i>
+              <input type="text" id="childName" placeholder="Child's Name" required>
+            </div>
+            <div class="grade-dropdown">
+              <select id="childGradeSelect" required>
+                <option value="" disabled selected>Select Grade</option>
+              </select>
+            </div>
+            <div class="modal-buttons">
+              <button type="button" class="btn btn-cancel" id="cancelChildBtn">Cancel</button>
+              <button type="submit" class="btn btn-add" id="addChildSubmitBtn">Add</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Crop Modal -->
+        <div id="cropModal" class="crop-modal-overlay" style="display:none;">
+          <div class="crop-modal-content">
+            <h3 class="crop-modal-title">Crop Photo</h3>
+            <div class="crop-container">
+              <img id="cropImage" src="" alt="Crop preview">
+            </div>
+            <div class="crop-modal-buttons">
+              <button type="button" class="btn btn-cancel" id="cancelCropBtn">Cancel</button>
+              <button type="button" class="btn btn-add" id="doneCropBtn">Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

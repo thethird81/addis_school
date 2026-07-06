@@ -1,0 +1,42 @@
+<nav class="flex-div">
+    <div class="nav-left flex-div">
+        <img class="menu-icon" src="__MENU__" alt="Menu Icon">
+        <a href="/dist/play-video.html"><img class="logo" src="__LOGO__" alt="Logo"></a>
+    </div>
+
+    <div class="nav-middle flex-div">
+        <div class="sliding-text" style="display:none;">
+            ከኬጂ - 12ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 12. Join Us Now!
+        </div>
+        <div class="search-box flex-div">
+            <input type="text" id="searchBar" placeholder="Search" />
+            <!-- Search Results Dropdown -->
+            <div id="searchResults" class="results-dropdown">
+                <ul id="resultsList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-right flex-div">
+        <button class="btn" id="joinUs" style="display:none;">Join Us!</button>
+        <div class="user-bar flex-div">
+            <div class="coin-container" id="coinContainer">
+                <img id="coinIcon" class="coin-icon" src="__COIN__" alt="Coin Icon">
+                <span id="coinCount">0</span>
+            </div>
+            <span id="userNameDisplay">Username</span>
+            <img id="userIcon" class="userIcon" src="__USER__" alt="User Icon">
+        </div>
+    </div>
+
+    <!-- User Sidebar -->
+    <div class="user-sidebar" id="userSidebar">
+        <p>User Menu</p>
+        <ul>
+            <li class="userSidebar-item" id="settings">Settings</li>
+            <li class="userSidebar-item" id="contactUs">Contact Us</li>
+            <li class="userSidebar-item" id="addUser">Add User</li>
+            <li class="userSidebar-item" id="logout">Logout</li>
+        </ul>
+    </div>
+</nav>

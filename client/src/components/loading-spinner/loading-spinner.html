@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid-Friendly Loading Spinner Demo</title>
+    <link rel="stylesheet" href="loading-spinner.css">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .demo-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        .demo-section h2 {
+            color: #FF9F1C;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            background: #FF9F1C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        button:hover {
+            background: #FF8F00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 159, 28, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .code-example {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #555;
+        }
+        
+        .features-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .browser-support {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .browser-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🚀 Kid-Friendly Loading Spinner</h1>
+        <p class="subtitle">A playful, animated loading indicator with legacy browser support</p>
+        
+        <div class="demo-section">
+            <h2>✨ Features</h2>
+            <ul class="features-list">
+                <li>Bright orange circle with smooth animations</li>
+                <li>Fun emoji that pulses gently</li>
+                <li>Infinite looping spinner</li>
+                <li>Legacy browser compatible (ES5 + vendor prefixes)</li>
+                <li>SVG with CSS fallback for old browsers</li>
+                <li>Easy-to-use API</li>
+            </ul>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🎮 Interactive Demo</h2>
+            <p>Click the buttons below to see the spinner in action:</p>
+            
+            <div class="button-group">
+                <button onclick="showDefaultSpinner()">Default Spinner</button>
+                <button onclick="showRocketSpinner()">Rocket 🚀</button>
+                <button onclick="showStarSpinner()">Star ⭐</button>
+                <button onclick="showPandaSpinner()">Panda 🐼</button>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="showSuccessSpinner()">Success ✅</button>
+                <button onclick="showErrorSpinner()">Error ❌</button>
+                <button onclick="showCustomSpinner()">Custom Text</button>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="hideSpinner()" style="background: #666;">Hide Spinner</button>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>💻 Quick Start Code</h2>
+            <div class="code-example">
+// 1. Include the files
+<link rel="stylesheet" href="loading-spinner.css">
+<script src="loading-spinner.js"></script>
+
+// 2. Show the spinner
+LoadingSpinner.show();
+
+// 3. Hide when done
+LoadingSpinner.hide();
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🌐 Browser Support</h2>
+            <div class="browser-support">
+                <span class="browser-badge">Chrome ✅</span>
+                <span class="browser-badge">Firefox ✅</span>
+                <span class="browser-badge">Safari ✅</span>
+                <span class="browser-badge">Edge ✅</span>
+                <span class="browser-badge">IE9+ ✅</span>
+                <span class="browser-badge">Mobile ✅</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="loading-spinner.js"></script>
+    <script>
+        // Initialize the spinner
+        LoadingSpinner.init({
+            emoji: '🚀',
+            text: 'Loading...',
+            autoHide: false
+        });
+        
+        // Demo functions
+        function showDefaultSpinner() {
+            LoadingSpinner.show();
+        }
+        
+        function showRocketSpinner() {
+            LoadingSpinner.show({
+                emoji: '🚀',
+                text: 'Blasting off!'
+            });
+        }
+        
+        function showStarSpinner() {
+            LoadingSpinner.show({
+                emoji: '⭐',
+                text: 'Shining bright...'
+            });
+        }
+        
+        function showPandaSpinner() {
+            LoadingSpinner.show({
+                emoji: '🐼',
+                text: 'Eating bamboo...'
+            });
+        }
+        
+        function showSuccessSpinner() {
+            LoadingSpinner.show({
+                emoji: '✅',
+                text: 'Success!'
+            });
+            setTimeout(function() {
+                LoadingSpinner.hide();
+            }, 2000);
+        }
+        
+        function showErrorSpinner() {
+            LoadingSpinner.show({
+                emoji: '❌',
+                text: 'Oops! Try again'
+            });
+            setTimeout(function() {
+                LoadingSpinner.hide();
+            }, 2000);
+        }
+        
+        function showCustomSpinner() {
+            LoadingSpinner.show({
+                emoji: '🎨',
+                text: 'Creating your masterpiece...'
+            });
+        }
+        
+        function hideSpinner() {
+            LoadingSpinner.hide();
+        }
+        
+        // Auto-hide after 5 seconds for demo
+        setTimeout(function() {
+            if (LoadingSpinner.isVisible()) {
+                LoadingSpinner.hide();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

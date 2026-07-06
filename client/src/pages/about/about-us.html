@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About • Addis School</title>
+    <meta name="description"
+        content="A safe, school-friendly video website that curates YouTube content by grade, subject, and topic. Built for kids, teachers, and families—works great on TVs and touch devices." />
+    <link rel="icon" href="../assets/images/logo.png" />
+    <!-- If you have a global stylesheet, keep this. Otherwise remove. -->
+
+    <style>
+        /* Minimal, page-local styles in case about.css is missing */
+        :root {
+            --bg: linear-gradient(to bottom, rgba(101, 1, 132, 0.89), rgba(44, 14, 5, 1));
+            --panel: #972c78;
+            --muted: #a9afc3;
+            --brand: #66e0a3;
+            --brand-2: #7ab6ff;
+            --text: #f1f5ff;
+            --ring: #974485;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            background: var(--bg);
+            color: var(--text)
+        }
+
+        a {
+            color: var(--brand)
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden
+        }
+
+        .skip-link:focus {
+            left: 12px;
+            top: 12px;
+            width: auto;
+            height: auto;
+            background: #000;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(11, 11, 16, .85);
+            backdrop-filter: saturate(140%) blur(8px);
+            border-bottom: 1px solid #1b1f30;
+            z-index: 10
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+            padding: 14px 0
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none
+        }
+
+        .brand img {
+            width: 150px;
+            height: 40px;
+            border-radius: 10px
+        }
+
+        .brand strong {
+            font-size: 18px
+        }
+
+        .nav a {
+            color: var(--text);
+            text-decoration: none;
+            opacity: .9
+        }
+
+        .nav a[aria-current="page"] {
+            color: var(--brand)
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 28px;
+            align-items: center;
+            padding: 40px 0
+        }
+
+        .hero .card {
+            background: linear-gradient(140deg, #141427, #0f1320 70%);
+            border: 1px solid #1c2040;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .25)
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 3.5vw, 42px);
+            line-height: 1.15;
+            margin: 0 0 10px
+        }
+
+        .hero p {
+            color: var(--muted);
+            margin: 0 0 14px
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #0f1a2a;
+            border: 1px solid #1a2540;
+            color: #b7c4ff;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--ring);
+            border-radius: 16px;
+            padding: 18px
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 16px 0
+        }
+
+        .kicker {
+            font-size: 12px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #8aa0ff
+        }
+
+        ul.feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 10px
+        }
+
+        ul.feature-list li {
+            display: flex;
+            gap: 10px
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 9px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--brand), var(--brand-2))
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        details {
+            background: var(--panel);
+            border: 1px solid var(--ring);
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        details+details {
+            margin-top: 10px
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        .cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #2a3555;
+            background: #10182b;
+            color: #e9efff;
+            text-decoration: none
+        }
+
+        .btn.primary {
+            background: linear-gradient(90deg, var(--brand), var(--brand-2));
+            color: #001016;
+            font-weight: 700
+        }
+
+        footer {
+            margin: 40px 0 20px;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        @media (max-width:880px) {
+            .hero {
+                grid-template-columns: 1fr
+            }
+
+            .nav {
+                gap: 8px
+            }
+        }
+    </style>
+    <script>
+        // Small ES5 helpers (no frameworks). Keep things TV-remote & keyboard friendly.
+        (function () {
+            // FAQ: allow left/right arrows to open/close <details>
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+                var active = document.activeElement;
+                if (!active || active.tagName !== 'SUMMARY') return;
+                var details = active.parentNode;
+                if (!details) return;
+                if (e.key === 'ArrowRight') details.open = true;
+                if (e.key === 'ArrowLeft') details.open = false;
+            });
+
+            // Respect "prefers-reduced-motion" users by skipping animated focus rings, etc.
+            try {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    document.documentElement.classList.add('reduced-motion');
+                }
+            } catch (_e) { }
+
+            // Current year
+            function setYear() {
+                var el = document.getElementById('year');
+                if (el) el.textContent = new Date().getFullYear();
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setYear);
+            } else { setYear(); }
+        })();
+    </script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header>
+        <div class="container nav" role="navigation" aria-label="Main">
+            <a class="brand" href="../pages/index.html">
+                <img src="<%= require('@assets/images/addisschool.png') %>" alt="Addis School logo" />
+
+            </a>
+            <nav class="cta">
+                <a href="../pages/index.html">Home</a>
+                <a href="../pages/play-video.html">Play</a>
+                <a href="../pages/contact-us.html">Contact</a>
+                <a href="../pages/about.html" aria-current="page">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main" class="container" tabindex="-1">
+        <section class="hero">
+            <div class="card">
+                <span class="pill" aria-hidden="true">Curated • Safe • School‑friendly</span>
+                <h1>About Addis School</h1>
+                <p>
+                    We help kids, families, and teachers find the <strong>right video at the right
+                        level</strong>—without the noise. Our library is organized by <strong>grade</strong>,
+                    <strong>subject</strong>, <strong>content</strong>, and <strong>sub‑content</strong>, so learners
+                    jump straight to what matters.
+                </p>
+                <p class="muted">
+                    Built to run smoothly on <strong>TVs, computers, and touch devices</strong>. Arrow‑key navigation
+                    and big‑screen focus states make it classroom and living‑room friendly.
+                </p>
+                <div class="cta">
+                    <a class="btn primary" href="../pages/index.html">Start exploring</a>
+                    <a class="btn" href="../pages/contact-us.html">Partner with us</a>
+                </div>
+            </div>
+            <div class="panel">
+                <p class="kicker">At a glance</p>
+                <ul class="feature-list">
+                    <li><span class="dot"></span>
+                        <div><strong>Curated & Filtered:</strong> Videos selected for quality and age‑appropriateness.
+                        </div>
+                    </li>
+                    <li><span class="dot"></span>
+                        <div><strong>By Grade & Topic:</strong> K‑6 structure: Grade → Subject → Content → Sub‑content.
+                        </div>
+                    </li>
+                    <li><span class="dot"></span>
+                        <div><strong>Focus Navigation:</strong> Optimized for TV remotes (arrows + Enter) and keyboards.
+                        </div>
+                    </li>
+                    <li><span class="dot"></span>
+                        <div><strong>Favorites:</strong> Save videos for quick access; synced per grade/subject.</div>
+                    </li>
+                    <li><span class="dot"></span>
+                        <div><strong>Classroom‑ready:</strong> Clean UI, no distractions, no autoplay traps.</div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="grid" aria-labelledby="mission-h">
+            <article class="panel">
+                <h2 id="mission-h">Our mission</h2>
+                <p>
+                    Give every child a safe, inspiring path to learn through video. We believe in
+                    <strong>clarity</strong>, <strong>safety</strong>, and <strong>access</strong> for all learners—at
+                    school, at home, and on the go.
+                </p>
+            </article>
+            <article class="panel" aria-labelledby="works-h">
+                <h2 id="works-h">How it works</h2>
+                <ol>
+                    <li><strong>Pick a grade</strong> (e.g., 3).</li>
+                    <li><strong>Choose a subject</strong> (Science, Math, English, etc.).</li>
+                    <li><strong>Select a content area</strong> (e.g., “Energy”).</li>
+                    <li><strong>Open a sub‑content</strong> to see curated videos (e.g., “Energy transfers”).</li>
+                </ol>
+                <p class="muted">Your selections also help us suggest better results over time.</p>
+            </article>
+            <article class="panel" aria-labelledby="safety-h">
+                <h2 id="safety-h">Safety & curation</h2>
+                <p>
+                    We combine <strong>manual review</strong> with structured metadata to screen out low‑quality or
+                    off‑topic videos. Titles, thumbnails, and descriptions are checked for school suitability.
+                </p>
+                <p class="muted">Have a concern about a video? <a href="../pages/contact-us.html">Report it</a> and
+                    we’ll take action.</p>
+            </article>
+            <article class="panel" aria-labelledby="features-h">
+                <h2 id="features-h">Features built for you</h2>
+                <ul>
+                    <li><strong>Favorites</strong> by grade/subject/content/sub‑content.</li>
+                    <li><strong>Remote‑friendly navigation</strong> for TV and keyboards.</li>
+                    <li><strong>Touch support</strong> for tablets and phones.</li>
+                    <li><strong>Clean layout</strong> with large focus states for the classroom.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="grid" aria-labelledby="faq-h">
+            <div class="panel">
+                <h2 id="faq-h">FAQ</h2>
+                <details>
+                    <summary>Where do the videos come from?</summary>
+                    <p>We use public sources (like YouTube) and apply our own filtering, tagging, and review. Only
+                        school‑friendly content makes the cut.</p>
+                </details>
+                <details>
+                    <summary>Can I suggest a video?</summary>
+                    <p>Yes! Use the <a href="../pages/contact-us.html">contact form</a> with the link and the
+                        grade/subject it fits.</p>
+                </details>
+                <details>
+                    <summary>Does it work on a smart TV?</summary>
+                    <p>Absolutely. Navigate with arrow keys and Enter. Focus highlights show where you are.</p>
+                </details>
+                <details>
+                    <summary>How do Favorites work?</summary>
+                    <p>Mark a video as a favorite. It’s saved under the same grade/subject/content/sub‑content so you
+                        can find it fast next time.</p>
+                </details>
+            </div>
+            <div class="panel">
+                <h2 class="kicker" style="margin-top:0">For schools & creators</h2>
+                <p>
+                    We’re open to partnerships with schools, teachers, and educational creators. If you publish great
+                    kid‑safe videos and want to reach classrooms, let’s talk.
+                </p>
+                <div class="cta">
+                    <a class="btn" href="../pages/contact-us.html">Contact the team</a>
+                    <a class="btn" href="mailto:hello@youngroots.example">Email us</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel" aria-labelledby="values-h">
+            <h2 id="values-h">Our values</h2>
+            <ul class="feature-list">
+                <li><span class="dot"></span>
+                    <div><strong>Safety first</strong> — kid‑appropriate by design.</div>
+                </li>
+                <li><span class="dot"></span>
+                    <div><strong>Learning matters</strong> — organized to match how schools teach.</div>
+                </li>
+                <li><span class="dot"></span>
+                    <div><strong>Simple & fast</strong> — works on low‑end devices and TV browsers.</div>
+                </li>
+                <li><span class="dot"></span>
+                    <div><strong>Respectful UX</strong> — no dark patterns, no autoplay traps.</div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="panel" aria-labelledby="tech-h">
+            <h2 id="tech-h">Under the hood (for the tech‑curious)</h2>
+            <p class="muted">
+                Built with modern, accessible HTML/CSS and <strong>vanilla ES5 JavaScript</strong>. Content is indexed
+                by <code>grade → subject → content → subcontent</code> and can be stored or synced (e.g., Firestore) for
+                fast retrieval. The UI supports <strong>arrow‑key focus</strong> for TV remotes and keyboards.
+            </p>
+        </section>
+    </main>
+
+    <footer class="container" role="contentinfo">
+        <p>© <span id="year"></span> Addis School. All rights reserved.</p>
+    </footer>
+
+    <!-- Optional: structured data for better SEO -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Addis School",
+    "url": "https://example.com",
+    "logo": "https://example.com/assets/logo.png",
+    "sameAs": [],
+    "description": "A safe, school-friendly video website curated by grade, subject, and topic.",
+    "foundingDate": "2025"
+  }
+  </script>
+</body>
+
+</html>

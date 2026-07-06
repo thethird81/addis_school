@@ -1,0 +1,287 @@
+/* Form Container */
+.container-register {
+
+    width: 100%;
+    max-width: 450px;
+
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Form Title */
+.form-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Input Field Container */
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+/* Input Fields */
+.input-group input {
+    width: 100%;
+    padding: 12px 20px 12px 15px;
+    /* Space for icon */
+    background-color: white;
+    border: 2px solid #ffffff;
+    color: #000;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+type
+
+/* Fix Icon Position */
+.input-group i {
+    position: absolute;
+    right: 15px;
+    /* Move icon inside the field */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+/* Placeholder & Label */
+.input-group label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* Move Label Up When Typing or Focusing */
+.input-group input:focus~label,
+.input-group input:not(:placeholder-shown)~label {
+    top: 5px;
+    font-size: 0.85rem;
+    color: #ffffff;
+    background: white;
+    padding: 0 5px;
+}
+
+/* Improve Focus State */
+.input-group input:focus {
+    outline: none;
+    border-color: #ffffff;
+}
+
+/* Forgot Password */
+.recover {
+    text-align: right;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.recover a {
+    text-decoration: none;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.recover a:hover {
+    color: #ff0000;
+}
+
+/* Buttons */
+button {
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    border: none;
+    width: 100%;
+    background: #cf04f3;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #4d4dbd;
+}
+
+/* OR Divider */
+.or {
+    font-size: 1rem;
+    margin: 1rem 0;
+}
+
+/* Social Icons */
+.icons {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.icons i {
+    color: #7d7deb;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    border: 2px solid #dfe9f5;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.icons i:hover {
+    background: #4d4dbd;
+    color: white;
+    border-color: #7d7deb;
+}
+
+/* Sign-up and Sign-in Links */
+.links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+#signUpButton,
+#signInButton {
+    color: #7d7deb;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#signUpButton:hover,
+#signInButton:hover {
+    text-decoration: underline;
+    color: #4d4dbd;
+}
+
+/* Message Box */
+.messageDiv {
+    background-color: #7d7deb;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    opacity: 0;
+    animation: fadeOut 7s forwards;
+    margin-bottom: 10px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+
+
+
+
+/* Grade Dropdown Container */
+.grade-dropdown {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+/* Dropdown Label */
+.grade-dropdown label {
+    display: block;
+    font-size: 1rem;
+    color: #757575;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Select Dropdown Style */
+.grade-dropdown select {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #ffffff;
+    appearance: none;
+    /* Hides default dropdown arrow in some browsers */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="%23575757" viewBox="0 0 20 20"><path d="M5.5 7.5L10 12l4.5-4.5H5.5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* On Focus */
+.grade-dropdown select:focus {
+    outline: none;
+    border-color: #ffffff;
+    box-shadow: 0 0 5px rgba(84, 10, 99, 0.5);
+}
+
+/* Option Styling */
+.grade-dropdown select option {
+    padding: 10px;
+    font-size: 1rem;
+    color: #ffffff;
+    background: #540a63;
+}
+
+/* Hover Effect */
+.grade-dropdown select:hover {
+    border-color: #4d4dbd;
+}
+
+/* Error State (Optional) */
+.grade-dropdown select.error {
+    border-color: #ff4d4d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .grade-dropdown select {
+        font-size: 0.9rem;
+        width: 100%;
+
+    }
+}

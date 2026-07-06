@@ -1,0 +1,144 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, rgba(101, 1, 132, 0.89), rgba(44, 14, 5, 1));
+    /* Green school theme */
+    color: #333;
+    /* Dark text for readability */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Home icon at top-left */
+.home {
+    position: fixed;
+    /* stays on top-left even when scrolling */
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.home img {
+    width: 40px;
+    /* adjust size */
+    height: 40px;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Form Container */
+.form-container {
+    background-color: #e8deef;
+    /* Clean white background */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    width: 100%;
+    max-width: 480px;
+}
+
+/* Label Styles */
+label {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Input and Textarea Styles */
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+    border-color: #3498db;
+    /* Blue border on focus */
+    outline: none;
+}
+
+/* Button Styles */
+button[type="submit"] {
+    background-color: #64016d;
+    /* Blue background */
+    color: #fff;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #b9299a;
+    /* Darker blue on hover */
+}
+
+/* Message Style */
+.message {
+    font-size: 1rem;
+    color: #e74c3c;
+    /* Red for errors or warning messages */
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    button[type="submit"] {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    label {
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        font-size: 0.95rem;
+    }
+}

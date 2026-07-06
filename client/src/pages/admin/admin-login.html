@@ -1,0 +1,75 @@
+b <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Addis School</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../features/admin/auth/auth.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Admin Login</h1>
+        <p>Access the admin dashboard</p>
+      </div>
+      
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="admin@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password" required>
+        </div>
+        
+        <button type="submit" class="btn-login" id="loginBtn">Login</button>
+        
+        <div class="login-footer">
+          <p id="errorMessage" class="error-message"></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import admin auth module - this guarantees window.adminAuth is initialized
+    import '../../features/admin/auth/adminAuth.js';
+
+    // Login form handler
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMessage = document.getElementById('errorMessage');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      // Clear previous error
+      errorMessage.textContent = '';
+      
+      // Disable button
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+      
+      try {
+        await window.adminAuth.login(email, password);
+      } catch (error) {
+        errorMessage.textContent = error.message;
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+      }
+    });
+
+    // Check if already logged in
+    if (window.adminAuth.isAuthenticated) {
+      window.adminAuth.showDashboard();
+    }
+  </script>
+</body>
+</html>

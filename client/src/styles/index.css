@@ -1,0 +1,27 @@
+@import './navbar.css';
+@import './sidebar.css';
+@import '../features/auth/auth.css';
+@import './user-sidebar.css';
+@import './responsive.css';
+
+/* ===== GLOBAL STYLES ===== */
+/* 
+ * NOTE: Individual component CSS files handle their own base styles.
+ * This file only contains imports and utility classes to avoid conflicts.
+ */
+
+/* Focus styles for accessibility */
+.focused {
+    outline: 3px solid #ffd700;
+    background-color: rgba(255, 215, 0, 0.1) !important;
+}
+
+/* ===== LEGACY BROWSER FALLBACKS ===== */
+/* Box-sizing fallback for older browsers */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="title"></title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="play-video-page">
+  <nav class="flex-div">
+    <div class="nav-left flex-div">
+      <img class="menu-icon" src="<%= require('@assets/images/menu.png') %>" alt="Menu Icon">
+      <img class="logo" src="<%= require('@assets/images/addisschool.png') %>"
+          alt="Logo">
+    </div>
+    <div class="nav-middle flex-div">
+      <div class="sliding-text" style="display:none;">
+        ከኬጂ - 12ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 12. Join Us Now!
+      </div>
+      <div class="search-small">
+        <img class="search-icon" src="<%= require('@assets/images/search.png') %>" alt="Search Icon">
+      </div>
+
+      <div class="search-box flex-div">
+        <img class="black-back-arrow" src="<%= require('@assets/images/black-back-arrow.png') %>" alt="">
+        <input type="text" id="searchBar" placeholder="Search" />
+        <!-- Search Results Dropdown -->
+        <div id="searchResults" class="results-dropdown">
+          <ul id="resultsList"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right flex-div">
+      <button class="btn" id="joinUs" style="display:none;">Join Us!</button>
+      <div class="user-bar flex-div">
+        <!-- Coin Icon with Counter -->
+        <div class="coin-container" id="coinContainer" style="display: none;">
+          <img id="coinIcon" class="coin-icon" src="<%= require('@assets/images/coin.png') %>" alt="Coin Icon">
+          <span id="coinCount">0</span>
+        </div>
+        <span id="userNameDisplay">abye</span>
+        <img id="userIcon" class="userIcon" src="<%= require('@assets/images/user-icon.png') %>" alt="User Icon">
+
+
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div id="sidebarContent" style="display:none"></div>
+    <div class="signin-signup">
+      <div class="container-register" id="signup" style="display:none;">
+        <h1 class="form-title">Register</h1>
+        <form method="post" action="">
+          <div id="signUpMessage" class="messageDiv" style="display:none;"></div>
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="userName" placeholder="User Name" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="rEmail" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="rPassword" placeholder="Password" required>
+          </div>
+          <div class="grade-dropdown">
+            <select id="gradeSelect">
+              <option value="" disabled selected>Select a Grade</option>
+            </select>
+          </div>
+          <button class="btn" id="submitSignUp">Sign Up</button>
+        </form>
+        <div class="links">
+          <p>Already Have Account ?</p>
+          <button id="signInButton">Sign In</button>
+        </div>
+      </div>
+      <div class="container-register" id="signIn">
+        <h1 class="form-title">Sign In</h1>
+        <form method="post" action="">
+          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+             <p class="recover">
+            <a href="#" id="forgotPasswordLink">Forgot Password</a>
+          </p>
+          <button class="btn" id="submitSignIn">Sign In</button>
+          <div class="links">
+            <p>Don't have account yet?</p>
+            <button id="signUpButton">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="user-sidebar" id="userSidebar">
+    <p>User Menu</p>
+    <ul>
+      <li class="userSidebar-item item" tabindex="0" id="aboutUs">About Us</li>
+      <li class="userSidebar-item" id="settings">Settings</li>
+      <li class="userSidebar-item" id="contactUs">Contact Us</li>
+       <li class="userSidebar-item item" tabindex="0" id="changeGrade">Change Grade</li>
+      
+       <li class="userSidebar-item item" tabindex="0" id="logout">Logout</li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="play-video">
+        <div class="iframe-container">
+          <div id="youtube-player"></div>
+          <div id="iframeOverlay" class="iframe-controls-overlay"></div>
+          
+          <div class="video-menu">
+            <div class="menu-trigger">&#8942;</div>
+            <div class="menu-dropdown">
+              <button class="menu-item favorite-btn" >&#9734; Like</button>
+              <button class="menu-item report-btn">&#x2691; Report</button>
+              <button class="menu-item delete-btn" id="deleteVideoBtn">&#128465; Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-sidebar"></div>
+    </div>
+  </div>
+  <!-- Quiz Modal -->
+  <div id="quizModal">
+    <div id="overlay"></div>
+    <div class="quiz-content">
+      <p id="questionText"></p>
+      <div id="answerContainer"></div>
+      <p id="countdown"></p>
+    </div>
+  </div>
+</body>
+
+</html>

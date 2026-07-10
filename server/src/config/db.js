@@ -1,12 +1,18 @@
 import "dotenv/config";
 import { PrismaClient } from "../../prisma/generated/prisma/client.ts";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const connectionString = process.env.DIRECT_URL + "?sslmode=require";
 
-const adapter = new PrismaPg({
+const pool = new Pool({
   connectionString,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
+
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({
   adapter,

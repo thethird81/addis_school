@@ -1,7 +1,6 @@
 import { checkLiked, playVideo, getSelectedPart } from "../../../components/iframe/iframe.js";
 import { showNotEnoughCoinsModal } from "../../../features/coin/coin.js";
 import { updateUserField } from "../../../utils/updateUserData";
-import { removeVideoById } from "../../admin/delete/deleteServices.js";
 import { subtructCoins, addCoins } from "../../coin/coin.js";
 import { resolveNamesFromLocator ,getGradeName} from "../../../utils/sharedFunctions.js";
 const activeProfile = JSON.parse(localStorage.getItem('activeProfile'));
@@ -104,7 +103,7 @@ export const getCurrentVideoList = () => {
 }
 export const updateRightSidebar = (videoId) => {
     //remove one video from the current video list and return the rest
-    videoList = removeVideoById(getCurrentVideoList(), videoId);
+    //videoList = removeVideoById(getCurrentVideoList(), videoId);
     //use the returned video list to populat the side bar again
     isDelete = true;
     populateRightSidebarLazy(videoList, true)

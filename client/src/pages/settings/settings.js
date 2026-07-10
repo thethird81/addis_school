@@ -2,7 +2,7 @@ import "./settings.css";
 import '../../styles/navbar.css';
 import '../../styles/sidebar.css';
 import { getBaseUrl } from "../../utils/path.js";
-import { getGradeName } from '../../utils/sharedFunctions.js';
+import { getGradeName, refresh } from '../../utils/sharedFunctions.js';
 import '../../components/navbar/navbar.js';
 import '../../components/loading-spinner/loading-spinner.css';
 import '../../components/loading-spinner/loading-spinner.js';
@@ -66,11 +66,11 @@ if (!activeProfile) {
 }
 
 // DOM references
-const hierarchyContainer = document.getElementById("quizHierarchyContainer");
-const favoritesListContainer = document.getElementById("favoritesListContainer");
-const favoritesCountSpan = document.getElementById("favoritesCount");
+const quizCardsContainer = document.getElementById("quiz-cards-container");
 const errorMessageEl = document.getElementById("errorMessage");
 const saveBtn = document.getElementById("saveFavoritesBtn");
+const favoritesTabBtn = document.getElementById("favoritesTabBtn");
+const remainingTabBtn = document.getElementById("remainingTabBtn");
 
 // Settings toggle
 const quizTabBtn = document.getElementById("quizTabBtn");
@@ -107,9 +107,12 @@ let editingProfileId = null;
 let currentAvatarDataUrl = null;
 let isUploadingAvatar = false;
 
-// ─── Pending changes tracking ────────────────────────────────────────────────
-const pendingAdditions = new Set();
-const pendingRemovals = new Set();
+// ─── State Management ────────────────────────────────────────────────────────
+
+// Array to store quiz objects: { id, title, isFavorite }
+let quizStateArray = [];
+// Current filter: 'favorites' | 'remaining'
+let currentFilter = 'favorites';
 
 // ─── API helpers ────────────────────────────────────────────────────────────
 
@@ -119,7 +122,7 @@ function getAccessToken() {
 
 async function fetchWithAuth(url, options = {}) {
   const token = getAccessToken();
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -127,6 +130,26 @@ async function fetchWithAuth(url, options = {}) {
       ...(options.headers || {}),
     },
   });
+
+  // If access token expired
+  if (response.status === 401) {
+    console.log("Access token expired. Attempting to refresh...");
+    const newAccessToken = await refresh();
+    console.log("New access token obtained:", newAccessToken);
+    if (!newAccessToken) {
+      throw new Error("Unable to refresh access token");
+    }
+    // retry original request with new access token
+    response = await fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${newAccessToken}`,
+        ...(options.headers || {}),
+      },
+    });
+  }
+
   if (!response.ok) {
     const text = await response.text();
     throw new Error(text || `HTTP ${response.status}`);
@@ -194,7 +217,6 @@ async function deleteProfile(id) {
 
 const deleteAvatarFromSupabase = async (avatarUrl) => {
   try {
-    // Extract file path from URL
     const urlParts = avatarUrl.split('/');
     const fileName = urlParts[urlParts.length - 1];
     const filePath = 'avatars/' + fileName;
@@ -212,13 +234,11 @@ const deleteAvatarFromSupabase = async (avatarUrl) => {
 };
 
 const uploadAvatarToSupabase = async (blob) => {
-  // Show loading spinner during upload
   if (typeof LoadingSpinner !== 'undefined') {
     LoadingSpinner.show();
   }
   
   try {
-    // Wait for supabase to be initialized if it's still null
     if (!supabase) {
       console.warn('⏳ Supabase client not yet initialized, waiting...');
       const maxWait = 5000;
@@ -267,266 +287,154 @@ async function fetchGrades() {
 
 function updateSaveButtonState() {
   if (!saveBtn) return;
-  const hasChanges = pendingAdditions.size > 0 || pendingRemovals.size > 0;
+  const hasChanges = quizStateArray.some(q => {
+    const card = document.querySelector(`.quiz-card[data-id="${q.id}"]`);
+    return card && card.dataset.pending === 'true';
+  });
   saveBtn.disabled = !hasChanges;
 }
 
-// ─── Render functions ───────────────────────────────────────────────────────
+// ─── Render Quiz Cards ──────────────────────────────────────────────────────
 
-function createQuizCheckbox(quiz, isFavorite) {
-  const quizItem = document.createElement("label");
-  quizItem.className = "quiz-item";
+function renderQuizCards() {
+  quizCardsContainer.innerHTML = "";
 
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.dataset.quizId = quiz.quizId;
-  checkbox.dataset.quizTitle = quiz.quizTitle;
+  // Filter quizzes based on current filter
+  let filteredQuizzes = [];
+  if (currentFilter === 'favorites') {
+    filteredQuizzes = quizStateArray.filter(q => q.isFavorite);
+  } else {
+    filteredQuizzes = quizStateArray.filter(q => !q.isFavorite);
+  }
 
-  const wasFavorite = isFavorite;
-  const isPendingAdd = pendingAdditions.has(quiz.quizId);
-  const isPendingRemove = pendingRemovals.has(quiz.quizId);
-
-  checkbox.checked = isPendingAdd ? true : (isPendingRemove ? false : wasFavorite);
-
-  checkbox.addEventListener("change", (e) => {
-    const qId = e.target.dataset.quizId;
-    const isNowChecked = e.target.checked;
-
-    if (isNowChecked) {
-      if (pendingRemovals.has(qId)) {
-        pendingRemovals.delete(qId);
-      } else {
-        pendingAdditions.add(qId);
-      }
-    } else {
-      if (pendingAdditions.has(qId)) {
-        pendingAdditions.delete(qId);
-      } else {
-        pendingRemovals.add(qId);
-      }
-    }
-
-    updateSaveButtonState();
-  });
-
-  const quizLabel = document.createElement("span");
-  quizLabel.textContent = quiz.quizTitle;
-
-  quizItem.appendChild(checkbox);
-  quizItem.appendChild(quizLabel);
-  return quizItem;
-}
-
-function renderQuizHierarchy(subjects, generalQuizzes, favoriteQuizIds) {
-  hierarchyContainer.innerHTML = "";
-
-  if ((!subjects || subjects.length === 0) && (!generalQuizzes || generalQuizzes.length === 0)) {
-    hierarchyContainer.innerHTML =
-      '<p class="no-quizzes-msg">No quizzes available for this grade.</p>';
+  // Show message if no quizzes
+  if (filteredQuizzes.length === 0) {
+    const message = document.createElement("div");
+    message.className = "no-quizzes-message";
+    message.textContent = currentFilter === 'favorites' 
+      ? "No favorited quizzes yet. Browse quizzes and click ⭐ to add favorites!"
+      : "All quizzes are favorited! 🎉";
+    quizCardsContainer.appendChild(message);
     return;
   }
 
-  if (generalQuizzes && generalQuizzes.length > 0) {
-    const generalSection = document.createElement("div");
-    generalSection.className = "subject-category";
-
-    const generalBtn = document.createElement("button");
-    generalBtn.className = "collapsible-btn";
-    generalBtn.textContent = "General Quizzes";
-    generalBtn.addEventListener("click", () => {
-      const wrapper = generalBtn.nextElementSibling;
-      wrapper.style.display = wrapper.style.display === "block" ? "none" : "block";
-    });
-    generalSection.appendChild(generalBtn);
-
-    const generalWrapper = document.createElement("div");
-    generalWrapper.className = "content-wrapper";
-
-    generalQuizzes.forEach((quiz) => {
-      const quizItem = createQuizCheckbox(quiz, favoriteQuizIds.has(quiz.quizId));
-      generalWrapper.appendChild(quizItem);
-    });
-
-    generalSection.appendChild(generalWrapper);
-    hierarchyContainer.appendChild(generalSection);
-  }
-
-  subjects.forEach((subject) => {
-    const subjectDiv = document.createElement("div");
-    subjectDiv.className = "subject-category";
-
-    const subjectBtn = document.createElement("button");
-    subjectBtn.className = "collapsible-btn";
-    subjectBtn.textContent = subject.subjectName;
-    subjectBtn.addEventListener("click", () => {
-      const content = subjectBtn.nextElementSibling;
-      content.style.display = content.style.display === "block" ? "none" : "block";
-    });
-    subjectDiv.appendChild(subjectBtn);
-
-    const contentWrapper = document.createElement("div");
-    contentWrapper.className = "content-wrapper";
-
-    if (subject.quizzes && subject.quizzes.length > 0) {
-      const subjectQuizBlock = document.createElement("div");
-      subjectQuizBlock.className = "content-block";
-
-      const subjectQuizTitle = document.createElement("div");
-      subjectQuizTitle.className = "subcontent-title";
-      subjectQuizTitle.textContent = "(Subject-level quizzes)";
-      subjectQuizBlock.appendChild(subjectQuizTitle);
-
-      subject.quizzes.forEach((quiz) => {
-        const quizItem = createQuizCheckbox(quiz, favoriteQuizIds.has(quiz.quizId));
-        subjectQuizBlock.appendChild(quizItem);
-      });
-
-      contentWrapper.appendChild(subjectQuizBlock);
-    }
-
-    (subject.contents || []).forEach((content) => {
-      const contentDiv = document.createElement("div");
-      contentDiv.className = "content-block";
-
-      const contentBtn = document.createElement("button");
-      contentBtn.className = "collapsible-btn sub-btn";
-      contentBtn.textContent = content.contentName;
-      contentBtn.addEventListener("click", () => {
-        const sub = contentBtn.nextElementSibling;
-        sub.style.display = sub.style.display === "block" ? "none" : "block";
-      });
-      contentDiv.appendChild(contentBtn);
-
-      const subcontentWrapper = document.createElement("div");
-      subcontentWrapper.className = "subcontent-wrapper";
-
-      if (content.quizzes && content.quizzes.length > 0) {
-        const contentQuizBlock = document.createElement("div");
-        contentQuizBlock.className = "subcontent-block";
-
-        const contentQuizTitle = document.createElement("div");
-        contentQuizTitle.className = "subcontent-title";
-        contentQuizTitle.textContent = "(Content-level quizzes)";
-        contentQuizBlock.appendChild(contentQuizTitle);
-
-        content.quizzes.forEach((quiz) => {
-          const quizItem = createQuizCheckbox(quiz, favoriteQuizIds.has(quiz.quizId));
-          contentQuizBlock.appendChild(quizItem);
-        });
-
-        subcontentWrapper.appendChild(contentQuizBlock);
-      }
-
-      (content.subcontents || []).forEach((subcontent) => {
-        const scDiv = document.createElement("div");
-        scDiv.className = "subcontent-block";
-
-        const scTitle = document.createElement("div");
-        scTitle.className = "subcontent-title";
-        scTitle.textContent = subcontent.subcontentName;
-        scDiv.appendChild(scTitle);
-
-        (subcontent.quizzes || []).forEach((quiz) => {
-          const quizItem = createQuizCheckbox(quiz, favoriteQuizIds.has(quiz.quizId));
-          scDiv.appendChild(quizItem);
-        });
-
-        subcontentWrapper.appendChild(scDiv);
-      });
-
-      contentDiv.appendChild(subcontentWrapper);
-      contentWrapper.appendChild(contentDiv);
-    });
-
-    subjectDiv.appendChild(contentWrapper);
-    hierarchyContainer.appendChild(subjectDiv);
+  // Create card for each filtered quiz
+  filteredQuizzes.forEach((quiz) => {
+    const card = createQuizCard(quiz);
+    quizCardsContainer.appendChild(card);
   });
 }
 
-// ─── Favorites list management ──────────────────────────────────────────────
+function createQuizCard(quiz) {
+  const card = document.createElement("div");
+  card.className = "quiz-card";
+  card.dataset.id = quiz.id;
+  card.dataset.pending = "false";
 
-const favoritesMap = new Map();
-
-function renderFavoritesList(favorites) {
-  favoritesListContainer.innerHTML = "";
-  favoritesMap.clear();
-
-  favorites.forEach((fav) => {
-    favoritesMap.set(fav.quizId, fav.quizTitle);
-    addFavoritesListItem(fav.quizId, fav.quizTitle);
-  });
-
-  updateFavoritesCount();
-}
-
-function addToFavoritesList(quizId, quizTitle) {
-  if (favoritesMap.has(quizId)) return;
-  favoritesMap.set(quizId, quizTitle);
-  addFavoritesListItem(quizId, quizTitle);
-  updateFavoritesCount();
-}
-
-function removeFromFavoritesList(quizId) {
-  favoritesMap.delete(quizId);
-  const item = document.querySelector(`.favorite-item[data-quiz-id="${quizId}"]`);
-  if (item) item.remove();
-  updateFavoritesCount();
-}
-
-function addFavoritesListItem(quizId, quizTitle) {
-  const item = document.createElement("div");
-  item.className = "favorite-item";
-  item.dataset.quizId = quizId;
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "favorite-toggle-btn";
+  toggleBtn.dataset.id = quiz.id;
+  toggleBtn.innerHTML = `<span class="star-icon">${quiz.isFavorite ? '⭐' : '☆'}</span>`;
+  toggleBtn.title = quiz.isFavorite ? "Remove from favorites" : "Add to favorites";
 
   const titleSpan = document.createElement("span");
-  titleSpan.textContent = quizTitle;
+  titleSpan.className = "quiz-title";
+  titleSpan.textContent = quiz.title;
 
-  const removeBtn = document.createElement("button");
-  removeBtn.className = "remove-fav-btn";
-  removeBtn.innerHTML = "&times;";
-  removeBtn.title = "Remove from favorites";
-  removeBtn.addEventListener("click", async () => {
+  card.appendChild(toggleBtn);
+  card.appendChild(titleSpan);
+
+  return card;
+}
+
+// ─── Event Delegation for Star Toggle ───────────────────────────────────────
+
+function setupEventDelegation() {
+  quizCardsContainer.addEventListener("click", async (e) => {
+    // Check if click originated from a favorite toggle button
+    const toggleBtn = e.target.closest('.favorite-toggle-btn');
+    if (!toggleBtn) return;
+
+    const quizId = toggleBtn.dataset.id;
+    const quiz = quizStateArray.find(q => q.id === quizId);
+    if (!quiz) return;
+
+    const card = document.querySelector(`.quiz-card[data-id="${quizId}"]`);
+    const wasFavorite = quiz.isFavorite;
+    const willBeFavorite = !wasFavorite;
+
+    // 1. Optimistic UI Update: Toggle star immediately
+    quiz.isFavorite = willBeFavorite;
+    toggleBtn.innerHTML = `<span class="star-icon">${willBeFavorite ? '⭐' : '☆'}</span>`;
+    toggleBtn.title = willBeFavorite ? "Remove from favorites" : "Add to favorites";
+
+    // 2. Check if card should fade out (if it no longer matches the current filter)
+    const shouldFadeOut = currentFilter === 'favorites' && !willBeFavorite ||
+                          currentFilter === 'remaining' && willBeFavorite;
+
+    if (shouldFadeOut && card) {
+      card.classList.add('fading-out');
+      
+      // Wait for fade-out animation before re-rendering
+      setTimeout(() => {
+        renderQuizCards();
+      }, 200);
+    } else if (!shouldFadeOut) {
+      // If staying in view, just update the button
+      // No need to re-render
+    }
+
+    // 3. Backend sync
     try {
-      await removeFavorite(activeProfile.id, quizId);
-      removeFromFavoritesList(quizId);
-      const checkbox = document.querySelector(`input[type="checkbox"][data-quiz-id="${quizId}"]`);
-      if (checkbox) {
-        checkbox.checked = false;
-        if (pendingAdditions.has(quizId)) {
-          pendingAdditions.delete(quizId);
-        } else if (!pendingRemovals.has(quizId)) {
-          pendingRemovals.add(quizId);
-        }
-        updateSaveButtonState();
+      const profileId = activeProfile.id;
+      if (willBeFavorite) {
+        await addFavorite(profileId, quizId);
+      } else {
+        await removeFavorite(profileId, quizId);
       }
-      updateFavoritesCount();
-    } catch (err) {
-      console.error("Failed to remove favorite:", err);
+      
+      // Mark as not pending on success
+      if (card) {
+        card.dataset.pending = "false";
+      }
+      updateSaveButtonState();
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+      
+      // 4. Revert optimistic update on error
+      quiz.isFavorite = wasFavorite;
+      toggleBtn.innerHTML = `<span class="star-icon">${wasFavorite ? '⭐' : '☆'}</span>`;
+      toggleBtn.title = wasFavorite ? "Remove from favorites" : "Add to favorites";
+      
+      // Remove fade-out class if it was added
+      if (card) {
+        card.classList.remove('fading-out');
+      }
+      
+      // Re-render to show correct state
+      renderQuizCards();
+      
+      // Show fallback alert notification
+      alert("Failed to update favorite. Please try again.");
+      updateSaveButtonState();
     }
   });
-
-  item.appendChild(titleSpan);
-  item.appendChild(removeBtn);
-  favoritesListContainer.appendChild(item);
 }
 
-function updateFavoritesCount() {
-  const count = favoritesMap.size;
-  favoritesCountSpan.textContent = count;
+// ─── Tab Switching ──────────────────────────────────────────────────────────
+
+function switchToFavoritesTab() {
+  currentFilter = 'favorites';
+  favoritesTabBtn.classList.add('active');
+  remainingTabBtn.classList.remove('active');
+  renderQuizCards();
 }
 
-function showError(element, message) {
-  if (element) {
-    element.textContent = message;
-    element.style.display = "block";
-  }
-}
-
-function clearError(element) {
-  if (element) {
-    element.textContent = "";
-    element.style.display = "none";
-  }
+function switchToRemainingTab() {
+  currentFilter = 'remaining';
+  remainingTabBtn.classList.add('active');
+  favoritesTabBtn.classList.remove('active');
+  renderQuizCards();
 }
 
 // ─── Profile rendering ──────────────────────────────────────────────────────
@@ -581,7 +489,6 @@ function renderProfilesList(profiles) {
     deleteBtn.addEventListener("click", async () => {
       if (confirm(`Are you sure you want to delete ${profile.profile_name}?`)) {
         try {
-          // Delete avatar from Supabase if it exists
           if (profile.avatar_url) {
             await deleteAvatarFromSupabase(profile.avatar_url);
           }
@@ -590,10 +497,8 @@ function renderProfilesList(profiles) {
           const updatedProfiles = profiles.filter((p) => p.id !== profile.id);
           renderProfilesList(updatedProfiles);
           
-          // Update localStorage
           localStorage.setItem("profiles", JSON.stringify(updatedProfiles));
           
-          // If the deleted profile was the active one, switch to the first available profile
           if (activeProfile && activeProfile.id === profile.id && updatedProfiles.length > 0) {
             const newActiveProfile = updatedProfiles[0];
             localStorage.setItem("activeProfile", JSON.stringify(newActiveProfile));
@@ -666,8 +571,6 @@ async function handleChildSubmit(e) {
     return;
   }
 
-  // Only include avatar_url if it's a public URL (not a base64 data URL)
-  // This prevents sending large payloads that cause 413 errors
   const avatarUrl = currentAvatarDataUrl && !currentAvatarDataUrl.startsWith("data:")
     ? currentAvatarDataUrl
     : "";
@@ -681,12 +584,10 @@ async function handleChildSubmit(e) {
   try {
     let savedProfile;
     if (editingProfileId) {
-      // Get existing profile to check for avatar changes
       const existingProfile = await fetchProfiles().then(profiles => 
         profiles.find(p => p.id === editingProfileId)
       );
       
-      // If avatar was changed, delete the old one from Supabase
       if (existingProfile && existingProfile.avatar_url && 
           existingProfile.avatar_url !== avatarUrl && avatarUrl) {
         await deleteAvatarFromSupabase(existingProfile.avatar_url);
@@ -694,7 +595,6 @@ async function handleChildSubmit(e) {
       
       savedProfile = await updateProfile(editingProfileId, profileData);
       
-      // Update local profiles array
       const localProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
       const index = localProfiles.findIndex(p => p.id === editingProfileId);
       if (index !== -1) {
@@ -704,7 +604,6 @@ async function handleChildSubmit(e) {
     } else {
       savedProfile = await createProfile(profileData);
       
-      // Add to local profiles array and set as active
       const localProfiles = JSON.parse(localStorage.getItem("profiles")) || [];
       localProfiles.push(savedProfile);
       localStorage.setItem("profiles", JSON.stringify(localProfiles));
@@ -757,7 +656,6 @@ async function handleCropDone() {
     imageSmoothingQuality: 'high',
   });
 
-  // Convert canvas to blob instead of base64
   canvas.toBlob((blob) => {
     const url = URL.createObjectURL(blob);
     avatarPreview.innerHTML = `<img src="${url}" alt="Avatar">`;
@@ -769,7 +667,6 @@ async function handleCropDone() {
     }
     cropImage.src = "";
 
-    // Upload avatar to Supabase and store the public URL
     uploadAvatarToSupabase(blob)
       .then(publicUrl => {
         currentAvatarDataUrl = publicUrl;
@@ -840,45 +737,19 @@ async function loadGrades() {
   }
 }
 
-// ─── Save handler ───────────────────────────────────────────────────────────
+// ─── Error handling helpers ─────────────────────────────────────────────────
 
-async function handleSaveFavorites() {
-  if (!saveBtn) return;
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Saving...";
+function showError(element, message) {
+  if (element) {
+    element.textContent = message;
+    element.style.display = "block";
+  }
+}
 
-  const profileId = activeProfile.id;
-
-  try {
-    for (const quizId of pendingAdditions) {
-      await addFavorite(profileId, quizId);
-    }
-
-    for (const quizId of pendingRemovals) {
-      await removeFavorite(profileId, quizId);
-    }
-
-    pendingAdditions.clear();
-    pendingRemovals.clear();
-
-    const favorites = await fetchFavorites(profileId);
-    renderFavoritesList(favorites);
-
-    const favoriteQuizIds = new Set(favorites.map((f) => f.quizId));
-    document.querySelectorAll('input[type="checkbox"][data-quiz-id]').forEach((cb) => {
-      cb.checked = favoriteQuizIds.has(cb.dataset.quizId);
-    });
-
-    updateSaveButtonState();
-    saveBtn.textContent = "Saved!";
-    setTimeout(() => {
-      saveBtn.textContent = "Save Changes";
-    }, 2000);
-  } catch (error) {
-    console.error("Error saving favorites:", error);
-    showError(errorMessageEl, "Failed to save changes. Please try again.");
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Save Changes";
+function clearError(element) {
+  if (element) {
+    element.textContent = "";
+    element.style.display = "none";
   }
 }
 
@@ -898,10 +769,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Wire up save button
-  if (saveBtn) {
-    saveBtn.addEventListener("click", handleSaveFavorites);
-    updateSaveButtonState();
+  // Wire up tab buttons
+  if (favoritesTabBtn && remainingTabBtn) {
+    favoritesTabBtn.addEventListener("click", switchToFavoritesTab);
+    remainingTabBtn.addEventListener("click", switchToRemainingTab);
   }
 
   // Settings toggle
@@ -960,9 +831,48 @@ document.addEventListener("DOMContentLoaded", async () => {
       fetchFavorites(profileId),
     ]);
 
+    // Build quiz state array from hierarchy data and favorites
     const favoriteQuizIds = new Set(favorites.map((f) => f.quizId));
-    renderFavoritesList(favorites);
-    renderQuizHierarchy(hierarchyData.subjects || [], hierarchyData.generalQuizzes || [], favoriteQuizIds);
+    quizStateArray = [];
+
+    // Helper to process quizzes
+    const processQuizzes = (quizzes) => {
+      if (!quizzes) return;
+      quizzes.forEach((quiz) => {
+        quizStateArray.push({
+          id: quiz.quizId,
+          title: quiz.quizTitle,
+          isFavorite: favoriteQuizIds.has(quiz.quizId)
+        });
+      });
+    };
+
+    // Process general quizzes
+    processQuizzes(hierarchyData.generalQuizzes);
+
+    // Process subjects and their nested quizzes
+    if (hierarchyData.subjects) {
+      hierarchyData.subjects.forEach((subject) => {
+        processQuizzes(subject.quizzes);
+        if (subject.contents) {
+          subject.contents.forEach((content) => {
+            processQuizzes(content.quizzes);
+            if (content.subcontents) {
+              content.subcontents.forEach((subcontent) => {
+                processQuizzes(subcontent.quizzes);
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // Setup event delegation
+    setupEventDelegation();
+
+    // Initial render
+    renderQuizCards();
+    updateSaveButtonState();
   } catch (error) {
     console.error("Error loading settings:", error);
     showError(

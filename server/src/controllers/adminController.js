@@ -879,22 +879,19 @@ const getQuizzes = async (req, res) => {
 
 const createQuiz = async (req, res) => {
   try {
-    const { title, is_general, grade_id, subject_id, content_id, subcontent_id, questions } = req.body;
+    const { title, questions } = req.body;
     if (!title) {
       return res.status(400).json({ error: "Missing required field: title" });
-    }
-    if (!is_general && !grade_id) {
-      return res.status(400).json({ error: "Missing required field: grade_id" });
     }
     if (!Array.isArray(questions) || !questions.length) {
       return res.status(400).json({ error: "Missing required field: questions array must be provided" });
     }
 
-    // Create quiz, questions, and optionally assignment in a single transaction with increased timeout
+    // Create quiz and questions in a single transaction
     const result = await prisma.$transaction(async (tx) => {
       // 1. Create the quiz
       const quiz = await tx.quizzes.create({
-        data: { title, is_general: is_general || false },
+        data: { title },
       });
 
       // 2. Create all questions in batch (convert from JSON import format to DB format)
@@ -907,25 +904,13 @@ const createQuiz = async (req, res) => {
           correct_answer: converted.correct_answer,
           difficulty: converted.difficulty,
           question_image: converted.question_image,
+          explanation: converted.explanation || null
         };
       });
 
       await tx.questions.createMany({
         data: questionsData,
       });
-
-      // 3. Create quiz assignment to curriculum position (only for non-general quizzes)
-      if (!is_general) {
-        await tx.quiz_assignments.create({
-          data: {
-            quiz_id: quiz.id,
-            grade_id,
-            subject_id: subject_id || null,
-            content_id: content_id || null,
-            subcontent_id: subcontent_id || null,
-          },
-        });
-      }
 
       return { quiz, questionCount: questionsData.length };
     }, {
@@ -947,12 +932,11 @@ const createQuiz = async (req, res) => {
 const updateQuiz = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, is_general } = req.body;
+    const { title } = req.body;
     const quiz = await prisma.quizzes.update({
       where: { id },
       data: {
         ...(title !== undefined && { title }),
-        ...(is_general !== undefined && { is_general }),
       },
     });
     res.status(200).json(quiz);
@@ -975,18 +959,18 @@ const deleteQuiz = async (req, res) => {
 
 const importQuizJSON = async (req, res) => {
   try {
-    const { title, grade_id, subject_id, content_id, subcontent_id, questions } = req.body;
+    const { title, questions } = req.body;
 
-    if (!title || !grade_id || !Array.isArray(questions) || !questions.length) {
+    if (!title || !Array.isArray(questions) || !questions.length) {
       return res.status(400).json({
-        error: "Missing required fields: title, grade_id, and questions array",
+        error: "Missing required fields: title and questions array",
       });
     }
 
     const result = await prisma.$transaction(async (tx) => {
       // 1. Create the quiz
       const quiz = await tx.quizzes.create({
-        data: { title, is_general: false },
+        data: { title },
       });
 
       // 2. Create all questions in batch (convert from JSON import format to DB format)
@@ -1006,18 +990,7 @@ const importQuizJSON = async (req, res) => {
         data: questionsData,
       });
 
-      // 3. Create quiz assignment to curriculum position (any level)
-      const assignment = await tx.quiz_assignments.create({
-        data: {
-          quiz_id: quiz.id,
-          grade_id,
-          subject_id: subject_id || null,
-          content_id: content_id || null,
-          subcontent_id: subcontent_id || null,
-        },
-      });
-
-      return { quiz, questionCount: questionsData.length, assignment };
+      return { quiz, questionCount: questionsData.length };
     }, {
       maxWait: 15000, // 15s max wait for the connection
       timeout: 30000  // 30s transaction timeout

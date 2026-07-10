@@ -106,20 +106,12 @@ const getSidebarQuizzesByGrade = async (req, res) => {
       }
     });
 
-    // Fetch general quizzes (is_general: true) to include in the general quizzes section
-    const generalQuizRecords = await prisma.quizzes.findMany({
-      where: { is_general: true },
-      select: { id: true, title: true }
-    });
-
-    if (quizAssignments.length === 0 && generalQuizRecords.length === 0) {
+    if (quizAssignments.length === 0) {
       return res.status(200).json({ gradeId: id, subjects: [], generalQuizzes: [] });
     }
 
     // Separate assignments by hierarchy level
-    const generalQuizzes = generalQuizRecords.map(function(q) {
-      return { quizId: q.id, quizTitle: q.title };
-    });  // grade-level only (no subject_id)
+    const generalQuizzes = [];  // grade-level only (no subject_id)
     const subjectLevelQuizzes = [];  // has subject_id, no content_id
     const contentLevelQuizzes = [];  // has content_id, no subcontent_id
     const subcontentLevelQuizzes = []; // has subcontent_id

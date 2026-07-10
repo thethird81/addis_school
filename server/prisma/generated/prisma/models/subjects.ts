@@ -177,7 +177,6 @@ export type subjectsWhereInput = {
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
   contents?: Prisma.ContentsListRelationFilter
   quiz_assignments?: Prisma.Quiz_assignmentsListRelationFilter
-  quiz_mappings?: Prisma.Quiz_mappingsListRelationFilter
   subject_channels?: Prisma.Subject_channelsListRelationFilter
   grades?: Prisma.XOR<Prisma.GradesScalarRelationFilter, Prisma.gradesWhereInput>
   video_assignments?: Prisma.Video_assignmentsListRelationFilter
@@ -191,7 +190,6 @@ export type subjectsOrderByWithRelationInput = {
   channel_assignments?: Prisma.channel_assignmentsOrderByRelationAggregateInput
   contents?: Prisma.contentsOrderByRelationAggregateInput
   quiz_assignments?: Prisma.quiz_assignmentsOrderByRelationAggregateInput
-  quiz_mappings?: Prisma.quiz_mappingsOrderByRelationAggregateInput
   subject_channels?: Prisma.subject_channelsOrderByRelationAggregateInput
   grades?: Prisma.gradesOrderByWithRelationInput
   video_assignments?: Prisma.video_assignmentsOrderByRelationAggregateInput
@@ -209,7 +207,6 @@ export type subjectsWhereUniqueInput = Prisma.AtLeast<{
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
   contents?: Prisma.ContentsListRelationFilter
   quiz_assignments?: Prisma.Quiz_assignmentsListRelationFilter
-  quiz_mappings?: Prisma.Quiz_mappingsListRelationFilter
   subject_channels?: Prisma.Subject_channelsListRelationFilter
   grades?: Prisma.XOR<Prisma.GradesScalarRelationFilter, Prisma.gradesWhereInput>
   video_assignments?: Prisma.Video_assignmentsListRelationFilter
@@ -242,7 +239,6 @@ export type subjectsCreateInput = {
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
@@ -256,7 +252,6 @@ export type subjectsUncheckedCreateInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
@@ -268,7 +263,6 @@ export type subjectsUpdateInput = {
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
@@ -282,7 +276,6 @@ export type subjectsUncheckedUpdateInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
@@ -455,20 +448,6 @@ export type subjectsUpdateOneWithoutQuiz_assignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.subjectsUpdateToOneWithWhereWithoutQuiz_assignmentsInput, Prisma.subjectsUpdateWithoutQuiz_assignmentsInput>, Prisma.subjectsUncheckedUpdateWithoutQuiz_assignmentsInput>
 }
 
-export type subjectsCreateNestedOneWithoutQuiz_mappingsInput = {
-  create?: Prisma.XOR<Prisma.subjectsCreateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedCreateWithoutQuiz_mappingsInput>
-  connectOrCreate?: Prisma.subjectsCreateOrConnectWithoutQuiz_mappingsInput
-  connect?: Prisma.subjectsWhereUniqueInput
-}
-
-export type subjectsUpdateOneRequiredWithoutQuiz_mappingsNestedInput = {
-  create?: Prisma.XOR<Prisma.subjectsCreateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedCreateWithoutQuiz_mappingsInput>
-  connectOrCreate?: Prisma.subjectsCreateOrConnectWithoutQuiz_mappingsInput
-  upsert?: Prisma.subjectsUpsertWithoutQuiz_mappingsInput
-  connect?: Prisma.subjectsWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.subjectsUpdateToOneWithWhereWithoutQuiz_mappingsInput, Prisma.subjectsUpdateWithoutQuiz_mappingsInput>, Prisma.subjectsUncheckedUpdateWithoutQuiz_mappingsInput>
-}
-
 export type subjectsCreateNestedOneWithoutVideo_assignmentsInput = {
   create?: Prisma.XOR<Prisma.subjectsCreateWithoutVideo_assignmentsInput, Prisma.subjectsUncheckedCreateWithoutVideo_assignmentsInput>
   connectOrCreate?: Prisma.subjectsCreateOrConnectWithoutVideo_assignmentsInput
@@ -491,7 +470,6 @@ export type subjectsCreateWithoutContentsInput = {
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
@@ -504,7 +482,6 @@ export type subjectsUncheckedCreateWithoutContentsInput = {
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
@@ -531,7 +508,6 @@ export type subjectsUpdateWithoutContentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
@@ -544,7 +520,6 @@ export type subjectsUncheckedUpdateWithoutContentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
@@ -556,7 +531,6 @@ export type subjectsCreateWithoutGradesInput = {
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
 }
@@ -568,7 +542,6 @@ export type subjectsUncheckedCreateWithoutGradesInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
@@ -616,7 +589,6 @@ export type subjectsCreateWithoutSubject_channelsInput = {
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
 }
@@ -629,7 +601,6 @@ export type subjectsUncheckedCreateWithoutSubject_channelsInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
 
@@ -656,7 +627,6 @@ export type subjectsUpdateWithoutSubject_channelsInput = {
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
 }
@@ -669,7 +639,6 @@ export type subjectsUncheckedUpdateWithoutSubject_channelsInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
 
@@ -679,7 +648,6 @@ export type subjectsCreateWithoutChannel_assignmentsInput = {
   created_at?: Date | string
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
@@ -692,7 +660,6 @@ export type subjectsUncheckedCreateWithoutChannel_assignmentsInput = {
   created_at?: Date | string
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
@@ -719,7 +686,6 @@ export type subjectsUpdateWithoutChannel_assignmentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
@@ -732,7 +698,6 @@ export type subjectsUncheckedUpdateWithoutChannel_assignmentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
@@ -743,7 +708,6 @@ export type subjectsCreateWithoutQuiz_assignmentsInput = {
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
@@ -756,7 +720,6 @@ export type subjectsUncheckedCreateWithoutQuiz_assignmentsInput = {
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
 }
@@ -783,7 +746,6 @@ export type subjectsUpdateWithoutQuiz_assignmentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
@@ -796,71 +758,6 @@ export type subjectsUncheckedUpdateWithoutQuiz_assignmentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
-  subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
-  video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-}
-
-export type subjectsCreateWithoutQuiz_mappingsInput = {
-  id?: string
-  name: string
-  created_at?: Date | string
-  channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
-  contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
-  quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
-  grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
-  video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutSubjectsInput
-}
-
-export type subjectsUncheckedCreateWithoutQuiz_mappingsInput = {
-  id?: string
-  grade_id: string
-  name: string
-  created_at?: Date | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
-  video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-}
-
-export type subjectsCreateOrConnectWithoutQuiz_mappingsInput = {
-  where: Prisma.subjectsWhereUniqueInput
-  create: Prisma.XOR<Prisma.subjectsCreateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedCreateWithoutQuiz_mappingsInput>
-}
-
-export type subjectsUpsertWithoutQuiz_mappingsInput = {
-  update: Prisma.XOR<Prisma.subjectsUpdateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedUpdateWithoutQuiz_mappingsInput>
-  create: Prisma.XOR<Prisma.subjectsCreateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedCreateWithoutQuiz_mappingsInput>
-  where?: Prisma.subjectsWhereInput
-}
-
-export type subjectsUpdateToOneWithWhereWithoutQuiz_mappingsInput = {
-  where?: Prisma.subjectsWhereInput
-  data: Prisma.XOR<Prisma.subjectsUpdateWithoutQuiz_mappingsInput, Prisma.subjectsUncheckedUpdateWithoutQuiz_mappingsInput>
-}
-
-export type subjectsUpdateWithoutQuiz_mappingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
-  contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
-  quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
-  grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
-  video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
-}
-
-export type subjectsUncheckedUpdateWithoutQuiz_mappingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  grade_id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
@@ -872,7 +769,6 @@ export type subjectsCreateWithoutVideo_assignmentsInput = {
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutSubjectsInput
   grades: Prisma.gradesCreateNestedOneWithoutSubjectsInput
 }
@@ -885,7 +781,6 @@ export type subjectsUncheckedCreateWithoutVideo_assignmentsInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
   contents?: Prisma.contentsUncheckedCreateNestedManyWithoutSubjectsInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutSubjectsInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedCreateNestedManyWithoutSubjectsInput
   subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutSubjectsInput
 }
 
@@ -912,7 +807,6 @@ export type subjectsUpdateWithoutVideo_assignmentsInput = {
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutSubjectsNestedInput
 }
@@ -925,7 +819,6 @@ export type subjectsUncheckedUpdateWithoutVideo_assignmentsInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
 
@@ -942,7 +835,6 @@ export type subjectsUpdateWithoutGradesInput = {
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutSubjectsNestedInput
 }
@@ -954,7 +846,6 @@ export type subjectsUncheckedUpdateWithoutGradesInput = {
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
   contents?: Prisma.contentsUncheckedUpdateManyWithoutSubjectsNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
-  quiz_mappings?: Prisma.quiz_mappingsUncheckedUpdateManyWithoutSubjectsNestedInput
   subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutSubjectsNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutSubjectsNestedInput
 }
@@ -974,7 +865,6 @@ export type SubjectsCountOutputType = {
   channel_assignments: number
   contents: number
   quiz_assignments: number
-  quiz_mappings: number
   subject_channels: number
   video_assignments: number
 }
@@ -983,7 +873,6 @@ export type SubjectsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   channel_assignments?: boolean | SubjectsCountOutputTypeCountChannel_assignmentsArgs
   contents?: boolean | SubjectsCountOutputTypeCountContentsArgs
   quiz_assignments?: boolean | SubjectsCountOutputTypeCountQuiz_assignmentsArgs
-  quiz_mappings?: boolean | SubjectsCountOutputTypeCountQuiz_mappingsArgs
   subject_channels?: boolean | SubjectsCountOutputTypeCountSubject_channelsArgs
   video_assignments?: boolean | SubjectsCountOutputTypeCountVideo_assignmentsArgs
 }
@@ -1022,13 +911,6 @@ export type SubjectsCountOutputTypeCountQuiz_assignmentsArgs<ExtArgs extends run
 /**
  * SubjectsCountOutputType without action
  */
-export type SubjectsCountOutputTypeCountQuiz_mappingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.quiz_mappingsWhereInput
-}
-
-/**
- * SubjectsCountOutputType without action
- */
 export type SubjectsCountOutputTypeCountSubject_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.subject_channelsWhereInput
 }
@@ -1049,7 +931,6 @@ export type subjectsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   channel_assignments?: boolean | Prisma.subjects$channel_assignmentsArgs<ExtArgs>
   contents?: boolean | Prisma.subjects$contentsArgs<ExtArgs>
   quiz_assignments?: boolean | Prisma.subjects$quiz_assignmentsArgs<ExtArgs>
-  quiz_mappings?: boolean | Prisma.subjects$quiz_mappingsArgs<ExtArgs>
   subject_channels?: boolean | Prisma.subjects$subject_channelsArgs<ExtArgs>
   grades?: boolean | Prisma.gradesDefaultArgs<ExtArgs>
   video_assignments?: boolean | Prisma.subjects$video_assignmentsArgs<ExtArgs>
@@ -1084,7 +965,6 @@ export type subjectsInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   channel_assignments?: boolean | Prisma.subjects$channel_assignmentsArgs<ExtArgs>
   contents?: boolean | Prisma.subjects$contentsArgs<ExtArgs>
   quiz_assignments?: boolean | Prisma.subjects$quiz_assignmentsArgs<ExtArgs>
-  quiz_mappings?: boolean | Prisma.subjects$quiz_mappingsArgs<ExtArgs>
   subject_channels?: boolean | Prisma.subjects$subject_channelsArgs<ExtArgs>
   grades?: boolean | Prisma.gradesDefaultArgs<ExtArgs>
   video_assignments?: boolean | Prisma.subjects$video_assignmentsArgs<ExtArgs>
@@ -1103,7 +983,6 @@ export type $subjectsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     channel_assignments: Prisma.$channel_assignmentsPayload<ExtArgs>[]
     contents: Prisma.$contentsPayload<ExtArgs>[]
     quiz_assignments: Prisma.$quiz_assignmentsPayload<ExtArgs>[]
-    quiz_mappings: Prisma.$quiz_mappingsPayload<ExtArgs>[]
     subject_channels: Prisma.$subject_channelsPayload<ExtArgs>[]
     grades: Prisma.$gradesPayload<ExtArgs>
     video_assignments: Prisma.$video_assignmentsPayload<ExtArgs>[]
@@ -1510,7 +1389,6 @@ export interface Prisma__subjectsClient<T, Null = never, ExtArgs extends runtime
   channel_assignments<T extends Prisma.subjects$channel_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$channel_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$channel_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contents<T extends Prisma.subjects$contentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$contentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$contentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   quiz_assignments<T extends Prisma.subjects$quiz_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$quiz_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$quiz_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  quiz_mappings<T extends Prisma.subjects$quiz_mappingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$quiz_mappingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$quiz_mappingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subject_channels<T extends Prisma.subjects$subject_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$subject_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$subject_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   grades<T extends Prisma.gradesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.gradesDefaultArgs<ExtArgs>>): Prisma.Prisma__gradesClient<runtime.Types.Result.GetResult<Prisma.$gradesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   video_assignments<T extends Prisma.subjects$video_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.subjects$video_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$video_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2017,30 +1895,6 @@ export type subjects$quiz_assignmentsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.Quiz_assignmentsScalarFieldEnum | Prisma.Quiz_assignmentsScalarFieldEnum[]
-}
-
-/**
- * subjects.quiz_mappings
- */
-export type subjects$quiz_mappingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the quiz_mappings
-   */
-  select?: Prisma.quiz_mappingsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the quiz_mappings
-   */
-  omit?: Prisma.quiz_mappingsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.quiz_mappingsInclude<ExtArgs> | null
-  where?: Prisma.quiz_mappingsWhereInput
-  orderBy?: Prisma.quiz_mappingsOrderByWithRelationInput | Prisma.quiz_mappingsOrderByWithRelationInput[]
-  cursor?: Prisma.quiz_mappingsWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Quiz_mappingsScalarFieldEnum | Prisma.Quiz_mappingsScalarFieldEnum[]
 }
 
 /**

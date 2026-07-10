@@ -67,8 +67,8 @@ let resumeAfterAdvertCallback = null; // called after advert ends to do custom r
 
 let questionTimer = null;
 const COIN_CHANGE_INTERVAL = 180;     // 3 minutes
-const QUIZ_INTERVAL_ENTERTAINMENT = 3 * 60 * 1000;  // 3 minutes in ms
-const QUIZ_INTERVAL_OTHER = 10 * 60 * 1000;          // 10 minutes in ms
+const QUIZ_INTERVAL_ENTERTAINMENT = 1 * 60 * 1000;  // 3 minutes in ms
+const QUIZ_INTERVAL_OTHER = 3 * 60 * 1000;          // 10 minutes in ms
 
 /* ── Load YouTube IFrame API ────────────────────────────────── */
 loadYouTubeIframeAPI();

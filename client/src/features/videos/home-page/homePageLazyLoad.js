@@ -167,7 +167,8 @@ export function updateVideoListLazyHome(videos, reset) {
         // Format duration if available
         var durationHtml = "";
         if (video.duration) {
-            durationHtml = '<span class="video-duration-badge">' + video.duration + '</span>';
+            var formattedDuration = formatDuration(video.duration);
+            durationHtml = '<span class="video-duration-badge">' + formattedDuration + '</span>';
         }
 
         // Build thumbnail HTML
@@ -185,10 +186,11 @@ export function updateVideoListLazyHome(videos, reset) {
             '</div>' +
             '<div class="video-card-info">' +
                 '<div class="video-card-title">' + video.title + '</div>' +
-                '<div class="video-card-meta">' +
-                    '<span class="video-card-subject">' + subjectEmoji + ' ' + subjectName + '</span>' +
-                    '<span class="video-card-channel">' + channelTitle + '</span>' +
-                '</div>' +
+            '<div class="video-card-meta">' +
+                '<span class="video-card-subject">' + subjectEmoji + ' ' + subjectName + '</span>' +
+                '<span class="video-card-channel">' + channelTitle + '</span>' +
+                (video.viewCount !== undefined ? '<span class="video-card-views">' + video.viewCount + ' </span>' : '') +
+            '</div>' +
             '</div>';
 
         card.addEventListener("click", function() {
@@ -214,6 +216,43 @@ export function updateVideoListLazyHome(videos, reset) {
             }
         }, 50);
     }
+}
+
+// Format duration from seconds to HH:MM:SS or MM:SS
+function formatDuration(seconds) {
+    if (!seconds || isNaN(seconds)) {
+        return "";
+    }
+    
+    var hours = Math.floor(seconds / 3600);
+    var minutes = Math.floor((seconds % 3600) / 60);
+    var secs = seconds % 60;
+    
+    // Format with leading zeros
+    var secsStr = secs < 10 ? "0" + secs : secs;
+    var minsStr = minutes < 10 ? "0" + minutes : minutes;
+    
+    if (hours > 0) {
+        // If over an hour, use H:MM:SS format
+        return hours + ":" + minsStr + ":" + secsStr;
+    } else {
+        // If under an hour, use MM:SS format
+        return minsStr + ":" + secsStr;
+    }
+}
+
+// Format view count to human-readable format (e.g., 1500 -> 1.5K, 1500000 -> 1.5M)
+function formatViewCount(count) {
+    if (!count || isNaN(count)) {
+        return "0";
+    }
+    
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    } else if (count >= 1000) {
+        return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return count.toString();
 }
 
 // Kid-friendly emoji mapping for subjects

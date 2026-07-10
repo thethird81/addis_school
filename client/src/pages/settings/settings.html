@@ -107,22 +107,19 @@
   </div>
   <!-- Quiz Settings View -->
   <div id="quizSettingsView" class="subcontent-selection">
-    <h2>Favorite Quizzes</h2>
+    <h2>Quiz Settings</h2>
 
     <!-- Error message container -->
     <div id="errorMessage" class="error-message" style="display:none;"></div>
 
-    <!-- Favorited Quizzes Section -->
-    <div class="favorites-section">
-      <h3>Your Favorited Quizzes (<span id="favoritesCount">0</span>)</h3>
-      <div id="favoritesListContainer" class="favorites-list"></div>
+    <!-- Tab Buttons -->
+    <div class="quiz-tabs">
+      <button class="quiz-tab-btn active" id="favoritesTabBtn">⭐ Favorites</button>
+      <button class="quiz-tab-btn" id="remainingTabBtn">📚 Remaining</button>
     </div>
 
-    <hr class="divider" />
-
-    <!-- Quiz Hierarchy Section -->
-    <h3>Browse Quizzes</h3>
-    <div id="quizHierarchyContainer"></div>
+    <!-- Quiz Cards Container -->
+    <div id="quiz-cards-container"></div>
 
     <!-- Save Button -->
     <button id="saveFavoritesBtn" class="save-favorites-btn" disabled>Save Changes</button>

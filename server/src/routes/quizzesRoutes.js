@@ -1,8 +1,6 @@
 import express from "express";
 import {
   getQuizzes,
-  getQuizById,
-  getQuizzesBySubcontent,
   createQuiz,
   updateQuiz,
   deleteQuiz
@@ -11,8 +9,8 @@ import {
 const router = express.Router();
 
 router.get("/", getQuizzes);
-router.get("/subcontent/:subcontentId", getQuizzesBySubcontent);
-router.get("/:id", getQuizById);
+//router.get("/subcontent/:subcontentId", getQuizzesBySubcontent);
+//router.get("/:id", getQuizById);
 router.post("/", createQuiz);
 router.put("/:id", updateQuiz);
 router.delete("/:id", deleteQuiz);

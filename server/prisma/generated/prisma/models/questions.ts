@@ -32,6 +32,7 @@ export type QuestionsMinAggregateOutputType = {
   correct_answer: string | null
   created_at: Date | null
   question_image: string | null
+  explanation: string | null
 }
 
 export type QuestionsMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type QuestionsMaxAggregateOutputType = {
   correct_answer: string | null
   created_at: Date | null
   question_image: string | null
+  explanation: string | null
 }
 
 export type QuestionsCountAggregateOutputType = {
@@ -53,6 +55,7 @@ export type QuestionsCountAggregateOutputType = {
   correct_answer: number
   created_at: number
   question_image: number
+  explanation: number
   _all: number
 }
 
@@ -65,6 +68,7 @@ export type QuestionsMinAggregateInputType = {
   correct_answer?: true
   created_at?: true
   question_image?: true
+  explanation?: true
 }
 
 export type QuestionsMaxAggregateInputType = {
@@ -75,6 +79,7 @@ export type QuestionsMaxAggregateInputType = {
   correct_answer?: true
   created_at?: true
   question_image?: true
+  explanation?: true
 }
 
 export type QuestionsCountAggregateInputType = {
@@ -86,6 +91,7 @@ export type QuestionsCountAggregateInputType = {
   correct_answer?: true
   created_at?: true
   question_image?: true
+  explanation?: true
   _all?: true
 }
 
@@ -170,6 +176,7 @@ export type QuestionsGroupByOutputType = {
   correct_answer: string
   created_at: Date
   question_image: string | null
+  explanation: string | null
   _count: QuestionsCountAggregateOutputType | null
   _min: QuestionsMinAggregateOutputType | null
   _max: QuestionsMaxAggregateOutputType | null
@@ -202,6 +209,7 @@ export type questionsWhereInput = {
   correct_answer?: Prisma.StringFilter<"questions"> | string
   created_at?: Prisma.DateTimeFilter<"questions"> | Date | string
   question_image?: Prisma.StringNullableFilter<"questions"> | string | null
+  explanation?: Prisma.StringNullableFilter<"questions"> | string | null
   quizzes?: Prisma.XOR<Prisma.QuizzesScalarRelationFilter, Prisma.quizzesWhereInput>
 }
 
@@ -214,6 +222,7 @@ export type questionsOrderByWithRelationInput = {
   correct_answer?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   question_image?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanation?: Prisma.SortOrderInput | Prisma.SortOrder
   quizzes?: Prisma.quizzesOrderByWithRelationInput
 }
 
@@ -229,6 +238,7 @@ export type questionsWhereUniqueInput = Prisma.AtLeast<{
   correct_answer?: Prisma.StringFilter<"questions"> | string
   created_at?: Prisma.DateTimeFilter<"questions"> | Date | string
   question_image?: Prisma.StringNullableFilter<"questions"> | string | null
+  explanation?: Prisma.StringNullableFilter<"questions"> | string | null
   quizzes?: Prisma.XOR<Prisma.QuizzesScalarRelationFilter, Prisma.quizzesWhereInput>
 }, "id">
 
@@ -241,6 +251,7 @@ export type questionsOrderByWithAggregationInput = {
   correct_answer?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   question_image?: Prisma.SortOrderInput | Prisma.SortOrder
+  explanation?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.questionsCountOrderByAggregateInput
   _max?: Prisma.questionsMaxOrderByAggregateInput
   _min?: Prisma.questionsMinOrderByAggregateInput
@@ -258,6 +269,7 @@ export type questionsScalarWhereWithAggregatesInput = {
   correct_answer?: Prisma.StringWithAggregatesFilter<"questions"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"questions"> | Date | string
   question_image?: Prisma.StringNullableWithAggregatesFilter<"questions"> | string | null
+  explanation?: Prisma.StringNullableWithAggregatesFilter<"questions"> | string | null
 }
 
 export type questionsCreateInput = {
@@ -268,6 +280,7 @@ export type questionsCreateInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
   quizzes: Prisma.quizzesCreateNestedOneWithoutQuestionsInput
 }
 
@@ -280,6 +293,7 @@ export type questionsUncheckedCreateInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
 }
 
 export type questionsUpdateInput = {
@@ -290,6 +304,7 @@ export type questionsUpdateInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quizzes?: Prisma.quizzesUpdateOneRequiredWithoutQuestionsNestedInput
 }
 
@@ -302,6 +317,7 @@ export type questionsUncheckedUpdateInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type questionsCreateManyInput = {
@@ -313,6 +329,7 @@ export type questionsCreateManyInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
 }
 
 export type questionsUpdateManyMutationInput = {
@@ -323,6 +340,7 @@ export type questionsUpdateManyMutationInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type questionsUncheckedUpdateManyInput = {
@@ -334,6 +352,7 @@ export type questionsUncheckedUpdateManyInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type questionsCountOrderByAggregateInput = {
@@ -345,6 +364,7 @@ export type questionsCountOrderByAggregateInput = {
   correct_answer?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   question_image?: Prisma.SortOrder
+  explanation?: Prisma.SortOrder
 }
 
 export type questionsMaxOrderByAggregateInput = {
@@ -355,6 +375,7 @@ export type questionsMaxOrderByAggregateInput = {
   correct_answer?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   question_image?: Prisma.SortOrder
+  explanation?: Prisma.SortOrder
 }
 
 export type questionsMinOrderByAggregateInput = {
@@ -365,6 +386,7 @@ export type questionsMinOrderByAggregateInput = {
   correct_answer?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   question_image?: Prisma.SortOrder
+  explanation?: Prisma.SortOrder
 }
 
 export type QuestionsListRelationFilter = {
@@ -427,6 +449,7 @@ export type questionsCreateWithoutQuizzesInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
 }
 
 export type questionsUncheckedCreateWithoutQuizzesInput = {
@@ -437,6 +460,7 @@ export type questionsUncheckedCreateWithoutQuizzesInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
 }
 
 export type questionsCreateOrConnectWithoutQuizzesInput = {
@@ -477,6 +501,7 @@ export type questionsScalarWhereInput = {
   correct_answer?: Prisma.StringFilter<"questions"> | string
   created_at?: Prisma.DateTimeFilter<"questions"> | Date | string
   question_image?: Prisma.StringNullableFilter<"questions"> | string | null
+  explanation?: Prisma.StringNullableFilter<"questions"> | string | null
 }
 
 export type questionsCreateManyQuizzesInput = {
@@ -487,6 +512,7 @@ export type questionsCreateManyQuizzesInput = {
   correct_answer: string
   created_at?: Date | string
   question_image?: string | null
+  explanation?: string | null
 }
 
 export type questionsUpdateWithoutQuizzesInput = {
@@ -497,6 +523,7 @@ export type questionsUpdateWithoutQuizzesInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type questionsUncheckedUpdateWithoutQuizzesInput = {
@@ -507,6 +534,7 @@ export type questionsUncheckedUpdateWithoutQuizzesInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type questionsUncheckedUpdateManyWithoutQuizzesInput = {
@@ -517,6 +545,7 @@ export type questionsUncheckedUpdateManyWithoutQuizzesInput = {
   correct_answer?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   question_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -530,6 +559,7 @@ export type questionsSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   correct_answer?: boolean
   created_at?: boolean
   question_image?: boolean
+  explanation?: boolean
   quizzes?: boolean | Prisma.quizzesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["questions"]>
 
@@ -542,6 +572,7 @@ export type questionsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   correct_answer?: boolean
   created_at?: boolean
   question_image?: boolean
+  explanation?: boolean
   quizzes?: boolean | Prisma.quizzesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["questions"]>
 
@@ -554,6 +585,7 @@ export type questionsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   correct_answer?: boolean
   created_at?: boolean
   question_image?: boolean
+  explanation?: boolean
   quizzes?: boolean | Prisma.quizzesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["questions"]>
 
@@ -566,9 +598,10 @@ export type questionsSelectScalar = {
   correct_answer?: boolean
   created_at?: boolean
   question_image?: boolean
+  explanation?: boolean
 }
 
-export type questionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "quiz_id" | "question_text" | "difficulty" | "options" | "correct_answer" | "created_at" | "question_image", ExtArgs["result"]["questions"]>
+export type questionsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "quiz_id" | "question_text" | "difficulty" | "options" | "correct_answer" | "created_at" | "question_image" | "explanation", ExtArgs["result"]["questions"]>
 export type questionsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   quizzes?: boolean | Prisma.quizzesDefaultArgs<ExtArgs>
 }
@@ -593,6 +626,7 @@ export type $questionsPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     correct_answer: string
     created_at: Date
     question_image: string | null
+    explanation: string | null
   }, ExtArgs["result"]["questions"]>
   composites: {}
 }
@@ -1025,6 +1059,7 @@ export interface questionsFieldRefs {
   readonly correct_answer: Prisma.FieldRef<"questions", 'String'>
   readonly created_at: Prisma.FieldRef<"questions", 'DateTime'>
   readonly question_image: Prisma.FieldRef<"questions", 'String'>
+  readonly explanation: Prisma.FieldRef<"questions", 'String'>
 }
     
 

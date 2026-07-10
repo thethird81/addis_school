@@ -2,7 +2,10 @@ import { prisma } from "../config/db.js";
 
 const getQuizzes = async (req, res) => {
   try {
-    const quizzes = await prisma.quizzes.findMany({ orderBy: { created_at: "desc" } });
+    const quizzes = await prisma.quizzes.findMany({
+      orderBy: { created_at: "desc" },
+      include: { _count: { select: { questions: true } } },
+    });
     res.status(200).json(quizzes);
   } catch (error) {
     console.error("Error fetching quizzes:", error);
@@ -10,39 +13,14 @@ const getQuizzes = async (req, res) => {
   }
 };
 
-const getQuizById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const quiz = await prisma.quizzes.findUnique({ where: { id } });
-    if (!quiz) {
-      return res.status(404).json({ error: "Quiz not found" });
-    }
-    res.status(200).json(quiz);
-  } catch (error) {
-    console.error("Error fetching quiz:", error);
-    res.status(500).json({ error: "Failed to fetch quiz" });
-  }
-};
-
-const getQuizzesBySubcontent = async (req, res) => {
-  try {
-    const { subcontentId } = req.params;
-    const quizzes = await prisma.quizzes.findMany({ where: { subcontent_id: subcontentId } });
-    res.status(200).json(quizzes);
-  } catch (error) {
-    console.error("Error fetching quizzes by subcontent:", error);
-    res.status(500).json({ error: "Failed to fetch quizzes" });
-  }
-};
-
 const createQuiz = async (req, res) => {
   try {
-    const { title, description, quiz_type, subcontent_id, is_active } = req.body;
-    if (!title || !quiz_type) {
-      return res.status(400).json({ error: "Missing required fields" });
+    const { title } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: "Missing required field: title" });
     }
     const created = await prisma.quizzes.create({
-      data: { title, description, quiz_type, subcontent_id, is_active }
+      data: { title }
     });
     res.status(201).json(created);
   } catch (error) {
@@ -54,10 +32,10 @@ const createQuiz = async (req, res) => {
 const updateQuiz = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, quiz_type, subcontent_id, is_active } = req.body;
+    const { title } = req.body;
     const updated = await prisma.quizzes.update({
       where: { id },
-      data: { title, description, quiz_type, subcontent_id, is_active }
+      data: { ...(title !== undefined && { title }) }
     });
     res.status(200).json(updated);
   } catch (error) {
@@ -77,4 +55,5 @@ const deleteQuiz = async (req, res) => {
   }
 };
 
-export { getQuizzes, getQuizById, getQuizzesBySubcontent, createQuiz, updateQuiz, deleteQuiz };
+export { getQuizzes, createQuiz, updateQuiz, deleteQuiz };
+

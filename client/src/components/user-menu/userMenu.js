@@ -5,6 +5,7 @@ import { getGradeName } from '../../utils/sharedFunctions.js';
 import { getVideosByGrade } from "../../features/videos/videoResolver.js";
 import '../../components/loading-spinner/loading-spinner.css';
 import '../../components/loading-spinner/loading-spinner.js';
+import { getBaseUrl } from '../../utils/path.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -164,20 +165,34 @@ function updateNavbarUserIcon(profile) {
 async function saveProfilesBeforeLogout() {
   const userId = localStorage.getItem("loggedInUserId");
   const profiles = JSON.parse(localStorage.getItem("profiles")) || [];
-    
+  
   if (!userId || profiles.length === 0) return;
 
+  const baseUrl = getBaseUrl();
+  
   for (const profile of profiles) {
-     console.log("Saving profile coins:", profile.coins);
-     console.log("supabaseClient update response for profile ID", profile.id, ":", { error });
-    const { error } = await supabaseClient
-      .from('profiles')
-      .update({
-       coins: profile.coins,
-      })
-      .eq('id', profile.id);// extra safety
+    console.log("Saving profile coins:", profile.coins, "for profile ID:", profile.id);
     
-    if (error) {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${baseUrl}/api/v1/profiles/${profile.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          coins: profile.coins
+        })
+      });
+
+      if (response.ok) {
+        console.log("Successfully updated profile:", profile.id);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Error updating profile:", response.status, errorData);
+      }
+    } catch (error) {
       console.error("Error updating profile:", error);
     }
   }

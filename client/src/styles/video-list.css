@@ -331,7 +331,11 @@
     font-size: 12px;
     font-weight: 600;
 }
-
+.video-card-views {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 600;
+}
 /* ===== Channel Grid Styles ===== */
 .channel-grid {
     /* Legacy fallback for browsers that don't support grid */

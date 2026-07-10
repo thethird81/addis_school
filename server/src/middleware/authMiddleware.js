@@ -27,8 +27,8 @@ export async function authMiddleware(req, res, next) {
 
     console.log("Decoded accessToken:", decoded);
 
-    // Supabase user id is inside "sub"
-    req.userId = decoded.id;
+    // User id is in the "sub" claim
+    req.userId = decoded.sub;
     req.user = decoded;
 
     next();
@@ -38,4 +38,31 @@ export async function authMiddleware(req, res, next) {
     return res.status(401).json({ error: "Invalid accessToken" });
   }
 
+}
+
+/**
+ * Authorization middleware factory - restricts access based on user roles
+ * @param  {...string} allowedRoles - Array of roles allowed to access the route
+ * @returns {Function} Express middleware
+ */
+export function restrictTo(...allowedRoles) {
+  return (req, res, next) => {
+    // Ensure authMiddleware has run and req.user exists
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized - Authentication required" });
+    }
+
+    // Check if user's role is in the allowed roles
+    const userRole = req.user.role;
+    
+    if (!allowedRoles.includes(userRole)) {
+      return res.status(403).json({ 
+        error: "Forbidden - Insufficient permissions",
+        requiredRoles: allowedRoles,
+        userRole: userRole 
+      });
+    }
+
+    next();
+  };
 }

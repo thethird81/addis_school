@@ -66,7 +66,6 @@ export const ModelName = {
   channel_assignments: 'channel_assignments',
   likes: 'likes',
   quiz_assignments: 'quiz_assignments',
-  quiz_mappings: 'quiz_mappings',
   reports: 'reports',
   users_metadata: 'users_metadata',
   video_assignments: 'video_assignments',
@@ -132,7 +131,8 @@ export const QuestionsScalarFieldEnum = {
   options: 'options',
   correct_answer: 'correct_answer',
   created_at: 'created_at',
-  question_image: 'question_image'
+  question_image: 'question_image',
+  explanation: 'explanation'
 } as const
 
 export type QuestionsScalarFieldEnum = (typeof QuestionsScalarFieldEnum)[keyof typeof QuestionsScalarFieldEnum]
@@ -141,7 +141,6 @@ export type QuestionsScalarFieldEnum = (typeof QuestionsScalarFieldEnum)[keyof t
 export const QuizzesScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  is_general: 'is_general',
   created_at: 'created_at'
 } as const
 
@@ -252,18 +251,6 @@ export const Quiz_assignmentsScalarFieldEnum = {
 } as const
 
 export type Quiz_assignmentsScalarFieldEnum = (typeof Quiz_assignmentsScalarFieldEnum)[keyof typeof Quiz_assignmentsScalarFieldEnum]
-
-
-export const Quiz_mappingsScalarFieldEnum = {
-  id: 'id',
-  quiz_id: 'quiz_id',
-  grade_id: 'grade_id',
-  subject_id: 'subject_id',
-  content_id: 'content_id',
-  subcontent_id: 'subcontent_id'
-} as const
-
-export type Quiz_mappingsScalarFieldEnum = (typeof Quiz_mappingsScalarFieldEnum)[keyof typeof Quiz_mappingsScalarFieldEnum]
 
 
 export const ReportsScalarFieldEnum = {

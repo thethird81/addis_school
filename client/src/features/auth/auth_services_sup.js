@@ -1,6 +1,5 @@
 'use strict';
-import { getBasePath } from '../../utils/sharedFunctions.js';
-import { getBaseUrl } from '../../utils/path.js';
+import { getBasePath,getBaseUrl } from '../../utils/path.js';
 import { deleteDatabase } from '../../features/store/indexeddbStore.js';
 import { fetchSubcontentsByGrade } from '../search/search.js';
 import { getVideosByGrade } from "../../features/videos/videoResolver.js";

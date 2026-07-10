@@ -331,17 +331,46 @@ const saveVideosToDatabase = async (videos, { grade_id, subject_id, content_id, 
     let savedCount = 0;
     let assignedCount = 0;
 
-    // Batch 1: find all existing videos in one query
-    const existingVideos = await tx.videos.findMany({
-      where: { id: { in: videoIds } },
-      select: { id: true },
-    });
-    const existingVideoIds = new Set(existingVideos.map((v) => v.id));
+    // Step 1: Ensure all videos exist (upsert to handle duplicates)
+    for (const video of videos) {
+      await tx.videos.upsert({
+        where: { id: video.videoId },
+        update: {
+          title: video.title,
+          channel_title: video.channelTitle,
+          thumbnails: video.thumbnails,
+          published_at: video.publishedAt ? new Date(video.publishedAt) : null,
+          channel_id: video.channelId,
+          duration: video.duration || 0,
+          view_count: video.viewCount || 0,
+        },
+        create: {
+          id: video.videoId,
+          title: video.title,
+          channel_title: video.channelTitle,
+          thumbnails: video.thumbnails,
+          published_at: video.publishedAt ? new Date(video.publishedAt) : null,
+          channel_id: video.channelId,
+          duration: video.duration || 0,
+          view_count: video.viewCount || 0,
+        },
+      });
+      savedCount++;
+    }
 
-    // Batch 2: find all existing assignments for this curriculum position in one query
+    // Step 2: Verify which videos actually exist in database (double-check after creation attempts)
+    const allVideoIds = videos.map(v => v.videoId);
+    const existingVideosInDb = await tx.videos.findMany({
+      where: { id: { in: allVideoIds } },
+      select: { id: true }
+    });
+    const videosThatActuallyExist = new Set(existingVideosInDb.map(v => v.id));
+    console.log(`Verified ${videosThatActuallyExist.size} videos exist in database out of ${allVideoIds.length} requested`);
+
+    // Step 3: Find existing assignments for this curriculum position (only for videos that exist)
     const existingAssignments = await tx.video_assignments.findMany({
       where: {
-        video_id: { in: videoIds },
+        video_id: { in: allVideoIds },
         grade_id: grade_id,
         subject_id: subject_id || null,
         content_id: content_id || null,
@@ -351,43 +380,39 @@ const saveVideosToDatabase = async (videos, { grade_id, subject_id, content_id, 
     });
     const assignedVideoIds = new Set(existingAssignments.map((a) => a.video_id));
 
-    // Collect new videos to create
-    const newVideos = videos
-      .filter((v) => !existingVideoIds.has(v.videoId))
-      .map((v) => ({
-        id: v.videoId,
-        title: v.title,
-        channel_title: v.channelTitle,
-        thumbnails: v.thumbnails,
-        published_at: v.publishedAt ? new Date(v.publishedAt) : null,
-        channel_id: v.channelId,
-        duration: v.duration || 0,
-        view_count: v.viewCount || 0,
-      }));
+    // Step 4: Create assignments one by one (only for videos that verified exist)
+    // This ensures no foreign key constraint violations
+    for (const video of videos) {
+      // Skip if assignment already exists
+      if (assignedVideoIds.has(video.videoId)) {
+        continue;
+      }
+      
+      // Skip if video doesn't actually exist in database
+      if (!videosThatActuallyExist.has(video.videoId)) {
+        console.log(`Video ${video.videoId} not in database, skipping assignment`);
+        continue;
+      }
 
-    // Batch 3: create all new videos at once (skip if race condition inserts same video)
-    if (newVideos.length > 0) {
-      console.log("newVideos to create:", newVideos );
-      const createResult = await tx.videos.createMany({ data: newVideos, skipDuplicates: true });
-      savedCount = createResult.count;
-    }
-
-    // Collect new assignments to create
-    const newAssignments = videos
-      .filter((v) => !assignedVideoIds.has(v.videoId))
-      .map((v) => ({
-        video_id: v.videoId,
-        grade_id: grade_id,
-        subject_id: subject_id || null,
-        content_id: content_id || null,
-        subcontent_id: subcontent_id || null,
-      }));
-
-    // Batch 4: create all new assignments at once
-    if (newAssignments.length > 0) {
-      console.log(`Creating ${newAssignments.length} new assignments for grade_id: ${grade_id}`);
-      const assignResult = await tx.video_assignments.createMany({ data: newAssignments, skipDuplicates: true });
-      assignedCount = assignResult.count;
+      try {
+        await tx.video_assignments.create({
+          data: {
+            video_id: video.videoId,
+            grade_id: grade_id,
+            subject_id: subject_id || null,
+            content_id: content_id || null,
+            subcontent_id: subcontent_id || null,
+          },
+        });
+        assignedCount++;
+      } catch (error) {
+        // If assignment already exists (unique constraint), skip it
+        if (error.code === 'P2002') {
+          console.log(`Assignment already exists for video ${video.videoId}`);
+        } else {
+          throw error;
+        }
+      }
     }
 
     return { savedCount, assignedCount, totalFetched: videos.length };

@@ -155,11 +155,11 @@ const refresh = async (req, res) => {
     const token = req.cookies.refreshToken;
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
       if (err) return res.sendStatus(403);
 
       const newAccessToken = jwt.sign(
-        { id: user.id },
+        { sub: decoded.sub },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRES }
       );

@@ -11,20 +11,30 @@ import {
   deleteVideo,
   removeFromWatchHistory,
   getAdvertVideos,
+  searchYouTubeVideos,
+  getCurriculumTree,
+  bulkDeleteVideoAssignments,
+  deleteVideoAssignment,
+  getWorkspaceVideosBySubcontent,
 } from "../controllers/videosController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.get("/random", getRandomVideos);
 router.get("/subcontents/:subcontentId", getVideosBySubcontent);
+router.get("/workspace/subcontents/:subcontentId", getWorkspaceVideosBySubcontent);
 router.get("/grade/:gradeId", getVideosByGrade);
 router.get("/channel/:channelId", getVideosByChannel);
 router.get("/adverts/:gradeId", getAdvertVideos);
+router.get("/curriculum/tree", getCurriculumTree);
 router.get("/:id", getVideoById);
 router.post("/save", saveVideos);
+router.post("/search-youtube", searchYouTubeVideos);
 router.post("/", createVideo);
 router.put("/:id", updateVideo);
+router.delete("/bulk", bulkDeleteVideoAssignments);
 router.delete("/:id", deleteVideo);
+router.delete("/assignments/:assignmentId", deleteVideoAssignment);
 router.delete("/watch-history", removeFromWatchHistory);
 
 export default router;

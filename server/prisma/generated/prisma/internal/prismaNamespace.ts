@@ -399,7 +399,6 @@ export const ModelName = {
   channel_assignments: 'channel_assignments',
   likes: 'likes',
   quiz_assignments: 'quiz_assignments',
-  quiz_mappings: 'quiz_mappings',
   reports: 'reports',
   users_metadata: 'users_metadata',
   video_assignments: 'video_assignments',
@@ -420,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "grade_channels" | "subject_channels" | "channel_assignments" | "likes" | "quiz_assignments" | "quiz_mappings" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos"
+    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "grade_channels" | "subject_channels" | "channel_assignments" | "likes" | "quiz_assignments" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1534,80 +1533,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    quiz_mappings: {
-      payload: Prisma.$quiz_mappingsPayload<ExtArgs>
-      fields: Prisma.quiz_mappingsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.quiz_mappingsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.quiz_mappingsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        findFirst: {
-          args: Prisma.quiz_mappingsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.quiz_mappingsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        findMany: {
-          args: Prisma.quiz_mappingsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>[]
-        }
-        create: {
-          args: Prisma.quiz_mappingsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        createMany: {
-          args: Prisma.quiz_mappingsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.quiz_mappingsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>[]
-        }
-        delete: {
-          args: Prisma.quiz_mappingsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        update: {
-          args: Prisma.quiz_mappingsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        deleteMany: {
-          args: Prisma.quiz_mappingsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.quiz_mappingsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.quiz_mappingsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>[]
-        }
-        upsert: {
-          args: Prisma.quiz_mappingsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$quiz_mappingsPayload>
-        }
-        aggregate: {
-          args: Prisma.Quiz_mappingsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateQuiz_mappings>
-        }
-        groupBy: {
-          args: Prisma.quiz_mappingsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Quiz_mappingsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.quiz_mappingsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Quiz_mappingsCountAggregateOutputType> | number
-        }
-      }
-    }
     reports: {
       payload: Prisma.$reportsPayload<ExtArgs>
       fields: Prisma.reportsFieldRefs
@@ -2059,7 +1984,8 @@ export const QuestionsScalarFieldEnum = {
   options: 'options',
   correct_answer: 'correct_answer',
   created_at: 'created_at',
-  question_image: 'question_image'
+  question_image: 'question_image',
+  explanation: 'explanation'
 } as const
 
 export type QuestionsScalarFieldEnum = (typeof QuestionsScalarFieldEnum)[keyof typeof QuestionsScalarFieldEnum]
@@ -2068,7 +1994,6 @@ export type QuestionsScalarFieldEnum = (typeof QuestionsScalarFieldEnum)[keyof t
 export const QuizzesScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  is_general: 'is_general',
   created_at: 'created_at'
 } as const
 
@@ -2179,18 +2104,6 @@ export const Quiz_assignmentsScalarFieldEnum = {
 } as const
 
 export type Quiz_assignmentsScalarFieldEnum = (typeof Quiz_assignmentsScalarFieldEnum)[keyof typeof Quiz_assignmentsScalarFieldEnum]
-
-
-export const Quiz_mappingsScalarFieldEnum = {
-  id: 'id',
-  quiz_id: 'quiz_id',
-  grade_id: 'grade_id',
-  subject_id: 'subject_id',
-  content_id: 'content_id',
-  subcontent_id: 'subcontent_id'
-} as const
-
-export type Quiz_mappingsScalarFieldEnum = (typeof Quiz_mappingsScalarFieldEnum)[keyof typeof Quiz_mappingsScalarFieldEnum]
 
 
 export const ReportsScalarFieldEnum = {
@@ -2542,7 +2455,6 @@ export type GlobalOmitConfig = {
   channel_assignments?: Prisma.channel_assignmentsOmit
   likes?: Prisma.likesOmit
   quiz_assignments?: Prisma.quiz_assignmentsOmit
-  quiz_mappings?: Prisma.quiz_mappingsOmit
   reports?: Prisma.reportsOmit
   users_metadata?: Prisma.users_metadataOmit
   video_assignments?: Prisma.video_assignmentsOmit

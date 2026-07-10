@@ -621,6 +621,127 @@ body {
     background: rgba(255, 255, 255, 0.15);
 }
 
+/* Quiz Tabs */
+.quiz-tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 25px;
+    padding: 4px;
+}
+
+.quiz-tab-btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+.quiz-tab-btn.active {
+    background: linear-gradient(135deg, #b7730d, #d4941a);
+    color: white;
+    box-shadow: 0 2px 8px rgba(183, 115, 13, 0.4);
+}
+
+.quiz-tab-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Quiz Cards Container */
+#quiz-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+/* Quiz Card */
+.quiz-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.quiz-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 215, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.quiz-card.fading-out {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+/* Favorite Toggle Button */
+.favorite-toggle-btn {
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.favorite-toggle-btn:hover {
+    transform: scale(1.15);
+}
+
+.favorite-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.favorite-toggle-btn .star-icon {
+    line-height: 1;
+}
+
+/* Quiz Title */
+.quiz-title {
+    flex: 1;
+    color: #e0e0e0;
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* No Quizzes Message */
+.no-quizzes-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #a09080;
+    font-style: italic;
+    padding: 40px 20px;
+    font-size: 15px;
+}
+
 /* Profile Settings */
 .profiles-list {
     display: flex;

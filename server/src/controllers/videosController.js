@@ -1,8 +1,13 @@
 import { prisma } from "../config/db.js";
+import axios from "axios";
+import { serializeObject, safeJsonResponse } from "../utils/bigIntSerializer.js";
 
 // Helper function to format view counts in compact notation
 export const formatViewCount = (count) => {
   if (count === null || count === undefined) return null;
+  if (typeof count === 'bigint') {
+    return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(Number(count));
+  }
   return new Intl.NumberFormat('en-US', { notation: 'compact' }).format(count);
 };
 
@@ -11,8 +16,6 @@ const getVideosBySubcontent = async (req, res) => {
     const { subcontentId } = req.params;
     const { gradeId, subjectId, contentId, profileId } = req.query;
 
-    // Build a dynamic where clause to filter by full curriculum context
-    // Only return non-advert (curricular) video assignments (duration >= 120 seconds)
     const where = {
       subcontent_id: subcontentId,
       videos: {
@@ -25,7 +28,6 @@ const getVideosBySubcontent = async (req, res) => {
     if (subjectId) where.subject_id = subjectId;
     if (contentId) where.content_id = contentId;
 
-    // If profileId is provided, exclude videos reported by this profile
     if (profileId) {
       where.videos = {
         reports: {
@@ -46,7 +48,7 @@ const getVideosBySubcontent = async (req, res) => {
     });
 
     if (!assignments.length) {
-      return res.status(404).json({ message: "No videos found" });
+      return safeJsonResponse(res, 404, { message: "No videos found" });
     }
 
     const formattedVideos = assignments.map((a) => ({
@@ -68,10 +70,10 @@ const getVideosBySubcontent = async (req, res) => {
       },
     }));
 
-    res.status(200).json(formattedVideos);
+    return safeJsonResponse(res, 200, formattedVideos);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    return safeJsonResponse(res, 500, { message: "Server error" });
   }
 };
 
@@ -79,16 +81,14 @@ const getRandomVideos = async (req, res) => {
   try {
     const { profileId } = req.query;
 
-    // Calling the new global, parameter-free database function
     const videos = await prisma.$queryRaw`
       SELECT * FROM get_global_random_assigned_videos();
     `;
 
     if (!videos || !videos.length) {
-      return res.status(404).json({ message: "No videos found" });
+      return safeJsonResponse(res, 404, { message: "No videos found" });
     }
 
-    // Convert BigInt values to strings to avoid serialization errors
     const result = videos.map((v) => ({
       videoId: v.id,
       title: v.title,
@@ -97,20 +97,20 @@ const getRandomVideos = async (req, res) => {
       channelTitle: v.channel_title,
       duration: v.duration,
       viewCount: formatViewCount(v.view_count),
-      locator:  {
+      locator: {
         grade_id: v.grade_id,
         subject_id: v.subject_id,
         content_id: v.content_id,
         subcontent_id: v.subcontent_id,
         channel_id: v.channel_id,
         subject_name: v.subject_name || null,
-      } 
+      },
     }));
 
-    res.status(200).json(result);
+    return safeJsonResponse(res, 200, result);
   } catch (err) {
     console.error("Error fetching random videos:", err);
-    res.status(500).json({ message: "Internal server error" });
+    return safeJsonResponse(res, 500, { message: "Internal server error" });
   }
 };
 
@@ -119,37 +119,35 @@ const getVideosByGrade = async (req, res) => {
     const { gradeId } = req.params;
     const { profileId } = req.query;
 
-   // Call the stored function using raw query. 
-    // Prisma maps the template variables safely into the query execution string.
     const assignments = await prisma.$queryRaw`
       SELECT * FROM get_videos_by_grade(
-        ${gradeId}::uuid, 
+        ${gradeId}::uuid,
         ${profileId ? profileId : null}::uuid
       );
     `;
-// Process flat rows into the response structure you expect
-const formattedVideos = assignments.map((a) => ({
-  videoId: a.id,                  // FIXED: Read directly from row
-  title: a.title,                 // FIXED: Read directly from row
-  thumbnails: a.thumbnails,       // FIXED: Read directly from row
-  publishedAt: a.published_at,    // FIXED: Read directly from row
-  channelTitle: a.channel_title,  // FIXED: Read directly from row
-  duration: a.duration,           // FIXED: Read directly from row
-  viewCount: formatViewCount(a.view_count),
-  locator: {
-    grade_id: a.grade_id,
-    subject_id: a.subject_id,
-    content_id: a.content_id,
-    subcontent_id: a.subcontent_id,
-    channel_id: a.channel_id,     // FIXED: Read directly from row
-    subject_name: a.subject_name || null, // FIXED: Read directly from row
-  },
-}));
 
-    res.status(200).json(formattedVideos);
+    const formattedVideos = assignments.map((a) => ({
+      videoId: a.id,
+      title: a.title,
+      thumbnails: a.thumbnails,
+      publishedAt: a.published_at,
+      channelTitle: a.channel_title,
+      duration: a.duration,
+      viewCount: formatViewCount(a.view_count),
+      locator: {
+        grade_id: a.grade_id,
+        subject_id: a.subject_id,
+        content_id: a.content_id,
+        subcontent_id: a.subcontent_id,
+        channel_id: a.channel_id,
+        subject_name: a.subject_name || null,
+      },
+    }));
+
+    return safeJsonResponse(res, 200, formattedVideos);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to fetch videos" });
+    return safeJsonResponse(res, 500, { error: "Failed to fetch videos" });
   }
 };
 
@@ -158,45 +156,44 @@ const getVideosByChannel = async (req, res) => {
     const { channelId } = req.params;
     const { profileId } = req.query;
 
-    const where = {
+    // First, get all videos from this channel with duration >= 120
+    const videosWhere = {
       channel_id: channelId,
+      duration: {
+        gte: 120,
+      },
     };
 
-    // If profileId is provided, exclude videos reported by this profile
+    const videos = await prisma.videos.findMany({
+      where: videosWhere,
+    });
+
+    if (!videos.length) {
+      return safeJsonResponse(res, 404, { error: "No videos found for this channel" });
+    }
+
+    const videoIds = videos.map((v) => v.id);
+    
+    // Get assignments for these videos
+    const assignmentWhere = {
+      video_id: { in: videoIds },
+    };
+
     if (profileId) {
-      where.reports = {
+      assignmentWhere.reports = {
         none: {
           profile_id: profileId,
         },
       };
     }
 
-    const videos = await prisma.videos.findMany({
-      where,
-    });
-
-    if (!videos.length) {
-      return res.status(404).json({ error: "No videos found for this channel" });
-    }
-
-    // Get video_assignments for all found videos to build locators
-    // Only return non-advert (curricular) assignments (duration >= 120 seconds)
-    const videoIds = videos.map((v) => v.id);
     const assignments = await prisma.video_assignments.findMany({
-      where: {
-        video_id: { in: videoIds },
-        videos: {
-          duration: {
-            gte: 120,
-          },
-        },
-      },
+      where: assignmentWhere,
       include: {
         subjects: true,
       },
     });
 
-    // Build a map of video_id -> assignment for locator lookup
     const assignmentMap = {};
     for (const a of assignments) {
       assignmentMap[a.video_id] = a;
@@ -226,10 +223,10 @@ const getVideosByChannel = async (req, res) => {
       };
     });
 
-    res.status(200).json(formattedVideos);
+    return safeJsonResponse(res, 200, formattedVideos);
   } catch (error) {
     console.error("Error fetching videos by channel:", error);
-    res.status(500).json({ error: "Failed to fetch videos" });
+    return safeJsonResponse(res, 500, { error: "Failed to fetch videos" });
   }
 };
 
@@ -239,13 +236,13 @@ const getVideoById = async (req, res) => {
     const video = await prisma.videos.findUnique({ where: { id } });
 
     if (!video) {
-      return res.status(404).json({ error: "Video not found" });
+      return safeJsonResponse(res, 404, { error: "Video not found 2" });
     }
 
-    res.status(200).json(video);
+    return safeJsonResponse(res, 200, video);
   } catch (error) {
     console.error("Error fetching video:", error);
-    res.status(500).json({ error: "Failed to fetch video" });
+    return safeJsonResponse(res, 500, { error: "Failed to fetch video" });
   }
 };
 
@@ -254,7 +251,7 @@ const createVideo = async (req, res) => {
     const { title, thumbnails, id, published_at, channel_title, channel_id } = req.body;
 
     if (!title || !id) {
-      return res.status(400).json({ error: "Missing required fields: title, id" });
+      return safeJsonResponse(res, 400, { error: "Missing required fields: title, id" });
     }
 
     const video = await prisma.videos.create({
@@ -268,10 +265,10 @@ const createVideo = async (req, res) => {
       },
     });
 
-    res.status(201).json(video);
+    return safeJsonResponse(res, 201, video);
   } catch (error) {
     console.error("Error creating video:", error);
-    res.status(500).json({ error: "Failed to create video" });
+    return safeJsonResponse(res, 500, { error: "Failed to create video" });
   }
 };
 
@@ -291,21 +288,49 @@ const updateVideo = async (req, res) => {
       },
     });
 
-    res.status(200).json(video);
+    return safeJsonResponse(res, 200, video);
   } catch (error) {
     console.error("Error updating video:", error);
-    res.status(500).json({ error: "Failed to update video" });
+    return safeJsonResponse(res, 500, { error: "Failed to update video" });
   }
 };
 
 const deleteVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    await prisma.videos.delete({ where: { id } });
-    res.status(200).json({ message: "Video deleted" });
+
+    // Archive the video before deletion
+    let archived = false;
+    try {
+      await prisma.deleted_videos.upsert({
+        where: { video_id: id },
+        update: { deleted_at: new Date() },
+        create: {
+          video_id: id,
+          deleted_at: new Date(),
+        },
+      });
+      archived = true;
+    } catch (archiveError) {
+      // Log but don't fail if archiving fails (RLS might block it)
+      console.warn("Could not archive deleted video:", archiveError.message);
+    }
+
+    // Delete the video - CASCADE constraints will handle related records
+    await prisma.videos.delete({
+      where: { id },
+    });
+
+    const message = archived 
+      ? "Video deleted and archived"
+      : "Video deleted";
+    
+    return safeJsonResponse(res, 200, { message });
   } catch (error) {
     console.error("Error deleting video:", error);
-    res.status(500).json({ error: "Failed to delete video" });
+    return safeJsonResponse(res, 500, { 
+      error: error.message || "Failed to delete video" 
+    });
   }
 };
 
@@ -314,7 +339,7 @@ const removeFromWatchHistory = async (req, res) => {
     const { profileId, videoId } = req.body;
 
     if (!profileId || !videoId) {
-      return res.status(400).json({ error: "Missing required fields: profileId, videoId" });
+      return safeJsonResponse(res, 400, { error: "Missing required fields: profileId, videoId" });
     }
 
     await prisma.watch_histories.deleteMany({
@@ -324,25 +349,23 @@ const removeFromWatchHistory = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "Watch history entries removed" });
+    return safeJsonResponse(res, 200, { message: "Watch history entries removed" });
   } catch (error) {
     console.error("Error removing watch history:", error);
-    res.status(500).json({ error: "Failed to remove watch history" });
+    return safeJsonResponse(res, 500, { error: "Failed to remove watch history" });
   }
 };
 
 const saveVideos = async (req, res) => {
   try {
-   
-    const { subcontentId, contentId, subjectId, gradeId ,videos } = req.body;
+    const { subcontentId, contentId, subjectId, gradeId, videos } = req.body;
 
     if (!Array.isArray(videos) || videos.length === 0) {
-      return res.status(400).json({ error: "Missing required fields: videos array is required" });
+      return safeJsonResponse(res, 400, { error: "Missing required fields: videos array is required" });
     }
 
-    // Channel-level saves don't need subcontentId; grade-level saves need at least gradeId
     if (!gradeId && !subcontentId) {
-      return res.status(400).json({ error: "Either gradeId or subcontentId is required" });
+      return safeJsonResponse(res, 400, { error: "Either gradeId or subcontentId is required" });
     }
 
     const rows = videos.map((v) => ({
@@ -360,21 +383,18 @@ const saveVideos = async (req, res) => {
         let assignedCount = 0;
 
         for (const row of rows) {
-          // Upsert the video record (create if not exists)
           const existing = await tx.videos.findUnique({ where: { id: row.id } });
           if (!existing) {
             await tx.videos.create({ data: row });
             savedCount++;
           }
 
-          // Build the where clause based on what's available
           const assignmentWhere = {
             video_id: row.id,
             grade_id: gradeId || null,
             subject_id: subjectId || null,
             content_id: contentId || null,
           };
-          // Only add subcontent_id to the where if it's provided (channel saves send null)
           if (subcontentId) {
             assignmentWhere.subcontent_id = subcontentId;
           }
@@ -390,7 +410,6 @@ const saveVideos = async (req, res) => {
               subject_id: subjectId || null,
               content_id: contentId || null,
             };
-            // Only include subcontent_id if provided
             if (subcontentId) {
               assignmentData.subcontent_id = subcontentId;
             }
@@ -405,19 +424,19 @@ const saveVideos = async (req, res) => {
         return { savedCount, assignedCount };
       },
       {
-      timeout: 120000,
-      maxWait: 30000,
+        timeout: 120000,
+        maxWait: 30000,
       }
     );
 
-    res.status(201).json({
+    return safeJsonResponse(res, 201, {
       message: "Videos saved",
       count: result.savedCount,
       assignmentsCreated: result.assignedCount,
     });
   } catch (error) {
     console.error("Error saving videos:", error);
-    res.status(500).json({ error: "Failed to save videos" });
+    return safeJsonResponse(res, 500, { error: "Failed to save videos" });
   }
 };
 
@@ -426,14 +445,12 @@ const getAdvertVideos = async (req, res) => {
     const { gradeId } = req.params;
     const { profileId } = req.query;
 
-    // Only return advert videos (duration < 120 seconds) excluding Entertainment subject
     const videosFilter = {
       duration: {
         lt: 120,
       },
     };
 
-    // If profileId is provided, exclude videos reported by this profile
     if (profileId) {
       videosFilter.reports = {
         none: {
@@ -456,10 +473,9 @@ const getAdvertVideos = async (req, res) => {
     });
 
     if (!assignments.length) {
-      return res.status(200).json([]);
+      return safeJsonResponse(res, 200, []);
     }
 
-    // Filter out Entertainment subject
     const filteredAssignments = assignments.filter((a) => {
       const subjectName = a.subjects?.name;
       return subjectName !== "Entertainment";
@@ -484,11 +500,246 @@ const getAdvertVideos = async (req, res) => {
       },
     }));
 
-    res.status(200).json(formattedVideos);
+    return safeJsonResponse(res, 200, formattedVideos);
   } catch (err) {
     console.error("Error fetching advert videos:", err);
-    res.status(500).json({ message: "Server error" });
+    return safeJsonResponse(res, 500, { message: "Server error" });
   }
 };
 
-export { getVideosBySubcontent, getRandomVideos, getVideosByGrade, getVideosByChannel, getVideoById, createVideo, updateVideo, deleteVideo, saveVideos, removeFromWatchHistory, getAdvertVideos }
+// Search YouTube API for videos
+const searchYouTubeVideos = async (req, res) => {
+  try {
+    const { query, maxResults = 10 } = req.query;
+
+    if (!query) {
+      return safeJsonResponse(res, 400, { error: "Search query is required" });
+    }
+
+    const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+    if (!YOUTUBE_API_KEY) {
+      return safeJsonResponse(res, 500, { error: "YouTube API key not configured" });
+    }
+
+    const response = await axios.get("https://www.googleapis.com/youtube/v3/search", {
+      params: {
+        part: "snippet",
+        q: query,
+        type: "video",
+        maxResults: maxResults,
+        key: YOUTUBE_API_KEY,
+      },
+    });
+
+    const videos = response.data.items.map((item) => ({
+      videoId: item.id.videoId,
+      title: item.snippet.title,
+      description: item.snippet.description,
+      thumbnails: item.snippet.thumbnails,
+      channelTitle: item.snippet.channelTitle,
+      channelId: item.snippet.channelId,
+      publishedAt: item.snippet.publishedAt,
+    }));
+
+    return safeJsonResponse(res, 200, videos);
+  } catch (error) {
+    console.error("Error searching YouTube:", error);
+    return safeJsonResponse(res, 500, { error: "Failed to search YouTube videos" });
+  }
+};
+
+// Get curriculum tree for navigation
+const getCurriculumTree = async (req, res) => {
+  try {
+    const grades = await prisma.grades.findMany({
+      orderBy: { sort_order: 'asc' },
+      include: {
+        subjects: {
+          orderBy: { name: 'asc' },
+          include: {
+            contents: {
+              orderBy: { name: 'asc' },
+              include: {
+                subcontents: {
+                  orderBy: { name: 'asc' },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return safeJsonResponse(res, 200, grades);
+  } catch (error) {
+    console.error("Error fetching curriculum tree:", error);
+    return safeJsonResponse(res, 500, { error: "Failed to fetch curriculum tree" });
+  }
+};
+
+// Delete single video assignment
+const deleteVideoAssignment = async (req, res) => {
+  try {
+    const { assignmentId } = req.params;
+
+    await prisma.video_assignments.delete({
+      where: { id: assignmentId },
+    });
+
+    return safeJsonResponse(res, 200, { message: "Video assignment deleted" });
+  } catch (error) {
+    console.error("Error deleting video assignment:", error);
+    return safeJsonResponse(res, 500, { error: "Failed to delete video assignment" });
+  }
+};
+
+// Bulk delete videos (CASCADE constraints handle related records)
+const bulkDeleteVideoAssignments = async (req, res) => {
+  try {
+    const { videoIds } = req.body;
+
+    if (!Array.isArray(videoIds) || videoIds.length === 0) {
+      return safeJsonResponse(res, 400, { error: "videoIds array is required" });
+    }
+
+    // Use transaction to ensure data consistency
+    const result = await prisma.$transaction(
+      async (tx) => {
+        // Delete videos in bulk - CASCADE constraints will handle related records
+        const deleteResult = await tx.videos.deleteMany({
+          where: {
+            id: {
+              in: videoIds,
+            },
+          },
+        });
+
+        // Only archive videos that were actually deleted
+        let archivedCount = 0;
+        if (deleteResult.count > 0) {
+          // Get the list of deleted video IDs from the result
+          const deletedIds = videoIds.slice(0, deleteResult.count);
+          
+          // Archive each successfully deleted video
+          for (const videoId of deletedIds) {
+            try {
+              await tx.deleted_videos.upsert({
+                where: { video_id: videoId },
+                update: { deleted_at: new Date() },
+                create: {
+                  video_id: videoId,
+                  deleted_at: new Date(),
+                },
+              });
+              archivedCount++;
+            } catch (archiveError) {
+              // Log but don't fail if archiving fails (RLS might block it)
+              console.warn(`Could not archive video ${videoId}:`, archiveError.message);
+            }
+          }
+        }
+
+        const message = archivedCount > 0
+          ? `${deleteResult.count} video(s) deleted and ${archivedCount} archived`
+          : `${deleteResult.count} video(s) deleted`;
+
+        return {
+          deletedCount: deleteResult.count,
+          archivedCount,
+          totalRequested: videoIds.length,
+          message,
+        };
+      },
+      {
+        timeout: 60000,
+        maxWait: 15000,
+      }
+    );
+
+    return safeJsonResponse(res, 200, {
+      message: result.message,
+      deletedCount: result.deletedCount,
+      archivedCount: result.archivedCount,
+      totalRequested: result.totalRequested,
+    });
+  } catch (error) {
+    console.error("Error bulk deleting videos:", error);
+    return safeJsonResponse(res, 500, { 
+      error: error.message || "Failed to bulk delete videos" 
+    });
+  }
+};
+
+// Get videos by subcontent for workspace (with assignments for deletion)
+ const getWorkspaceVideosBySubcontent = async (req, res) => {
+  try {
+    const { subcontentId } = req.params;
+    const { gradeId, subjectId, contentId } = req.query;
+
+    const where = {
+      subcontent_id: subcontentId,
+      videos: {
+        duration: {
+          gte: 120,
+        },
+      },
+    };
+
+    if (gradeId) where.grade_id = gradeId;
+    if (subjectId) where.subject_id = subjectId;
+    if (contentId) where.content_id = contentId;
+
+    const assignments = await prisma.video_assignments.findMany({
+      where,
+      include: {
+        videos: true,
+        subjects: true,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    const formattedVideos = assignments.map((a) => ({
+      assignmentId: a.id,
+      videoId: a.videos.id,
+      title: a.videos.title,
+      thumbnails: a.videos.thumbnails,
+      publishedAt: a.videos.published_at,
+      channelTitle: a.videos.channel_title,
+      channelId: a.videos.channel_id,
+      duration: a.videos.duration,
+      viewCount: formatViewCount(a.videos.view_count),
+      locator: {
+        grade_id: a.grade_id,
+        subject_id: a.subject_id,
+        content_id: a.content_id,
+        subcontent_id: a.subcontent_id,
+        channel_id: a.videos.channel_id,
+        subject_name: a.subjects?.name || null,
+      },
+    }));
+
+    return safeJsonResponse(res, 200, formattedVideos);
+  } catch (error) {
+    console.error("Error fetching workspace videos:", error);
+    return safeJsonResponse(res, 500, { error: "Failed to fetch workspace videos" });
+  }
+};
+
+export {
+  getVideosBySubcontent,
+  getRandomVideos,
+  getVideosByGrade,
+  getVideosByChannel,
+  getVideoById,
+  createVideo,
+  updateVideo,
+  deleteVideo,
+  saveVideos,
+  removeFromWatchHistory,
+  getAdvertVideos,
+  searchYouTubeVideos,
+  getCurriculumTree,
+  bulkDeleteVideoAssignments,
+  deleteVideoAssignment,
+  getWorkspaceVideosBySubcontent,
+};

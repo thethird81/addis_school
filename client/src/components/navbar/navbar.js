@@ -31,9 +31,11 @@ const logoElement = document.querySelector('.logo');
 if (logoElement) {
 
         
-           
-        
     logoElement.addEventListener('click', (event) => {
+        if (!window.location.pathname.endsWith('index.html')) {
+    window.location.href = getBasePath() + 'index.html';
+}
+           
         if(accessToken) {
          localStorage.removeItem("showChannelsGrid");
         // Show loading spinner

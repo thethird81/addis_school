@@ -1,12 +1,11 @@
 import express from "express";
 import { searchChannels, searchCurriculum, saveVideosToDatabase } from "../controllers/youtubeController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
-import { adminMiddleware } from "../middleware/adminMiddleware.js";
+import { authMiddleware, restrictTo } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// All YouTube fetch routes require auth + admin role
-router.use(authMiddleware, adminMiddleware);
+// All YouTube fetch routes require authentication + admin role
+router.use(authMiddleware, restrictTo('admin'));
 
 // Fetch videos by channel
 // Body: { isAdvert?: boolean }
@@ -31,7 +30,7 @@ router.post("/channel/:channelId", async (req, res) => {
 router.post("/search", async (req, res) => {
   try {
     const { searchTerm } = req.body;
-
+console.log("Received search request with searchTerm:", searchTerm);
     if (!searchTerm || !searchTerm.trim()) {
       return res.status(400).json({ error: "Missing required field: searchTerm" });
     }

@@ -118,11 +118,6 @@ export type likes = Prisma.likesModel
  */
 export type quiz_assignments = Prisma.quiz_assignmentsModel
 /**
- * Model quiz_mappings
- * This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
- */
-export type quiz_mappings = Prisma.quiz_mappingsModel
-/**
  * Model reports
  * This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
  */

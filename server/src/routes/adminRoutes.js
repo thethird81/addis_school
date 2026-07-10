@@ -54,13 +54,18 @@ import {
   resolveReportedVideo,
   deleteReportedVideo,
 } from "../controllers/adminController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
-import { adminMiddleware } from "../middleware/adminMiddleware.js";
+import {
+  getQuizAssignmentsByFilters,
+  bulkAssignQuizzes,
+  getQuizAssignmentById,
+  deleteQuizAssignment,
+} from "../controllers/quizAssignmentController.js";
+import { authMiddleware, restrictTo } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// All admin routes require auth + admin role
-router.use(authMiddleware, adminMiddleware);
+// All admin routes require authentication + admin role
+router.use(authMiddleware, restrictTo('admin'));
 
 // Tree
 router.get("/tree", getFullTree);
@@ -128,6 +133,12 @@ router.delete("/questions/:id", deleteQuestion);
 router.get("/quiz-assignments", getQuizAssignments);
 router.post("/quiz-assignments/assign", assignQuiz);
 router.delete("/quiz-assignments/:id", removeQuizAssignment);
+
+// New bulk assignment endpoints
+router.get("/quiz-assignments/filter", getQuizAssignmentsByFilters);
+router.post("/quiz-assignments/bulk", bulkAssignQuizzes);
+router.get("/quiz-assignments/:id", getQuizAssignmentById);
+router.delete("/quiz-assignments/bulk/:id", deleteQuizAssignment);
 
 // Videos
 router.get("/subcontents/:subcontentId/videos", getVideosBySubcontentAdmin);

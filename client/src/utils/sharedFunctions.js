@@ -23,9 +23,7 @@ export const updateUserField = async (field, newValue) => {
     console.log(`✅ Updated ${field} in localStorage:`, newValue);
     console.log("userData after update:", userData);
 };
-export const getBasePath = () => {
-    return process.env.NODE_ENV === 'development' ? '/dist/' : '/';
-};
+
 export const getVideoData = (type) => {
      const videoCategory = localStorage.getItem('videoCategory');
      console.log("getVideoData - videoCategory:", videoCategory);

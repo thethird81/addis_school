@@ -1,6 +1,5 @@
-import { getBaseUrl } from "../../utils/path.js";
+import { getBaseUrl,getBasePath } from "../../utils/path.js";
 import { resolveVideos } from "../videos/videoResolver.js";
-import { getBasePath } from "../../utils/sharedFunctions.js";
 import { updateVideoListLazyHome } from "../videos/home-page/homePageLazyLoad.js"
 import { resolveChannelVideos } from "../videos/channelVideos.js";
 

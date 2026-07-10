@@ -18,14 +18,14 @@ if (!baseConnectionString) {
 }
 
 // Append connection string parameters safely
+// Use uselibpqcompat=true to maintain old behavior where sslmode=require accepts self-signed certs
 const separator = baseConnectionString?.includes('?') ? '&' : '?';
-const connectionString = baseConnectionString ? `${baseConnectionString}${separator}sslmode=require` : undefined;
+const connectionString = baseConnectionString 
+  ? `${baseConnectionString}${separator}uselibpqcompat=true&sslmode=require` 
+  : undefined;
 
 const pool = new Pool({
   connectionString,
-  ssl: {
-    rejectUnauthorized: false, // Bypasses self-signed certificate constraints on Render
-  },
 });
 
 const adapter = new PrismaPg(pool);

@@ -41,6 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    var takeQuizEl = document.getElementById("takeQuiz");
+    if (takeQuizEl) {
+        takeQuizEl.textContent = "📝 Take Quiz";
+        takeQuizEl.addEventListener('click', function () {
+            if (typeof window.openQuizTaker === 'function') {
+                window.openQuizTaker();
+            } else {
+                console.error('Quiz taker not initialized');
+                alert('Quiz feature is not available. Please refresh the page.');
+            }
+        });
+    }
+
     // Make the 'Change Grade' button collapsible with arrows
     const changeGradeButton = document.getElementById('changeGrade');
     const profilesList = document.createElement('ul');

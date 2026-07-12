@@ -3,6 +3,7 @@ import {
   getSelctedQuestions,
   getQuestionsBySubcontent,
   getQuestionById,
+  getQuestionsByQuiz,
   createQuestion,
   updateQuestion,
   deleteQuestion,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 router.get("/subcontent/:subcontentId", getQuestionsBySubcontent);
 router.get("/:id", getQuestionById);
+router.get("/quiz/:quizId", getQuestionsByQuiz);
 router.post("/selected", getSelctedQuestions);
 router.post("/", createQuestion);
 router.put("/:id", updateQuestion);

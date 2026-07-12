@@ -1,0 +1,125 @@
+<!-- Quiz Taker Modal -->
+<div id="quizTakerModal" class="quiz-taker-overlay" style="display:none;">
+  <div class="quiz-taker-container">
+    <!-- Quiz Selection View -->
+    <div id="quizSelectionView" class="quiz-taker-view">
+      <div class="quiz-taker-header">
+        <h2>📚 Take Quiz</h2>
+        <button class="quiz-taker-close" id="closeQuizTaker">&times;</button>
+      </div>
+      
+      <!-- Filters -->
+      <div class="quiz-filters">
+        <div class="filter-group">
+          <label for="subjectFilter">Subject:</label>
+          <select id="subjectFilter" class="quiz-filter-select">
+            <option value="">All Subjects</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="contentFilter">Content:</label>
+          <select id="contentFilter" class="quiz-filter-select" disabled>
+            <option value="">All Content</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="subcontentFilter">Subcontent:</label>
+          <select id="subcontentFilter" class="quiz-filter-select" disabled>
+            <option value="">All Subcontents</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quiz List -->
+      <div id="quizList" class="quiz-list"></div>
+    </div>
+
+      <!-- Quiz Taking View -->
+      <div id="quizTakingView" class="quiz-taker-view" style="display:none;">
+        <div class="quiz-taker-header">
+          <button class="quiz-back-btn" id="backToSelection">← Back</button>
+          <h2 id="quizTitle">Quiz Title</h2>
+          <div class="quiz-header-stats">
+            <span id="questionPosition">Question 1 of 10</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="quiz-progress-container">
+          <div class="quiz-progress-bar" id="quizProgressBar"></div>
+        </div>
+
+        <!-- Question Area -->
+        <div class="quiz-question-area">
+          <div id="questionText" class="question-text"></div>
+          <div id="questionImage" class="question-image-container"></div>
+          <div id="answerOptions" class="answer-options"></div>
+          
+          <!-- Score Display -->
+          <div class="score-display">
+            <span class="score-item">Total: <span id="totalQuestions">10</span></span>
+            <span class="score-item">Attempted: <span id="attemptedCount">0</span></span>
+            <span class="score-item correct">✓ <span id="correctCount">0</span></span>
+            <span class="score-item wrong">✗ <span id="wrongCount">0</span></span>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="quiz-navigation">
+          <button id="prevQuestion" class="quiz-nav-btn" disabled>← Previous</button>
+          <button id="nextQuestion" class="quiz-nav-btn" disabled>Next →</button>
+          <button id="submitQuiz" class="quiz-nav-btn quiz-submit-btn" style="display:none;">Submit Quiz ✓</button>
+        </div>
+
+        <!-- Explanation (Collapsible, Below Navigation) -->
+        <div class="explanation-container">
+          <button class="explanation-toggle" id="explanationToggle" style="display:none;">
+            📖 Show Explanation
+          </button>
+          <div id="explanationContent" class="explanation-content" style="display:none;">
+            <p id="explanationText"></p>
+          </div>
+        </div>
+      </div>
+
+    <!-- Results View -->
+    <div id="quizResultsView" class="quiz-taker-view" style="display:none;">
+      <div class="quiz-taker-header">
+        <h2>🎉 Quiz Complete!</h2>
+        <button class="quiz-taker-close" id="closeQuizTakerResults">&times;</button>
+      </div>
+
+      <div class="results-container">
+        <div class="results-score-circle">
+          <div class="score-inner">
+            <span id="finalScore">0/0</span>
+            <span id="scorePercentage">0%</span>
+          </div>
+        </div>
+
+        <div class="results-breakdown">
+          <div class="result-item correct">
+            <span class="result-icon">✓</span>
+            <span class="result-label">Correct:</span>
+            <span id="correctCount" class="result-value">0</span>
+          </div>
+          <div class="result-item wrong">
+            <span class="result-icon">✗</span>
+            <span class="result-label">Wrong:</span>
+            <span id="wrongCount" class="result-value">0</span>
+          </div>
+          <div class="result-item skipped">
+            <span class="result-icon">⊘</span>
+            <span class="result-label">Skipped:</span>
+            <span id="skippedCount" class="result-value">0</span>
+          </div>
+        </div>
+
+        <div class="results-actions">
+          <button id="retryQuiz" class="result-btn">🔄 Retry Quiz</button>
+          <button id="newQuiz" class="result-btn primary">📚 Take Another Quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

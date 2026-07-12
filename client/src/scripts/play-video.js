@@ -9,6 +9,15 @@ import "../styles/play-video.css";
 import '../styles/navbar.css';
 import '../styles/responsive.css';
 import { fetchSelectedQuestions } from '../features/quiz/quiz.js';
+import '../features/quiz/quizTaker.js';
+import { pauseVideo as controlsPauseVideo } from '../components/iframe/playerControls.js';
+
+// Add event listener for Take Quiz button
+document.getElementById('takeQuiz')?.addEventListener('click', () => {
+  controlsPauseVideo();
+  openQuizTaker();
+});
+
 var accessToken = localStorage.getItem('accessToken');
 if (accessToken) {
 

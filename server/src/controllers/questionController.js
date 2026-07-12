@@ -54,6 +54,22 @@ const getQuestionById = async (req, res) => {
   }
 };
 
+const getQuestionsByQuiz = async (req, res) => {
+  try {
+    const { quizId } = req.params;
+
+    const questions = await prisma.questions.findMany({
+      where: { quiz_id: quizId },
+      orderBy: { created_at: 'asc' }
+    });
+
+    res.status(200).json(questions);
+  } catch (error) {
+    console.error("Error fetching questions by quiz:", error);
+    res.status(500).json({ error: "Failed to fetch questions" });
+  }
+};
+
 const createQuestion = async (req, res) => {
   try {
     const { question_text, options, correct_answer, quiz_id, question_image } = req.body;
@@ -114,4 +130,4 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
-export { getSelctedQuestions, getQuestionsBySubcontent, getQuestionById, createQuestion, updateQuestion, deleteQuestion };
+export { getSelctedQuestions, getQuestionsBySubcontent, getQuestionById, getQuestionsByQuiz, createQuestion, updateQuestion, deleteQuestion };

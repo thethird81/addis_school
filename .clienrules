@@ -1,0 +1,73 @@
+# Architectural Rules for `client/` Workspace (Modern Source JS to Legacy ES5 Build)
+
+You are building the `client/` directory for the Addis School website. 
+
+## 🚀 Core Philosophy
+You are encouraged to use **Modern JavaScript (ES6+, Async/Await, Optional Chaining, ES6 Classes, Arrow Functions)** within the `src/` files. However, because the public-facing client must remain compatible with legacy browsers (including older iOS/Safari rendering engines and IE11), you must configure Webpack and Babel to transpile this modern code down to stable ES5 during compilation.
+
+Follow these explicit rules for development.
+
+---
+
+## 1. JavaScript & Component Architecture (Modern Code Allowed)
+* **Write Modern JS:** Use modern language features safely in your source files.
+* **Component Pattern:** Construct dynamic page elements using modern ES6 Classes or clean Module Functions.
+* **Example Component Style:**
+    ```javascript
+    // src/components/VideoCard.js (Modern Source Code)
+    export class VideoCard {
+        constructor(videoData) {
+            this.video = videoData;
+        }
+
+        render() {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            
+            // Using modern template literals and optional chaining securely
+            card.innerHTML = `
+                <img src="${this.video?.thumbnail}">
+                <h3>${this.video?.title ?? 'Untitled Video'}</h3>
+            `;
+            return card;
+        }
+    }
+    ```
+* **Shared Modules:** Import types, validation schemas, or constants from the root workspace using the Webpack alias: `@addis-school/shared`.
+
+## 2. Page Templating (Static HTML Compilation)
+* For global layout structures (e.g., Navbar, Footer), use Webpack's `html-loader`.
+* Inject components directly into page layouts (`src/pages/*.html`) via template interpolation:
+    ```html
+    <%= require('../components/navbar.html').default %>
+    ```
+
+## 3. CSS & Style Rules
+* Divide your styles by feature or component domain (e.g., `src/features/videos/videos.css`).
+* Import your CSS sheets directly into the JavaScript files that initialize those specific features:
+    ```javascript
+    import '../../styles/base.css';
+    import './videos.css';
+    ```
+* Ensure PostCSS `autoprefixer` is running in Webpack to append vendor prefixes (`-webkit-`, `-moz-`) automatically.
+
+## 4. Critical Build/Transpilation Configuration
+To support modern source files building into a legacy runtime, you must verify the Webpack config enforces these layers:
+
+1. **Polyfill Injection:** Ensure `'whatwg-fetch'` and `'core-js/stable'` are explicitly listed *first* in your Webpack `entry` arrays so modern features (like Promises) are globally patched in legacy clients.
+2. **Webpack Target:** Set `target: ['web', 'es5']` to prevent Webpack from generating arrow functions in its internal bundle runtime.
+3. **Babel Target Configuration:** Ensure `babel-loader` utilizes the following targets:
+    ```javascript
+    presets: [
+      ['@babel/preset-env', {
+        targets: "> 0.25%, not dead, IE 11",
+        useBuiltIns: "entry",
+        corejs: 3
+      }]
+    ]
+    ```
+4. **Include Shared Code:** Double-check that your Babel loader exclusion rule does **not** bypass the `@addis-school/shared` workspace directory, as it must be compiled into ES5 along with the client code.
+
+-always apply  follow screen responsieve approach
+-never use native browser alerts always use modals to prompt or confirm
+-in client folder when you call an api from the back end always add a refresh token atempt if the response is 401 

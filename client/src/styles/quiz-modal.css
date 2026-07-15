@@ -24,7 +24,7 @@
 }
 
 #overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -33,13 +33,20 @@
     /* Colorful gradient overlay */
     z-index: 999;
     backdrop-filter: blur(3px);
+    display: none;
+    /* Hidden by default */
+}
+
+#overlay.active {
+    display: block;
+    /* Show overlay when active */
 }
 
 .quiz-content {
    
     position: relative;
     z-index: 1001;
-    background: linear-gradient(145deg, #fff9c4, #ffe0b2);
+    background: linear-gradient(145deg, #452f50, #520c8f);
     /* Warm sunny gradient */
     padding: 35px 25px;
     border-radius: 30px;
@@ -168,104 +175,3 @@
     box-shadow: 0 4px 10px rgba(255, 111, 0, 0.2);
 }
 
-/* Fun animations */
-@keyframes modalPop {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes contentBounce {
-    0% {
-        transform: scale(0.8) translateY(20px);
-        opacity: 0;
-    }
-    60% {
-        transform: scale(1.02) translateY(-5px);
-    }
-    100% {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes questionWiggle {
-    0%, 100% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(-2deg);
-    }
-    75% {
-        transform: rotate(2deg);
-    }
-}
-
-@keyframes correctPulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-@keyframes wrongShake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    20%, 60% {
-        transform: translateX(-5px);
-    }
-    40%, 80% {
-        transform: translateX(5px);
-    }
-}
-
-@keyframes countdownPulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Confetti effect for correct answers */
-.quiz-content .confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #ff0;
-    animation: confettiFall 2s ease-out forwards;
-}
-
-@keyframes confettiFall {
-    0% {
-        transform: translateY(-100px) rotate(0deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(500px) rotate(720deg);
-        opacity: 0;
-    }
-}

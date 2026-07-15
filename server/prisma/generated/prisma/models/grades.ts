@@ -209,7 +209,6 @@ export type gradesWhereInput = {
   sort_order?: Prisma.IntFilter<"grades"> | number
   created_at?: Prisma.DateTimeFilter<"grades"> | Date | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
-  grade_channels?: Prisma.Grade_channelsListRelationFilter
   profiles?: Prisma.ProfilesListRelationFilter
   quiz_assignments?: Prisma.Quiz_assignmentsListRelationFilter
   subjects?: Prisma.SubjectsListRelationFilter
@@ -222,7 +221,6 @@ export type gradesOrderByWithRelationInput = {
   sort_order?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   channel_assignments?: Prisma.channel_assignmentsOrderByRelationAggregateInput
-  grade_channels?: Prisma.grade_channelsOrderByRelationAggregateInput
   profiles?: Prisma.profilesOrderByRelationAggregateInput
   quiz_assignments?: Prisma.quiz_assignmentsOrderByRelationAggregateInput
   subjects?: Prisma.subjectsOrderByRelationAggregateInput
@@ -238,7 +236,6 @@ export type gradesWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.gradesWhereInput | Prisma.gradesWhereInput[]
   created_at?: Prisma.DateTimeFilter<"grades"> | Date | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
-  grade_channels?: Prisma.Grade_channelsListRelationFilter
   profiles?: Prisma.ProfilesListRelationFilter
   quiz_assignments?: Prisma.Quiz_assignmentsListRelationFilter
   subjects?: Prisma.SubjectsListRelationFilter
@@ -273,7 +270,6 @@ export type gradesCreateInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
@@ -286,7 +282,6 @@ export type gradesUncheckedCreateInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
@@ -299,7 +294,6 @@ export type gradesUpdateInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
@@ -312,7 +306,6 @@ export type gradesUncheckedUpdateInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
@@ -410,20 +403,6 @@ export type gradesUpdateOneRequiredWithoutSubjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.gradesUpdateToOneWithWhereWithoutSubjectsInput, Prisma.gradesUpdateWithoutSubjectsInput>, Prisma.gradesUncheckedUpdateWithoutSubjectsInput>
 }
 
-export type gradesCreateNestedOneWithoutGrade_channelsInput = {
-  create?: Prisma.XOR<Prisma.gradesCreateWithoutGrade_channelsInput, Prisma.gradesUncheckedCreateWithoutGrade_channelsInput>
-  connectOrCreate?: Prisma.gradesCreateOrConnectWithoutGrade_channelsInput
-  connect?: Prisma.gradesWhereUniqueInput
-}
-
-export type gradesUpdateOneRequiredWithoutGrade_channelsNestedInput = {
-  create?: Prisma.XOR<Prisma.gradesCreateWithoutGrade_channelsInput, Prisma.gradesUncheckedCreateWithoutGrade_channelsInput>
-  connectOrCreate?: Prisma.gradesCreateOrConnectWithoutGrade_channelsInput
-  upsert?: Prisma.gradesUpsertWithoutGrade_channelsInput
-  connect?: Prisma.gradesWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.gradesUpdateToOneWithWhereWithoutGrade_channelsInput, Prisma.gradesUpdateWithoutGrade_channelsInput>, Prisma.gradesUncheckedUpdateWithoutGrade_channelsInput>
-}
-
 export type gradesCreateNestedOneWithoutChannel_assignmentsInput = {
   create?: Prisma.XOR<Prisma.gradesCreateWithoutChannel_assignmentsInput, Prisma.gradesUncheckedCreateWithoutChannel_assignmentsInput>
   connectOrCreate?: Prisma.gradesCreateOrConnectWithoutChannel_assignmentsInput
@@ -472,7 +451,6 @@ export type gradesCreateWithoutProfilesInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutGradesInput
@@ -484,7 +462,6 @@ export type gradesUncheckedCreateWithoutProfilesInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutGradesInput
@@ -512,7 +489,6 @@ export type gradesUpdateWithoutProfilesInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutGradesNestedInput
@@ -524,7 +500,6 @@ export type gradesUncheckedUpdateWithoutProfilesInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
@@ -536,7 +511,6 @@ export type gradesCreateWithoutSubjectsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutGradesInput
@@ -548,7 +522,6 @@ export type gradesUncheckedCreateWithoutSubjectsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutGradesInput
@@ -576,7 +549,6 @@ export type gradesUpdateWithoutSubjectsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutGradesNestedInput
@@ -588,73 +560,8 @@ export type gradesUncheckedUpdateWithoutSubjectsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-}
-
-export type gradesCreateWithoutGrade_channelsInput = {
-  id?: string
-  name: string
-  sort_order: number
-  created_at?: Date | string
-  channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
-  quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
-  subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
-  video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutGradesInput
-}
-
-export type gradesUncheckedCreateWithoutGrade_channelsInput = {
-  id?: string
-  name: string
-  sort_order: number
-  created_at?: Date | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
-  quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
-  video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-}
-
-export type gradesCreateOrConnectWithoutGrade_channelsInput = {
-  where: Prisma.gradesWhereUniqueInput
-  create: Prisma.XOR<Prisma.gradesCreateWithoutGrade_channelsInput, Prisma.gradesUncheckedCreateWithoutGrade_channelsInput>
-}
-
-export type gradesUpsertWithoutGrade_channelsInput = {
-  update: Prisma.XOR<Prisma.gradesUpdateWithoutGrade_channelsInput, Prisma.gradesUncheckedUpdateWithoutGrade_channelsInput>
-  create: Prisma.XOR<Prisma.gradesCreateWithoutGrade_channelsInput, Prisma.gradesUncheckedCreateWithoutGrade_channelsInput>
-  where?: Prisma.gradesWhereInput
-}
-
-export type gradesUpdateToOneWithWhereWithoutGrade_channelsInput = {
-  where?: Prisma.gradesWhereInput
-  data: Prisma.XOR<Prisma.gradesUpdateWithoutGrade_channelsInput, Prisma.gradesUncheckedUpdateWithoutGrade_channelsInput>
-}
-
-export type gradesUpdateWithoutGrade_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
-  quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
-  subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
-  video_assignments?: Prisma.video_assignmentsUpdateManyWithoutGradesNestedInput
-}
-
-export type gradesUncheckedUpdateWithoutGrade_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  sort_order?: Prisma.IntFieldUpdateOperationsInput | number
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
-  quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
 }
 
@@ -663,7 +570,6 @@ export type gradesCreateWithoutChannel_assignmentsInput = {
   name: string
   sort_order: number
   created_at?: Date | string
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
@@ -675,7 +581,6 @@ export type gradesUncheckedCreateWithoutChannel_assignmentsInput = {
   name: string
   sort_order: number
   created_at?: Date | string
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
@@ -703,7 +608,6 @@ export type gradesUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
@@ -715,7 +619,6 @@ export type gradesUncheckedUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
@@ -728,7 +631,6 @@ export type gradesCreateWithoutQuiz_assignmentsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsCreateNestedManyWithoutGradesInput
@@ -740,7 +642,6 @@ export type gradesUncheckedCreateWithoutQuiz_assignmentsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
   video_assignments?: Prisma.video_assignmentsUncheckedCreateNestedManyWithoutGradesInput
@@ -768,7 +669,6 @@ export type gradesUpdateWithoutQuiz_assignmentsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUpdateManyWithoutGradesNestedInput
@@ -780,7 +680,6 @@ export type gradesUncheckedUpdateWithoutQuiz_assignmentsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
   video_assignments?: Prisma.video_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
@@ -792,7 +691,6 @@ export type gradesCreateWithoutVideo_assignmentsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsCreateNestedManyWithoutGradesInput
@@ -804,7 +702,6 @@ export type gradesUncheckedCreateWithoutVideo_assignmentsInput = {
   sort_order: number
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutGradesInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutGradesInput
   profiles?: Prisma.profilesUncheckedCreateNestedManyWithoutGradesInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedCreateNestedManyWithoutGradesInput
   subjects?: Prisma.subjectsUncheckedCreateNestedManyWithoutGradesInput
@@ -832,7 +729,6 @@ export type gradesUpdateWithoutVideo_assignmentsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUpdateManyWithoutGradesNestedInput
@@ -844,7 +740,6 @@ export type gradesUncheckedUpdateWithoutVideo_assignmentsInput = {
   sort_order?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutGradesNestedInput
   profiles?: Prisma.profilesUncheckedUpdateManyWithoutGradesNestedInput
   quiz_assignments?: Prisma.quiz_assignmentsUncheckedUpdateManyWithoutGradesNestedInput
   subjects?: Prisma.subjectsUncheckedUpdateManyWithoutGradesNestedInput
@@ -857,7 +752,6 @@ export type gradesUncheckedUpdateWithoutVideo_assignmentsInput = {
 
 export type GradesCountOutputType = {
   channel_assignments: number
-  grade_channels: number
   profiles: number
   quiz_assignments: number
   subjects: number
@@ -866,7 +760,6 @@ export type GradesCountOutputType = {
 
 export type GradesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | GradesCountOutputTypeCountChannel_assignmentsArgs
-  grade_channels?: boolean | GradesCountOutputTypeCountGrade_channelsArgs
   profiles?: boolean | GradesCountOutputTypeCountProfilesArgs
   quiz_assignments?: boolean | GradesCountOutputTypeCountQuiz_assignmentsArgs
   subjects?: boolean | GradesCountOutputTypeCountSubjectsArgs
@@ -888,13 +781,6 @@ export type GradesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  */
 export type GradesCountOutputTypeCountChannel_assignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.channel_assignmentsWhereInput
-}
-
-/**
- * GradesCountOutputType without action
- */
-export type GradesCountOutputTypeCountGrade_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.grade_channelsWhereInput
 }
 
 /**
@@ -932,7 +818,6 @@ export type gradesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   sort_order?: boolean
   created_at?: boolean
   channel_assignments?: boolean | Prisma.grades$channel_assignmentsArgs<ExtArgs>
-  grade_channels?: boolean | Prisma.grades$grade_channelsArgs<ExtArgs>
   profiles?: boolean | Prisma.grades$profilesArgs<ExtArgs>
   quiz_assignments?: boolean | Prisma.grades$quiz_assignmentsArgs<ExtArgs>
   subjects?: boolean | Prisma.grades$subjectsArgs<ExtArgs>
@@ -964,7 +849,6 @@ export type gradesSelectScalar = {
 export type gradesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "sort_order" | "created_at", ExtArgs["result"]["grades"]>
 export type gradesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | Prisma.grades$channel_assignmentsArgs<ExtArgs>
-  grade_channels?: boolean | Prisma.grades$grade_channelsArgs<ExtArgs>
   profiles?: boolean | Prisma.grades$profilesArgs<ExtArgs>
   quiz_assignments?: boolean | Prisma.grades$quiz_assignmentsArgs<ExtArgs>
   subjects?: boolean | Prisma.grades$subjectsArgs<ExtArgs>
@@ -978,7 +862,6 @@ export type $gradesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "grades"
   objects: {
     channel_assignments: Prisma.$channel_assignmentsPayload<ExtArgs>[]
-    grade_channels: Prisma.$grade_channelsPayload<ExtArgs>[]
     profiles: Prisma.$profilesPayload<ExtArgs>[]
     quiz_assignments: Prisma.$quiz_assignmentsPayload<ExtArgs>[]
     subjects: Prisma.$subjectsPayload<ExtArgs>[]
@@ -1384,7 +1267,6 @@ readonly fields: gradesFieldRefs;
 export interface Prisma__gradesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   channel_assignments<T extends Prisma.grades$channel_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.grades$channel_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$channel_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  grade_channels<T extends Prisma.grades$grade_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.grades$grade_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$grade_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   profiles<T extends Prisma.grades$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.grades$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$profilesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   quiz_assignments<T extends Prisma.grades$quiz_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.grades$quiz_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$quiz_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subjects<T extends Prisma.grades$subjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.grades$subjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$subjectsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1836,30 +1718,6 @@ export type grades$channel_assignmentsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.Channel_assignmentsScalarFieldEnum | Prisma.Channel_assignmentsScalarFieldEnum[]
-}
-
-/**
- * grades.grade_channels
- */
-export type grades$grade_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the grade_channels
-   */
-  select?: Prisma.grade_channelsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the grade_channels
-   */
-  omit?: Prisma.grade_channelsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.grade_channelsInclude<ExtArgs> | null
-  where?: Prisma.grade_channelsWhereInput
-  orderBy?: Prisma.grade_channelsOrderByWithRelationInput | Prisma.grade_channelsOrderByWithRelationInput[]
-  cursor?: Prisma.grade_channelsWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Grade_channelsScalarFieldEnum | Prisma.Grade_channelsScalarFieldEnum[]
 }
 
 /**

@@ -126,7 +126,7 @@ export function VideoCard({
   };
 
   return (
-    <Card className={`overflow-hidden transition-all hover:shadow-md ${className}`}>
+    <Card className={`overflow-hidden transition-all duration-300 ease-in-out hover:shadow-md ${className}`}>
       {/* 1. Thumbnail Container - centered horizontally, flush to the top edge, with overlays */}
       <div className="flex justify-center">
         <div

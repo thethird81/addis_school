@@ -88,10 +88,14 @@ export const  displayQuestion= async() => {
 
 function resetQuiz() {
     clearInterval(countdownInterval); // Clear any active countdown
-    countdownDisplay.innerHTML = ""; // Clear countdown display
-    var buttons = answerContainer.getElementsByClassName('answer');
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = false;
+    if (countdownDisplay) {
+        countdownDisplay.innerHTML = ""; // Clear countdown display
+    }
+    if (answerContainer) {
+        var buttons = answerContainer.getElementsByClassName('answer');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].disabled = false;
+        }
     }
 }
 
@@ -118,22 +122,28 @@ function handleAnswerClick(e) {
         // }, 60000);
     } else {
         console.log("Wrong answer clicked!");
-        var buttons = answerContainer.getElementsByClassName('answer');
-        for (var i = 0; i < buttons.length; i++) {
-            buttons[i].disabled = true;
+        if (answerContainer) {
+            var buttons = answerContainer.getElementsByClassName('answer');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+            }
         }
 
         var countdownTimer = 20;
-        countdownDisplay.innerHTML = countdownTimer;
-        countdownInterval = setInterval(function () {
-            countdownTimer--;
+        if (countdownDisplay) {
             countdownDisplay.innerHTML = countdownTimer;
+            countdownInterval = setInterval(function () {
+                countdownTimer--;
+                if (countdownDisplay) {
+                    countdownDisplay.innerHTML = countdownTimer;
+                }
 
-            if (countdownTimer <= 0) {
-                clearInterval(countdownInterval);
-                resetQuiz();
-            }
-        }, 1000);
+                if (countdownTimer <= 0) {
+                    clearInterval(countdownInterval);
+                    resetQuiz();
+                }
+            }, 1000);
+        }
     }
 }
 

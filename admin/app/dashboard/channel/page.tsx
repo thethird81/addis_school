@@ -1,178 +1,177 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useChannels, useCreateChannel, useUpdateChannel, useDeleteChannel } from "@/hooks/use-admin-api";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { ChannelTable } from "./_components/channel-table";
+import { ChannelDialog } from "./_components/channel-dialog";
+import { CurriculumSelect } from "./_components/curriculum-select";
+import { Channel } from "./_actions/channel-actions";
+import { bulkAssignChannels } from "./_actions/channel-actions";
+import { useMutation } from "@tanstack/react-query";
 
 export default function ChannelPage() {
-  const { data: channels = [], isLoading, refetch } = useChannels();
-  const createMutation = useCreateChannel();
-  const updateMutation = useUpdateChannel();
-  const deleteMutation = useDeleteChannel();
+  const router = useRouter();
+  const [selectedChannelIds, setSelectedChannelIds] = useState<string[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingChannel, setEditingChannel] = useState<Channel | null>(null);
+  const [assignmentNode, setAssignmentNode] = useState<{
+    gradeId?: string;
+    subjectId?: string;
+    contentId?: string;
+    subcontentId?: string;
+  }>({});
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingChannel, setEditingChannel] = useState<any>(null);
-  const [channelName, setChannelName] = useState("");
-  const [channelId, setChannelId] = useState("");
-
-  const handleOpenDialog = (channel?: any) => {
+  const handleOpenDialog = (channel?: Channel) => {
     if (channel) {
       setEditingChannel(channel);
-      setChannelName(channel.name);
-      setChannelId(channel.id);
     } else {
       setEditingChannel(null);
-      setChannelName("");
-      setChannelId("");
     }
-    setIsDialogOpen(true);
+    setDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
-    setIsDialogOpen(false);
+    setDialogOpen(false);
     setEditingChannel(null);
-    setChannelName("");
-    setChannelId("");
   };
 
-  const handleSave = async () => {
-    if (!channelName.trim()) {
-      toast.error("Channel name is required");
+  const handleViewVideos = (channel: Channel) => {
+    router.push(`/dashboard/channel/${channel.id}/video`);
+  };
+
+  const bulkAssignMutation = useMutation({
+    mutationFn: async ({ channelIds, gradeId, subjectId }: { channelIds: string[]; gradeId: string; subjectId: string }) => {
+      const result = await bulkAssignChannels({ channelIds, grade_id: gradeId, subject_id: subjectId });
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result;
+    },
+    onSuccess: (result) => {
+      toast.success(result.message || "Channels assigned successfully");
+      setSelectedChannelIds([]);
+      setAssignmentNode({});
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to assign channels");
+    },
+  });
+
+  const handleBulkAssign = async () => {
+    if (selectedChannelIds.length === 0) {
+      toast.error("Please select at least one channel");
       return;
     }
 
-    try {
-      if (editingChannel) {
-        await updateMutation.mutateAsync({ id: channelId, name: channelName });
-        toast.success("Channel updated successfully");
-      } else {
-        if (!channelId.trim()) {
-          toast.error("Channel ID is required for new channels");
-          return;
-        }
-        await createMutation.mutateAsync({ id: channelId, name: channelName });
-        toast.success("Channel created successfully");
-      }
-      handleCloseDialog();
-      refetch();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to save channel");
+    if (!assignmentNode.gradeId) {
+      toast.error("Please select a grade for assignment");
+      return;
     }
-  };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this channel?")) return;
-    try {
-      await deleteMutation.mutateAsync(id);
-      toast.success("Channel deleted successfully");
-      refetch();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete channel");
+    // Subject is required for channel assignment
+    if (!assignmentNode.subjectId) {
+      toast.error("Please select a subject for assignment");
+      return;
     }
+
+    bulkAssignMutation.mutate({
+      channelIds: selectedChannelIds,
+      gradeId: assignmentNode.gradeId,
+      subjectId: assignmentNode.subjectId,
+    });
   };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Channel</h1>
-        <p className="text-muted-foreground">Manage channels and their content.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Channel Administration</h1>
+          <p className="text-muted-foreground">
+            Manage channels and their video content.
+          </p>
+        </div>
+        <Button onClick={() => handleOpenDialog()}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Channel
+        </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Channel Management</CardTitle>
-          <div className="mt-4">
-            <Button onClick={() => handleOpenDialog()}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Channel
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">Loading channels...</div>
-          ) : channels.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <p className="text-lg">No channels found</p>
-              <p className="text-sm">Create a channel to get started</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {channels.map((channel: any) => (
-                <Card key={channel.id} className="overflow-hidden">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{channel.name}</h3>
-                        <p className="text-xs text-muted-foreground mt-1">ID: {channel.id}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleOpenDialog(channel)}
-                        className="flex-1"
-                      >
-                        <Pencil className="mr-1 h-3 w-3" />
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(channel.id)}
-                        disabled={deleteMutation.isPending}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="management" className="w-full">
+        <TabsList>
+          <TabsTrigger value="management">Channel Management</TabsTrigger>
+          <TabsTrigger value="assignments">Bulk Assignments</TabsTrigger>
+        </TabsList>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingChannel ? "Edit Channel" : "Add Channel"}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Channel ID</label>
-              <Input
-                value={channelId}
-                onChange={(e) => setChannelId(e.target.value)}
-                placeholder="YouTube Channel ID"
-                disabled={!!editingChannel}
-              />
+        <TabsContent value="management" className="space-y-4">
+          <ChannelTable
+            selectedChannelIds={selectedChannelIds}
+            onSelectionChange={setSelectedChannelIds}
+            onViewVideos={handleViewVideos}
+            onEditChannel={(channel) => handleOpenDialog(channel)}
+          />
+        </TabsContent>
+
+        <TabsContent value="assignments" className="space-y-4">
+          <div className="rounded-lg border p-6 space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold">Bulk Assignment</h3>
+              <p className="text-sm text-muted-foreground">
+                Select channels from the management tab, then choose a curriculum
+                node to assign them to.
+              </p>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Channel Name</label>
-              <Input
-                value={channelName}
-                onChange={(e) => setChannelName(e.target.value)}
-                placeholder="Enter channel name"
-              />
+
+            <div className="rounded-lg bg-muted/30 p-4">
+              <p className="text-sm font-medium mb-3">
+                {selectedChannelIds.length} channel(s) selected for assignment
+              </p>
+              {selectedChannelIds.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No channels selected. Go to the Channel Management tab and select
+                  channels using the checkboxes.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  <CurriculumSelect
+                    onSelectionChange={(selection) => setAssignmentNode({
+                      gradeId: selection.gradeId,
+                      subjectId: selection.subjectId,
+                      contentId: selection.contentId,
+                      subcontentId: selection.subcontentId,
+                    })}
+                  />
+
+                  <Button
+                    onClick={handleBulkAssign}
+                    disabled={bulkAssignMutation.isPending || !assignmentNode.gradeId || !assignmentNode.subjectId}
+                    className="w-full"
+                  >
+                    {bulkAssignMutation.isPending ? (
+                      <>
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted border-t-foreground mr-2" />
+                        Assigning...
+                      </>
+                    ) : (
+                      "Assign Selected Channels"
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-          <DialogFooter>
-            <Button onClick={handleCloseDialog} variant="secondary">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending}>
-              {editingChannel ? "Update" : "Create"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </TabsContent>
+      </Tabs>
+
+      <ChannelDialog 
+        open={dialogOpen} 
+        onOpenChange={setDialogOpen}
+        channel={editingChannel}
+        onSuccess={handleCloseDialog}
+      />
     </div>
   );
 }

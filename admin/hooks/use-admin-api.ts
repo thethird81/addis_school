@@ -325,9 +325,37 @@ export function useFetchYouTubeVideos() {
 
 export function useFetchChannelVideos() {
   return useMutation({
-    mutationFn: async ({ channelId, isAdvert }: { channelId: string; isAdvert?: boolean }) => {
-      const { data } = await api.post(`/youtube/channel/${channelId}`, { isAdvert });
+    mutationFn: async ({ channelId, isAdvert, query }: { channelId: string; isAdvert?: boolean; query?: string }) => {
+      const { data } = await api.post(`/youtube/channel/${channelId}`, { isAdvert, query });
       return data;
+    },
+  });
+}
+
+export function useSaveChannelVideos() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      videos,
+      gradeId,
+      subjectId,
+    }: {
+      videos: any[];
+      gradeId: string;
+      subjectId?: string;
+    }) => {
+      const { data } = await api.post("/youtube/save", {
+        videos,
+        grade_id: gradeId,
+        subject_id: subjectId || null,
+        content_id: null,
+        subcontent_id: null,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["videos"] });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
     },
   });
 }

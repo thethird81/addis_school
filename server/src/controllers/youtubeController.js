@@ -247,45 +247,47 @@ const searchChannels = async ({ channelId, type = "advert", query, maxResults = 
       });
     }
 
-    // Search 2: Regular channel search
-    // Build search URL based on type
-    let searchUrl =
-      `https://www.googleapis.com/youtube/v3/search` +
-      `?part=snippet&type=video&maxResults=${maxResults}` +
-      `&channelId=${encodeURIComponent(channelId)}` +
-      `&key=${YOUTUBE_API_KEY}`;
+    // // Search 2: Regular channel search
+    // // Build search URL based on type
+    // let searchUrl =
+    //   `https://www.googleapis.com/youtube/v3/search` +
+    //   `?part=snippet&type=video&maxResults=${maxResults}` +
+    //   `&channelId=${encodeURIComponent(channelId)}` +
+    //   `&key=${YOUTUBE_API_KEY}`;
 
-    // Add videoDuration=short only for advert type
-    if (type === "advert") {
-      searchUrl += `&videoDuration=short`;
-    }
+    // // Add videoDuration=short only for advert type
+    // if (type === "advert") {
+    //   searchUrl += `&videoDuration=short`;
+    // }
+    //  if (type === "curricular") {
+    //   searchUrl += `&videoDuration=long`;
+    // }
+    // // Add query if provided
+    // if (query && query.trim()) {
+    //   searchUrl += `&q=${encodeURIComponent(query)}`;
+    // }
 
-    // Add query if provided
-    if (query && query.trim()) {
-      searchUrl += `&q=${encodeURIComponent(query)}`;
-    }
+    // const response = await fetch(searchUrl);
+    // const data = await response.json();
 
-    const response = await fetch(searchUrl);
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("YouTube API error searching channels:", data);
+    // if (!response.ok) {
+    //   console.error("YouTube API error searching channels:", data);
       
-      if (isQuotaExceeded(data)) {
-        throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
-      }
+    //   if (isQuotaExceeded(data)) {
+    //     throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
+    //   }
       
-      throw new Error(`YouTube API error: ${data.error?.message || "Unknown error"}`);
-    }
+    //   throw new Error(`YouTube API error: ${data.error?.message || "Unknown error"}`);
+    // }
 
-    if (data.items && data.items.length > 0) {
-      // Collect unique video IDs from search
-      data.items.forEach((item) => {
-        if (item.id && item.id.kind === "youtube#video") {
-          uniqueVideoIds.add(item.id.videoId);
-        }
-      });
-    }
+    // if (data.items && data.items.length > 0) {
+    //   // Collect unique video IDs from search
+    //   data.items.forEach((item) => {
+    //     if (item.id && item.id.kind === "youtube#video") {
+    //       uniqueVideoIds.add(item.id.videoId);
+    //     }
+    //   });
+    // }
 
     const videoIds = Array.from(uniqueVideoIds);
 

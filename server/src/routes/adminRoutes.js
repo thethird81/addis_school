@@ -115,6 +115,47 @@ router.post("/assign/channel-to-position", assignChannelToPosition);
 router.get("/channels/:channelId/assignments", getChannelAssignments);
 router.delete("/channel-assignments/:id", removeChannelAssignment);
 router.get("/grades/:gradeId/channels", getChannelsByGrade);
+router.post("/channel-assignments/bulk", async (req, res) => {
+  const { channelIds, grade_id, subject_id } = req.body;
+
+  if (!Array.isArray(channelIds) || channelIds.length === 0) {
+    return res.status(400).json({ error: "No channels selected" });
+  }
+
+  if (!grade_id) {
+    return res.status(400).json({ error: "grade_id is required" });
+  }
+
+  if (!subject_id) {
+    return res.status(400).json({ error: "subject_id is required for channel assignment" });
+  }
+
+  try {
+    const { prisma } = await import("../config/db.js");
+
+    const assignments = await prisma.channel_assignments.createMany({
+      data: channelIds.map((channelId) => ({
+        channel_id: channelId,
+        grade_id,
+        subject_id,
+        content_id: null,
+        subcontent_id: null,
+      })),
+      skipDuplicates: true,
+    });
+
+    const skipped = channelIds.length - assignments.count;
+
+    res.status(201).json({
+      inserted: assignments.count,
+      skipped,
+      message: `Successfully assigned ${assignments.count} channel(s)${skipped > 0 ? `, ${skipped} already assigned` : ""}`,
+    });
+  } catch (error) {
+    console.error("Error bulk assigning channels:", error);
+    res.status(500).json({ error: "Failed to assign channels" });
+  }
+});
 
 // Quizzes
 router.get("/quizzes", getQuizzes);

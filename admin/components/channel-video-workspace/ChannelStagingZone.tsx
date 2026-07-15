@@ -4,10 +4,10 @@ import { useMemo, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { VideoCard } from "@/components/shared/VideoCard";
 import { UniversalPlayerModal } from "@/components/shared/UniversalPlayerModal";
-import { useVideoWorkspace } from "@/contexts/VideoWorkspaceContext";
+import { useChannelVideoWorkspace } from "@/contexts/ChannelVideoWorkspaceContext";
 import { Loader2, Trash2, Save, X } from "lucide-react";
 
-export function StagingZone() {
+export function ChannelStagingZone() {
   const {
     stagedVideos,
     stagedLoading,
@@ -24,14 +24,13 @@ export function StagingZone() {
     isOpenPlayerModal,
     activePlaybackList,
     activePlaybackIndex,
-    isPlaybackFromStaged,
     // Playback actions
     openPlayerModal,
     closePlayerModal,
     playNextVideo,
     playPreviousVideo,
     togglePlayerSelection,
-  } = useVideoWorkspace();
+  } = useChannelVideoWorkspace();
 
   // ---------- LOCAL SELECTION STATE ----------
   const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([]);
@@ -247,7 +246,7 @@ export function StagingZone() {
       </div>
 
       {/* Universal Player Modal */}
-      {isOpenPlayerModal && isPlaybackFromStaged && (
+      {isOpenPlayerModal && (
         <UniversalPlayerModal
           isOpen={true}
           onClose={closePlayerModal}

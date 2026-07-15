@@ -250,7 +250,7 @@ export function UniversalPlayerModal({
               type="range"
               min="0"
               max={duration || 100}
-              value={currentTime}
+              value={Number(currentTime) || 0}
               onChange={(e) => handleSeek([parseFloat(e.target.value)])}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
             />

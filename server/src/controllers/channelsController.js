@@ -17,7 +17,6 @@ const getChannelsByGrade = async (req, res) => {
             id: true,
             name: true,
             thumbnail_url: true,
-            type: true,
           },
         },
       },
@@ -31,8 +30,7 @@ const getChannelsByGrade = async (req, res) => {
       .map((row) => row.channels)
       .filter((channel, index, self) =>
         index === self.findIndex((c) => c.id === channel.id)
-      )
-      .filter((channel) => channel.type !== "advert");
+      );
       console.log("Fetched channels for grade:", gradeId, channels);
 
     res.status(200).json(channels);
@@ -71,7 +69,6 @@ const getSubjectChannelsByGrade = async (req, res) => {
                   id: true,
                   name: true,
                   thumbnail_url: true,
-                  type: true,
                 },
               },
             },

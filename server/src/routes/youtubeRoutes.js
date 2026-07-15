@@ -8,15 +8,16 @@ const router = express.Router();
 router.use(authMiddleware, restrictTo('admin'));
 
 // Fetch videos by channel
-// Body: { isAdvert?: boolean }
+// Body: { type?: "advert" | "curricular", isAdvert?: boolean, query?: string }
 router.post("/channel/:channelId", async (req, res) => {
   try {
     const { channelId } = req.params;
-    const { isAdvert } = req.body;
+    const { isAdvert, query, type } = req.body;
 
-    const type = isAdvert ? "advert" : "curricular";
+    // Use explicit type if provided, otherwise fall back to isAdvert
+    const resolvedType = type || (isAdvert ? "advert" : "curricular");
 
-    const videos = await searchChannels({ channelId, type });
+    const videos = await searchChannels({ channelId, type: resolvedType, query });
     
     res.status(200).json(videos);
   } catch (error) {

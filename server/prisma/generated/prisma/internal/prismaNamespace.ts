@@ -394,8 +394,6 @@ export const ModelName = {
   videos: 'videos',
   channels: 'channels',
   favorite_quizzes: 'favorite_quizzes',
-  grade_channels: 'grade_channels',
-  subject_channels: 'subject_channels',
   channel_assignments: 'channel_assignments',
   likes: 'likes',
   quiz_assignments: 'quiz_assignments',
@@ -419,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "grade_channels" | "subject_channels" | "channel_assignments" | "likes" | "quiz_assignments" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos"
+    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "channel_assignments" | "likes" | "quiz_assignments" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1163,154 +1161,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    grade_channels: {
-      payload: Prisma.$grade_channelsPayload<ExtArgs>
-      fields: Prisma.grade_channelsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.grade_channelsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.grade_channelsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        findFirst: {
-          args: Prisma.grade_channelsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.grade_channelsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        findMany: {
-          args: Prisma.grade_channelsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>[]
-        }
-        create: {
-          args: Prisma.grade_channelsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        createMany: {
-          args: Prisma.grade_channelsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.grade_channelsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>[]
-        }
-        delete: {
-          args: Prisma.grade_channelsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        update: {
-          args: Prisma.grade_channelsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        deleteMany: {
-          args: Prisma.grade_channelsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.grade_channelsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.grade_channelsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>[]
-        }
-        upsert: {
-          args: Prisma.grade_channelsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$grade_channelsPayload>
-        }
-        aggregate: {
-          args: Prisma.Grade_channelsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateGrade_channels>
-        }
-        groupBy: {
-          args: Prisma.grade_channelsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Grade_channelsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.grade_channelsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Grade_channelsCountAggregateOutputType> | number
-        }
-      }
-    }
-    subject_channels: {
-      payload: Prisma.$subject_channelsPayload<ExtArgs>
-      fields: Prisma.subject_channelsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.subject_channelsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.subject_channelsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        findFirst: {
-          args: Prisma.subject_channelsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.subject_channelsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        findMany: {
-          args: Prisma.subject_channelsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>[]
-        }
-        create: {
-          args: Prisma.subject_channelsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        createMany: {
-          args: Prisma.subject_channelsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.subject_channelsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>[]
-        }
-        delete: {
-          args: Prisma.subject_channelsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        update: {
-          args: Prisma.subject_channelsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        deleteMany: {
-          args: Prisma.subject_channelsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.subject_channelsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.subject_channelsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>[]
-        }
-        upsert: {
-          args: Prisma.subject_channelsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$subject_channelsPayload>
-        }
-        aggregate: {
-          args: Prisma.Subject_channelsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSubject_channels>
-        }
-        groupBy: {
-          args: Prisma.subject_channelsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Subject_channelsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.subject_channelsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Subject_channelsCountAggregateOutputType> | number
-        }
-      }
-    }
     channel_assignments: {
       payload: Prisma.$channel_assignmentsPayload<ExtArgs>
       fields: Prisma.channel_assignmentsFieldRefs
@@ -2039,8 +1889,7 @@ export const ChannelsScalarFieldEnum = {
   id: 'id',
   name: 'name',
   thumbnail_url: 'thumbnail_url',
-  created_at: 'created_at',
-  type: 'type'
+  created_at: 'created_at'
 } as const
 
 export type ChannelsScalarFieldEnum = (typeof ChannelsScalarFieldEnum)[keyof typeof ChannelsScalarFieldEnum]
@@ -2053,22 +1902,6 @@ export const Favorite_quizzesScalarFieldEnum = {
 } as const
 
 export type Favorite_quizzesScalarFieldEnum = (typeof Favorite_quizzesScalarFieldEnum)[keyof typeof Favorite_quizzesScalarFieldEnum]
-
-
-export const Grade_channelsScalarFieldEnum = {
-  grade_id: 'grade_id',
-  channel_id: 'channel_id'
-} as const
-
-export type Grade_channelsScalarFieldEnum = (typeof Grade_channelsScalarFieldEnum)[keyof typeof Grade_channelsScalarFieldEnum]
-
-
-export const Subject_channelsScalarFieldEnum = {
-  subject_id: 'subject_id',
-  channel_id: 'channel_id'
-} as const
-
-export type Subject_channelsScalarFieldEnum = (typeof Subject_channelsScalarFieldEnum)[keyof typeof Subject_channelsScalarFieldEnum]
 
 
 export const Channel_assignmentsScalarFieldEnum = {
@@ -2450,8 +2283,6 @@ export type GlobalOmitConfig = {
   videos?: Prisma.videosOmit
   channels?: Prisma.channelsOmit
   favorite_quizzes?: Prisma.favorite_quizzesOmit
-  grade_channels?: Prisma.grade_channelsOmit
-  subject_channels?: Prisma.subject_channelsOmit
   channel_assignments?: Prisma.channel_assignmentsOmit
   likes?: Prisma.likesOmit
   quiz_assignments?: Prisma.quiz_assignmentsOmit

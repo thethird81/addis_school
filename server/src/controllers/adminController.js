@@ -253,6 +253,14 @@ const getChannels = async (req, res) => {
   try {
     const channels = await prisma.channels.findMany({
       orderBy: { name: "asc" },
+      include: {
+        channel_assignments: {
+          select: {
+            grade_id: true,
+            subject_id: true,
+          },
+        },
+      },
     });
     res.status(200).json(channels);
   } catch (error) {
@@ -612,19 +620,38 @@ const getFullTree = async (req, res) => {
 const getGradeChannels = async (req, res) => {
   try {
     const { gradeId } = req.params;
+    
+    console.log("Fetching channels for grade:", gradeId);
+    
+    // Get all channel assignments for this grade (both grade-level and subject-level)
     const assignments = await prisma.channel_assignments.findMany({
       where: { 
         grade_id: gradeId,
-        subject_id: null,
-        content_id: null,
-        subcontent_id: null,
       },
-      include: { channels: true },
+      include: {
+        channels: true,
+      },
     });
-    res.status(200).json(assignments.map((a) => a.channels));
+
+    console.log("Found assignments:", assignments.length);
+    
+    // Deduplicate channels (a channel might be assigned at both grade and subject level)
+    const uniqueChannels = [];
+    const channelIds = new Set();
+    
+    for (const assignment of assignments) {
+      if (!channelIds.has(assignment.channel_id)) {
+        channelIds.add(assignment.channel_id);
+        uniqueChannels.push(assignment.channels);
+      }
+    }
+    
+    console.log("Unique channels:", uniqueChannels.length);
+    
+    res.status(200).json(uniqueChannels);
   } catch (error) {
-    console.error("Error fetching grade channels:", error);
-    res.status(500).json({ error: "Failed to fetch grade channels" });
+    console.error("Error fetching channels by grade:", error);
+    res.status(500).json({ error: "Failed to fetch channels" });
   }
 };
 
@@ -656,11 +683,16 @@ const assignChannelToPosition = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields: channel_id, grade_id" });
     }
 
+    // Subject is required for channel assignment
+    if (!subject_id) {
+      return res.status(400).json({ error: "Missing required field: subject_id is required for channel assignment" });
+    }
+
     const assignment = await prisma.channel_assignments.create({
       data: {
         channel_id,
         grade_id,
-        subject_id: subject_id || null,
+        subject_id,
         content_id: content_id || null,
         subcontent_id: subcontent_id || null,
       },
@@ -719,35 +751,37 @@ const removeChannelAssignment = async (req, res) => {
 const getChannelsByGrade = async (req, res) => {
   try {
     const { gradeId } = req.params;
-    
-    console.log("Fetching channels for grade:", gradeId);
-    
-    // Get all channel assignments for this grade (both grade-level and subject-level)
-    const assignments = await prisma.channel_assignments.findMany({
+
+    const gradeChannels = await prisma.channel_assignments.findMany({
       where: { 
         grade_id: gradeId,
+        subject_id: null,
+        content_id: null,
+        subcontent_id: null,
       },
       include: {
-        channels: true,
+        channels: {
+          select: {
+            id: true,
+            name: true,
+            thumbnail_url: true,
+          },
+        },
       },
     });
 
-    console.log("Found assignments:", assignments.length);
-    
-    // Deduplicate channels (a channel might be assigned at both grade and subject level)
-    const uniqueChannels = [];
-    const channelIds = new Set();
-    
-    for (const assignment of assignments) {
-      if (!channelIds.has(assignment.channel_id)) {
-        channelIds.add(assignment.channel_id);
-        uniqueChannels.push(assignment.channels);
-      }
+    if (!gradeChannels.length) {
+      return res.status(404).json({ error: "No channels found for this grade" });
     }
-    
-    console.log("Unique channels:", uniqueChannels.length);
-    
-    res.status(200).json(uniqueChannels);
+
+    const channels = gradeChannels
+      .map((row) => row.channels)
+      .filter((channel, index, self) =>
+        index === self.findIndex((c) => c.id === channel.id)
+      );
+      console.log("Fetched channels for grade:", gradeId, channels);
+
+    res.status(200).json(channels);
   } catch (error) {
     console.error("Error fetching channels by grade:", error);
     res.status(500).json({ error: "Failed to fetch channels" });
@@ -1122,7 +1156,6 @@ const assignQuiz = async (req, res) => {
     }
 
     // Validate that at least one position level is provided (grade is always provided)
-    // subject_id, content_id, subcontent_id are optional
     
     const assignment = await prisma.quiz_assignments.create({
       data: {
@@ -1395,7 +1428,7 @@ const deleteVideosByIds = async (req, res) => {
   try {
     const { videoIds } = req.body;
 
-    if (!Array.isArray(videoIds) || videoIds.length === 0) {
+    if (!Array.isArray(videoIds) || !videoIds.length) {
       return res.status(400).json({ error: "Missing required field: videoIds array" });
     }
 
@@ -1453,7 +1486,7 @@ const deleteVideosByPosition = async (req, res) => {
   try {
     const { subcontentId, videoIds } = req.body;
 
-    if (!subcontentId || !Array.isArray(videoIds) || videoIds.length === 0) {
+    if (!subcontentId || !Array.isArray(videoIds) || !videoIds.length) {
       return res.status(400).json({ error: "Missing required fields: subcontentId and videoIds array" });
     }
 
@@ -1552,6 +1585,73 @@ const deleteReportedVideo = async (req, res) => {
   }
 };
 
+// ==================== BULK CHANNEL ASSIGNMENTS ====================
+
+const bulkAssignChannels = async (req, res) => {
+  try {
+    const { channelIds, grade_id, subject_id } = req.body;
+
+    if (!Array.isArray(channelIds) || channelIds.length === 0) {
+      return res.status(400).json({ error: "channelIds must be a non-empty array" });
+    }
+
+    if (!grade_id) {
+      return res.status(400).json({ error: "grade_id is required" });
+    }
+
+    if (!subject_id) {
+      return res.status(400).json({ error: "subject_id is required for channel assignment" });
+    }
+
+    let inserted = 0;
+    let skipped = 0;
+
+    for (const channelId of channelIds) {
+      try {
+        // Check if the exact assignment combination already exists
+        const existingAssignment = await prisma.channel_assignments.findFirst({
+          where: {
+            channel_id: channelId,
+            grade_id,
+            subject_id,
+            content_id: null,
+            subcontent_id: null,
+          },
+        });
+
+        if (existingAssignment) {
+          // Skip if already exists
+          skipped++;
+        } else {
+          // Create new assignment
+          await prisma.channel_assignments.create({
+            data: {
+              channel_id: channelId,
+              grade_id,
+              subject_id,
+              content_id: null,
+              subcontent_id: null,
+            },
+          });
+          inserted++;
+        }
+      } catch (err) {
+        skipped++;
+        console.warn(`Skipped assignment for channel ${channelId}:`, err.message);
+      }
+    }
+
+    res.status(200).json({
+      message: `Assigned ${inserted} channel(s), skipped ${skipped} error(s)`,
+      inserted,
+      skipped,
+    });
+  } catch (error) {
+    console.error("Error bulk assigning channels:", error);
+    res.status(500).json({ error: "Failed to assign channels" });
+  }
+};
+
 export {
   getGrades,
   createGrade,
@@ -1606,4 +1706,5 @@ export {
   getAllReportedVideos,
   resolveReportedVideo,
   deleteReportedVideo,
+  bulkAssignChannels,
 };

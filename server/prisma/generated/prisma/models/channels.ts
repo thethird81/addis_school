@@ -28,14 +28,12 @@ export type ChannelsMinAggregateOutputType = {
   id: string | null
   name: string | null
   created_at: Date | null
-  type: string | null
 }
 
 export type ChannelsMaxAggregateOutputType = {
   id: string | null
   name: string | null
   created_at: Date | null
-  type: string | null
 }
 
 export type ChannelsCountAggregateOutputType = {
@@ -43,7 +41,6 @@ export type ChannelsCountAggregateOutputType = {
   name: number
   thumbnail_url: number
   created_at: number
-  type: number
   _all: number
 }
 
@@ -52,14 +49,12 @@ export type ChannelsMinAggregateInputType = {
   id?: true
   name?: true
   created_at?: true
-  type?: true
 }
 
 export type ChannelsMaxAggregateInputType = {
   id?: true
   name?: true
   created_at?: true
-  type?: true
 }
 
 export type ChannelsCountAggregateInputType = {
@@ -67,7 +62,6 @@ export type ChannelsCountAggregateInputType = {
   name?: true
   thumbnail_url?: true
   created_at?: true
-  type?: true
   _all?: true
 }
 
@@ -148,7 +142,6 @@ export type ChannelsGroupByOutputType = {
   name: string
   thumbnail_url: runtime.JsonValue | null
   created_at: Date
-  type: string
   _count: ChannelsCountAggregateOutputType | null
   _min: ChannelsMinAggregateOutputType | null
   _max: ChannelsMaxAggregateOutputType | null
@@ -177,10 +170,7 @@ export type channelsWhereInput = {
   name?: Prisma.StringFilter<"channels"> | string
   thumbnail_url?: Prisma.JsonNullableFilter<"channels">
   created_at?: Prisma.DateTimeFilter<"channels"> | Date | string
-  type?: Prisma.StringFilter<"channels"> | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
-  grade_channels?: Prisma.Grade_channelsListRelationFilter
-  subject_channels?: Prisma.Subject_channelsListRelationFilter
 }
 
 export type channelsOrderByWithRelationInput = {
@@ -188,10 +178,7 @@ export type channelsOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   channel_assignments?: Prisma.channel_assignmentsOrderByRelationAggregateInput
-  grade_channels?: Prisma.grade_channelsOrderByRelationAggregateInput
-  subject_channels?: Prisma.subject_channelsOrderByRelationAggregateInput
 }
 
 export type channelsWhereUniqueInput = Prisma.AtLeast<{
@@ -202,10 +189,7 @@ export type channelsWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"channels"> | string
   thumbnail_url?: Prisma.JsonNullableFilter<"channels">
   created_at?: Prisma.DateTimeFilter<"channels"> | Date | string
-  type?: Prisma.StringFilter<"channels"> | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
-  grade_channels?: Prisma.Grade_channelsListRelationFilter
-  subject_channels?: Prisma.Subject_channelsListRelationFilter
 }, "id">
 
 export type channelsOrderByWithAggregationInput = {
@@ -213,7 +197,6 @@ export type channelsOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  type?: Prisma.SortOrder
   _count?: Prisma.channelsCountOrderByAggregateInput
   _max?: Prisma.channelsMaxOrderByAggregateInput
   _min?: Prisma.channelsMinOrderByAggregateInput
@@ -227,7 +210,6 @@ export type channelsScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"channels"> | string
   thumbnail_url?: Prisma.JsonNullableWithAggregatesFilter<"channels">
   created_at?: Prisma.DateTimeWithAggregatesFilter<"channels"> | Date | string
-  type?: Prisma.StringWithAggregatesFilter<"channels"> | string
 }
 
 export type channelsCreateInput = {
@@ -235,10 +217,7 @@ export type channelsCreateInput = {
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
-  type?: string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutChannelsInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUncheckedCreateInput = {
@@ -246,10 +225,7 @@ export type channelsUncheckedCreateInput = {
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
-  type?: string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutChannelsInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUpdateInput = {
@@ -257,10 +233,7 @@ export type channelsUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutChannelsNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsUncheckedUpdateInput = {
@@ -268,10 +241,7 @@ export type channelsUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutChannelsNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsCreateManyInput = {
@@ -279,7 +249,6 @@ export type channelsCreateManyInput = {
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
-  type?: string
 }
 
 export type channelsUpdateManyMutationInput = {
@@ -287,7 +256,6 @@ export type channelsUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type channelsUncheckedUpdateManyInput = {
@@ -295,7 +263,6 @@ export type channelsUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type channelsCountOrderByAggregateInput = {
@@ -303,54 +270,23 @@ export type channelsCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   thumbnail_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  type?: Prisma.SortOrder
 }
 
 export type channelsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  type?: Prisma.SortOrder
 }
 
 export type channelsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  type?: Prisma.SortOrder
 }
 
 export type ChannelsScalarRelationFilter = {
   is?: Prisma.channelsWhereInput
   isNot?: Prisma.channelsWhereInput
-}
-
-export type channelsCreateNestedOneWithoutGrade_channelsInput = {
-  create?: Prisma.XOR<Prisma.channelsCreateWithoutGrade_channelsInput, Prisma.channelsUncheckedCreateWithoutGrade_channelsInput>
-  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutGrade_channelsInput
-  connect?: Prisma.channelsWhereUniqueInput
-}
-
-export type channelsUpdateOneRequiredWithoutGrade_channelsNestedInput = {
-  create?: Prisma.XOR<Prisma.channelsCreateWithoutGrade_channelsInput, Prisma.channelsUncheckedCreateWithoutGrade_channelsInput>
-  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutGrade_channelsInput
-  upsert?: Prisma.channelsUpsertWithoutGrade_channelsInput
-  connect?: Prisma.channelsWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.channelsUpdateToOneWithWhereWithoutGrade_channelsInput, Prisma.channelsUpdateWithoutGrade_channelsInput>, Prisma.channelsUncheckedUpdateWithoutGrade_channelsInput>
-}
-
-export type channelsCreateNestedOneWithoutSubject_channelsInput = {
-  create?: Prisma.XOR<Prisma.channelsCreateWithoutSubject_channelsInput, Prisma.channelsUncheckedCreateWithoutSubject_channelsInput>
-  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutSubject_channelsInput
-  connect?: Prisma.channelsWhereUniqueInput
-}
-
-export type channelsUpdateOneRequiredWithoutSubject_channelsNestedInput = {
-  create?: Prisma.XOR<Prisma.channelsCreateWithoutSubject_channelsInput, Prisma.channelsUncheckedCreateWithoutSubject_channelsInput>
-  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutSubject_channelsInput
-  upsert?: Prisma.channelsUpsertWithoutSubject_channelsInput
-  connect?: Prisma.channelsWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.channelsUpdateToOneWithWhereWithoutSubject_channelsInput, Prisma.channelsUpdateWithoutSubject_channelsInput>, Prisma.channelsUncheckedUpdateWithoutSubject_channelsInput>
 }
 
 export type channelsCreateNestedOneWithoutChannel_assignmentsInput = {
@@ -367,126 +303,11 @@ export type channelsUpdateOneRequiredWithoutChannel_assignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.channelsUpdateToOneWithWhereWithoutChannel_assignmentsInput, Prisma.channelsUpdateWithoutChannel_assignmentsInput>, Prisma.channelsUncheckedUpdateWithoutChannel_assignmentsInput>
 }
 
-export type channelsCreateWithoutGrade_channelsInput = {
-  id: string
-  name: string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string
-  type?: string
-  channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutChannelsInput
-}
-
-export type channelsUncheckedCreateWithoutGrade_channelsInput = {
-  id: string
-  name: string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string
-  type?: string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutChannelsInput
-}
-
-export type channelsCreateOrConnectWithoutGrade_channelsInput = {
-  where: Prisma.channelsWhereUniqueInput
-  create: Prisma.XOR<Prisma.channelsCreateWithoutGrade_channelsInput, Prisma.channelsUncheckedCreateWithoutGrade_channelsInput>
-}
-
-export type channelsUpsertWithoutGrade_channelsInput = {
-  update: Prisma.XOR<Prisma.channelsUpdateWithoutGrade_channelsInput, Prisma.channelsUncheckedUpdateWithoutGrade_channelsInput>
-  create: Prisma.XOR<Prisma.channelsCreateWithoutGrade_channelsInput, Prisma.channelsUncheckedCreateWithoutGrade_channelsInput>
-  where?: Prisma.channelsWhereInput
-}
-
-export type channelsUpdateToOneWithWhereWithoutGrade_channelsInput = {
-  where?: Prisma.channelsWhereInput
-  data: Prisma.XOR<Prisma.channelsUpdateWithoutGrade_channelsInput, Prisma.channelsUncheckedUpdateWithoutGrade_channelsInput>
-}
-
-export type channelsUpdateWithoutGrade_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUpdateManyWithoutChannelsNestedInput
-}
-
-export type channelsUncheckedUpdateWithoutGrade_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutChannelsNestedInput
-}
-
-export type channelsCreateWithoutSubject_channelsInput = {
-  id: string
-  name: string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string
-  type?: string
-  channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutChannelsInput
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutChannelsInput
-}
-
-export type channelsUncheckedCreateWithoutSubject_channelsInput = {
-  id: string
-  name: string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Date | string
-  type?: string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutChannelsInput
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutChannelsInput
-}
-
-export type channelsCreateOrConnectWithoutSubject_channelsInput = {
-  where: Prisma.channelsWhereUniqueInput
-  create: Prisma.XOR<Prisma.channelsCreateWithoutSubject_channelsInput, Prisma.channelsUncheckedCreateWithoutSubject_channelsInput>
-}
-
-export type channelsUpsertWithoutSubject_channelsInput = {
-  update: Prisma.XOR<Prisma.channelsUpdateWithoutSubject_channelsInput, Prisma.channelsUncheckedUpdateWithoutSubject_channelsInput>
-  create: Prisma.XOR<Prisma.channelsCreateWithoutSubject_channelsInput, Prisma.channelsUncheckedCreateWithoutSubject_channelsInput>
-  where?: Prisma.channelsWhereInput
-}
-
-export type channelsUpdateToOneWithWhereWithoutSubject_channelsInput = {
-  where?: Prisma.channelsWhereInput
-  data: Prisma.XOR<Prisma.channelsUpdateWithoutSubject_channelsInput, Prisma.channelsUncheckedUpdateWithoutSubject_channelsInput>
-}
-
-export type channelsUpdateWithoutSubject_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutChannelsNestedInput
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutChannelsNestedInput
-}
-
-export type channelsUncheckedUpdateWithoutSubject_channelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutChannelsNestedInput
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutChannelsNestedInput
-}
-
 export type channelsCreateWithoutChannel_assignmentsInput = {
   id: string
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
-  type?: string
-  grade_channels?: Prisma.grade_channelsCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUncheckedCreateWithoutChannel_assignmentsInput = {
@@ -494,9 +315,6 @@ export type channelsUncheckedCreateWithoutChannel_assignmentsInput = {
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
-  type?: string
-  grade_channels?: Prisma.grade_channelsUncheckedCreateNestedManyWithoutChannelsInput
-  subject_channels?: Prisma.subject_channelsUncheckedCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsCreateOrConnectWithoutChannel_assignmentsInput = {
@@ -520,9 +338,6 @@ export type channelsUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  grade_channels?: Prisma.grade_channelsUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
@@ -530,9 +345,6 @@ export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  type?: Prisma.StringFieldUpdateOperationsInput | string
-  grade_channels?: Prisma.grade_channelsUncheckedUpdateManyWithoutChannelsNestedInput
-  subject_channels?: Prisma.subject_channelsUncheckedUpdateManyWithoutChannelsNestedInput
 }
 
 
@@ -542,14 +354,10 @@ export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
 
 export type ChannelsCountOutputType = {
   channel_assignments: number
-  grade_channels: number
-  subject_channels: number
 }
 
 export type ChannelsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | ChannelsCountOutputTypeCountChannel_assignmentsArgs
-  grade_channels?: boolean | ChannelsCountOutputTypeCountGrade_channelsArgs
-  subject_channels?: boolean | ChannelsCountOutputTypeCountSubject_channelsArgs
 }
 
 /**
@@ -569,30 +377,13 @@ export type ChannelsCountOutputTypeCountChannel_assignmentsArgs<ExtArgs extends 
   where?: Prisma.channel_assignmentsWhereInput
 }
 
-/**
- * ChannelsCountOutputType without action
- */
-export type ChannelsCountOutputTypeCountGrade_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.grade_channelsWhereInput
-}
-
-/**
- * ChannelsCountOutputType without action
- */
-export type ChannelsCountOutputTypeCountSubject_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.subject_channelsWhereInput
-}
-
 
 export type channelsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   thumbnail_url?: boolean
   created_at?: boolean
-  type?: boolean
   channel_assignments?: boolean | Prisma.channels$channel_assignmentsArgs<ExtArgs>
-  grade_channels?: boolean | Prisma.channels$grade_channelsArgs<ExtArgs>
-  subject_channels?: boolean | Prisma.channels$subject_channelsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channels"]>
 
@@ -601,7 +392,6 @@ export type channelsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   thumbnail_url?: boolean
   created_at?: boolean
-  type?: boolean
 }, ExtArgs["result"]["channels"]>
 
 export type channelsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -609,7 +399,6 @@ export type channelsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   thumbnail_url?: boolean
   created_at?: boolean
-  type?: boolean
 }, ExtArgs["result"]["channels"]>
 
 export type channelsSelectScalar = {
@@ -617,14 +406,11 @@ export type channelsSelectScalar = {
   name?: boolean
   thumbnail_url?: boolean
   created_at?: boolean
-  type?: boolean
 }
 
-export type channelsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "thumbnail_url" | "created_at" | "type", ExtArgs["result"]["channels"]>
+export type channelsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "thumbnail_url" | "created_at", ExtArgs["result"]["channels"]>
 export type channelsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | Prisma.channels$channel_assignmentsArgs<ExtArgs>
-  grade_channels?: boolean | Prisma.channels$grade_channelsArgs<ExtArgs>
-  subject_channels?: boolean | Prisma.channels$subject_channelsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type channelsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -634,15 +420,12 @@ export type $channelsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "channels"
   objects: {
     channel_assignments: Prisma.$channel_assignmentsPayload<ExtArgs>[]
-    grade_channels: Prisma.$grade_channelsPayload<ExtArgs>[]
-    subject_channels: Prisma.$subject_channelsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     thumbnail_url: runtime.JsonValue | null
     created_at: Date
-    type: string
   }, ExtArgs["result"]["channels"]>
   composites: {}
 }
@@ -1038,8 +821,6 @@ readonly fields: channelsFieldRefs;
 export interface Prisma__channelsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   channel_assignments<T extends Prisma.channels$channel_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.channels$channel_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$channel_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  grade_channels<T extends Prisma.channels$grade_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.channels$grade_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$grade_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  subject_channels<T extends Prisma.channels$subject_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.channels$subject_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$subject_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1073,7 +854,6 @@ export interface channelsFieldRefs {
   readonly name: Prisma.FieldRef<"channels", 'String'>
   readonly thumbnail_url: Prisma.FieldRef<"channels", 'Json'>
   readonly created_at: Prisma.FieldRef<"channels", 'DateTime'>
-  readonly type: Prisma.FieldRef<"channels", 'String'>
 }
     
 
@@ -1488,54 +1268,6 @@ export type channels$channel_assignmentsArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.Channel_assignmentsScalarFieldEnum | Prisma.Channel_assignmentsScalarFieldEnum[]
-}
-
-/**
- * channels.grade_channels
- */
-export type channels$grade_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the grade_channels
-   */
-  select?: Prisma.grade_channelsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the grade_channels
-   */
-  omit?: Prisma.grade_channelsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.grade_channelsInclude<ExtArgs> | null
-  where?: Prisma.grade_channelsWhereInput
-  orderBy?: Prisma.grade_channelsOrderByWithRelationInput | Prisma.grade_channelsOrderByWithRelationInput[]
-  cursor?: Prisma.grade_channelsWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Grade_channelsScalarFieldEnum | Prisma.Grade_channelsScalarFieldEnum[]
-}
-
-/**
- * channels.subject_channels
- */
-export type channels$subject_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the subject_channels
-   */
-  select?: Prisma.subject_channelsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the subject_channels
-   */
-  omit?: Prisma.subject_channelsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.subject_channelsInclude<ExtArgs> | null
-  where?: Prisma.subject_channelsWhereInput
-  orderBy?: Prisma.subject_channelsOrderByWithRelationInput | Prisma.subject_channelsOrderByWithRelationInput[]
-  cursor?: Prisma.subject_channelsWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Subject_channelsScalarFieldEnum | Prisma.Subject_channelsScalarFieldEnum[]
 }
 
 /**

@@ -98,8 +98,14 @@ function getClickedVideoSubject() {
 }
 
 function isEntertainment() {
-  return getClickedVideoSubject() === 'Entertainment';
+  const subject = getClickedVideoSubject();
+  console.log('Current video subject:', subject);
+  const isEnt = subject === 'Entertainment';
+  console.log('isEntertainment:', isEnt);
+  return isEnt;
 }
+  
+
 
 function getCurrentGradeName() {
   return getGradeName(grade_id);
@@ -107,6 +113,26 @@ function getCurrentGradeName() {
 
 function isKG1() {
   return getCurrentGradeName() === 'KG 1';
+}
+
+/**
+ * Check if user has enough coins for Entertainment videos.
+ * Shows modal and pauses video if coins are insufficient.
+ * Returns true if video can play, false otherwise.
+ */
+function checkCoinsForEntertainment() {
+  if (!accessToken) return true; // Not logged in, allow playback
+  
+  const activeProfile = JSON.parse(localStorage.getItem('activeProfile') || '{}');
+  const coins = activeProfile.coins || 0;
+ 
+  if (coins <= 0 && isEntertainment()) {
+    console.log('❌ Not enough coins for Entertainment video');
+    controlsPauseVideo();
+    showNotEnoughCoinsModal();
+    return false;
+  }
+  return true;
 }
 
 /* ── Advert API: play random advert, save main video state ──── */
@@ -244,6 +270,7 @@ window.onYouTubeIframeAPIReady = function () {
     videoId,
     /* onPlayerReady callback */
     function onPlayerReady(event) {
+      checkCoinsForEntertainment();
       favoriteBtn.style.display = 'block';
       progressIndicator.remove();
 
@@ -262,11 +289,8 @@ window.onYouTubeIframeAPIReady = function () {
 
       if (!accessToken) return;
 
-      const coins = JSON.parse(localStorage.getItem('activeProfile') || '{}').coins;
-      if (coins <= 0 && isEntertainment()) {
-        controlsPauseVideo();
-        showNotEnoughCoinsModal();
-      }
+      // Check coins for Entertainment videos
+      
     },
     /* onStateChange callback */
     function onPlayerStateChange(event) {
@@ -297,15 +321,18 @@ window.onYouTubeIframeAPIReady = function () {
           localStorage.setItem('clickedVideo', JSON.stringify(nextVideo));
           resetPlaybackState();
 
+          // Check coins for Entertainment videos before playing
+          const canPlayNext = checkCoinsForEntertainment();
+          
           // If next video is Entertainment, play advert before it starts
-          if (isEntertainment() && accessToken) {
+          if (canPlayNext && isEntertainment() && accessToken) {
             updatePlayerVideo(nextVideo.videoId);
             setTimeout(function () {
               playAdvert(function () {
                 // After advert, the quiz interval starts fresh via PLAYING state
               });
             }, 500);
-          } else {
+          } else if (canPlayNext) {
             updatePlayerVideo(nextVideo.videoId);
           }
         } else {
@@ -467,8 +494,11 @@ export async function playVideo(video) {
 
   localStorage.setItem('videoId', id);
 
+  // ── Check coins for Entertainment videos before playing ──
+  const canPlayVideo = checkCoinsForEntertainment();
+  
   // ── If Entertainment and logged in, play advert before the clicked video ──
-  if (isEntertainment() && accessToken) {
+  if (canPlayVideo && isEntertainment() && accessToken) {
     resetPlaybackState();
     // Save the target video as what we resume to after advert
     savedMainVideoId = id;
@@ -478,7 +508,7 @@ export async function playVideo(video) {
     playAdvert(function () {
       // After advert, the quiz interval starts fresh via PLAYING state
     });
-  } else {
+  } else if (canPlayVideo) {
     updatePlayerVideo(id);
   }
 }

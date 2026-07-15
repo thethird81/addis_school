@@ -61,8 +61,6 @@ export const ModelName = {
   videos: 'videos',
   channels: 'channels',
   favorite_quizzes: 'favorite_quizzes',
-  grade_channels: 'grade_channels',
-  subject_channels: 'subject_channels',
   channel_assignments: 'channel_assignments',
   likes: 'likes',
   quiz_assignments: 'quiz_assignments',
@@ -186,8 +184,7 @@ export const ChannelsScalarFieldEnum = {
   id: 'id',
   name: 'name',
   thumbnail_url: 'thumbnail_url',
-  created_at: 'created_at',
-  type: 'type'
+  created_at: 'created_at'
 } as const
 
 export type ChannelsScalarFieldEnum = (typeof ChannelsScalarFieldEnum)[keyof typeof ChannelsScalarFieldEnum]
@@ -200,22 +197,6 @@ export const Favorite_quizzesScalarFieldEnum = {
 } as const
 
 export type Favorite_quizzesScalarFieldEnum = (typeof Favorite_quizzesScalarFieldEnum)[keyof typeof Favorite_quizzesScalarFieldEnum]
-
-
-export const Grade_channelsScalarFieldEnum = {
-  grade_id: 'grade_id',
-  channel_id: 'channel_id'
-} as const
-
-export type Grade_channelsScalarFieldEnum = (typeof Grade_channelsScalarFieldEnum)[keyof typeof Grade_channelsScalarFieldEnum]
-
-
-export const Subject_channelsScalarFieldEnum = {
-  subject_id: 'subject_id',
-  channel_id: 'channel_id'
-} as const
-
-export type Subject_channelsScalarFieldEnum = (typeof Subject_channelsScalarFieldEnum)[keyof typeof Subject_channelsScalarFieldEnum]
 
 
 export const Channel_assignmentsScalarFieldEnum = {

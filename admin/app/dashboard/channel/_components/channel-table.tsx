@@ -21,9 +21,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, Loader2, Trash2, Pencil, Video } from "lucide-react";
+import { Search, Loader2, Trash2, Pencil, Video, Link2, Link2Off } from "lucide-react";
 import { getAllChannels, deleteChannel as deleteChannelAction, Channel } from "../_actions/channel-actions";
 import { useCurriculumTree } from "@/hooks/use-admin-api";
+import { AssignmentModal } from "./assignment-modal";
 
 interface ChannelTableProps {
   selectedChannelIds: string[];
@@ -31,6 +32,8 @@ interface ChannelTableProps {
   onViewVideos?: (channel: Channel) => void;
   onEditChannel?: (channel: Channel) => void;
   onChannelsLoaded?: (channels: Channel[]) => void;
+  filterGrade?: string;
+  filterSubject?: string;
 }
 
 export function ChannelTable({
@@ -39,11 +42,18 @@ export function ChannelTable({
   onViewVideos,
   onEditChannel,
   onChannelsLoaded,
+  filterGrade: externalFilterGrade,
+  filterSubject: externalFilterSubject,
 }: ChannelTableProps) {
   const [search, setSearch] = useState("");
-  const [filterGrade, setFilterGrade] = useState("");
-  const [filterSubject, setFilterSubject] = useState("");
+  const [filterGrade, setFilterGrade] = useState(externalFilterGrade || "");
+  const [filterSubject, setFilterSubject] = useState(externalFilterSubject || "");
   const [deleteTarget, setDeleteTarget] = useState<Channel | null>(null);
+  const [assignmentTarget, setAssignmentTarget] = useState<{
+    channel: Channel;
+    mode: 'assign' | 'remove';
+    assignmentId?: string;
+  } | null>(null);
 
   const queryClient = useQueryClient();
   const { data: tree = [] } = useCurriculumTree();
@@ -282,6 +292,70 @@ export function ChannelTable({
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {/* Dynamic Assign/Remove button based on filter state */}
+                      {(() => {
+                        // No filters: show Assign button
+                        if (!filterGrade && !filterSubject) {
+                          return (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setAssignmentTarget({ channel, mode: 'assign' })}
+                              aria-label={`Assign ${channel.name}`}
+                            >
+                              <Link2 className="h-4 w-4 text-green-600" />
+                            </Button>
+                          );
+                        }
+                        
+                        // Grade filter active (no subject): show Remove for grade-level assignment
+                        if (filterGrade && !filterSubject) {
+                          const gradeAssignment = channel.channel_assignments?.find(
+                            (a) => a.grade_id === filterGrade && !a.subject_id
+                          );
+                          if (gradeAssignment) {
+                            return (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setAssignmentTarget({
+                                  channel,
+                                  mode: 'remove',
+                                  assignmentId: (gradeAssignment as any).id,
+                                })}
+                                aria-label={`Remove grade assignment for ${channel.name}`}
+                              >
+                                <Link2Off className="h-4 w-4 text-orange-600" />
+                              </Button>
+                            );
+                          }
+                        }
+                        
+                        // Subject filter active: show Remove for subject-level assignment
+                        if (filterGrade && filterSubject) {
+                          const subjectAssignment = channel.channel_assignments?.find(
+                            (a) => a.subject_id === filterSubject
+                          );
+                          if (subjectAssignment) {
+                            return (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setAssignmentTarget({
+                                  channel,
+                                  mode: 'remove',
+                                  assignmentId: (subjectAssignment as any).id,
+                                })}
+                                aria-label={`Remove subject assignment for ${channel.name}`}
+                              >
+                                <Link2Off className="h-4 w-4 text-orange-600" />
+                              </Button>
+                            );
+                          }
+                        }
+                        
+                        return null;
+                      })()}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -314,6 +388,18 @@ export function ChannelTable({
           </TableBody>
         </Table>
       </div>
+
+      {/* Assignment Modal */}
+      <AssignmentModal
+        isOpen={Boolean(assignmentTarget)}
+        onClose={() => setAssignmentTarget(null)}
+        channelId={assignmentTarget?.channel?.id || ''}
+        channelName={assignmentTarget?.channel?.name || ''}
+        mode={assignmentTarget?.mode || 'assign'}
+        assignmentId={assignmentTarget?.assignmentId}
+        filterGrade={filterGrade || undefined}
+        filterSubject={filterSubject || undefined}
+      />
 
       {/* Delete Confirmation Modal */}
       <Dialog open={Boolean(deleteTarget)} onOpenChange={(open) => !open && setDeleteTarget(null)}>

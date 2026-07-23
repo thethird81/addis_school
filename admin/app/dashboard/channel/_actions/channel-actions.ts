@@ -10,6 +10,7 @@ export interface Channel {
   } | null;
   created_at?: string;
   channel_assignments?: Array<{
+    id?: string;
     grade_id?: string;
     subject_id?: string | null;
   }>;
@@ -164,6 +165,67 @@ export async function bulkAssignChannels({ channelIds, grade_id, subject_id }: B
     return { success: false, error: error.message || "Failed to assign channels" };
   }
 };
+
+// ==================== SINGLE CHANNEL ASSIGNMENT ====================
+
+interface AssignChannelToPositionParams {
+  channel_id: string;
+  grade_id: string;
+  subject_id?: string;
+}
+
+export async function assignChannelToPosition({ channel_id, grade_id, subject_id }: AssignChannelToPositionParams) {
+  try {
+    if (!channel_id || !grade_id) {
+      return { success: false, error: "channel_id and grade_id are required" };
+    }
+
+    const response = await fetch(`${API_BASE}/admin/assign/channel-to-position`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        channel_id,
+        grade_id,
+        subject_id: subject_id || null,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { success: false, error: data.error || "Failed to assign channel" };
+    }
+
+    return { success: true, assignment: data };
+  } catch (error: any) {
+    console.error("Error assigning channel to position:", error);
+    return { success: false, error: error.message || "Failed to assign channel" };
+  }
+}
+
+export async function removeChannelAssignment(assignmentId: string) {
+  try {
+    if (!assignmentId) {
+      return { success: false, error: "Assignment ID is required" };
+    }
+
+    const response = await fetch(`${API_BASE}/admin/channel-assignments/${assignmentId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return { success: false, error: data.error || "Failed to remove assignment" };
+    }
+
+    return { success: true, message: data.message };
+  } catch (error: any) {
+    console.error("Error removing channel assignment:", error);
+    return { success: false, error: error.message || "Failed to remove assignment" };
+  }
+}
 
 // ==================== CHANNEL ASSIGNMENTS (GET) ====================
 

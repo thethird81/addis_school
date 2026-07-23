@@ -240,6 +240,7 @@ export type profilesWhereInput = {
   is_active?: Prisma.BoolFilter<"profiles"> | boolean
   created_at?: Prisma.DateTimeFilter<"profiles"> | Date | string
   coins?: Prisma.IntNullableFilter<"profiles"> | number | null
+  favorite_channels?: Prisma.Favorite_channelsListRelationFilter
   favorite_quizzes?: Prisma.Favorite_quizzesListRelationFilter
   likes?: Prisma.LikesListRelationFilter
   grades?: Prisma.XOR<Prisma.GradesScalarRelationFilter, Prisma.gradesWhereInput>
@@ -257,6 +258,7 @@ export type profilesOrderByWithRelationInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   coins?: Prisma.SortOrderInput | Prisma.SortOrder
+  favorite_channels?: Prisma.favorite_channelsOrderByRelationAggregateInput
   favorite_quizzes?: Prisma.favorite_quizzesOrderByRelationAggregateInput
   likes?: Prisma.likesOrderByRelationAggregateInput
   grades?: Prisma.gradesOrderByWithRelationInput
@@ -278,6 +280,7 @@ export type profilesWhereUniqueInput = Prisma.AtLeast<{
   is_active?: Prisma.BoolFilter<"profiles"> | boolean
   created_at?: Prisma.DateTimeFilter<"profiles"> | Date | string
   coins?: Prisma.IntNullableFilter<"profiles"> | number | null
+  favorite_channels?: Prisma.Favorite_channelsListRelationFilter
   favorite_quizzes?: Prisma.Favorite_quizzesListRelationFilter
   likes?: Prisma.LikesListRelationFilter
   grades?: Prisma.XOR<Prisma.GradesScalarRelationFilter, Prisma.gradesWhereInput>
@@ -323,6 +326,7 @@ export type profilesCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
@@ -340,6 +344,7 @@ export type profilesUncheckedCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
@@ -353,6 +358,7 @@ export type profilesUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
@@ -370,6 +376,7 @@ export type profilesUncheckedUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
@@ -624,6 +631,20 @@ export type profilesUpdateOneRequiredWithoutWatch_historiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.profilesUpdateToOneWithWhereWithoutWatch_historiesInput, Prisma.profilesUpdateWithoutWatch_historiesInput>, Prisma.profilesUncheckedUpdateWithoutWatch_historiesInput>
 }
 
+export type profilesCreateNestedOneWithoutFavorite_channelsInput = {
+  create?: Prisma.XOR<Prisma.profilesCreateWithoutFavorite_channelsInput, Prisma.profilesUncheckedCreateWithoutFavorite_channelsInput>
+  connectOrCreate?: Prisma.profilesCreateOrConnectWithoutFavorite_channelsInput
+  connect?: Prisma.profilesWhereUniqueInput
+}
+
+export type profilesUpdateOneRequiredWithoutFavorite_channelsNestedInput = {
+  create?: Prisma.XOR<Prisma.profilesCreateWithoutFavorite_channelsInput, Prisma.profilesUncheckedCreateWithoutFavorite_channelsInput>
+  connectOrCreate?: Prisma.profilesCreateOrConnectWithoutFavorite_channelsInput
+  upsert?: Prisma.profilesUpsertWithoutFavorite_channelsInput
+  connect?: Prisma.profilesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.profilesUpdateToOneWithWhereWithoutFavorite_channelsInput, Prisma.profilesUpdateWithoutFavorite_channelsInput>, Prisma.profilesUncheckedUpdateWithoutFavorite_channelsInput>
+}
+
 export type profilesCreateWithoutGradesInput = {
   id?: string
   profile_name: string
@@ -631,6 +652,7 @@ export type profilesCreateWithoutGradesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   users: Prisma.users_metadataCreateNestedOneWithoutProfilesInput
@@ -646,6 +668,7 @@ export type profilesUncheckedCreateWithoutGradesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
@@ -699,6 +722,7 @@ export type profilesCreateWithoutFavorite_quizzesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
   users: Prisma.users_metadataCreateNestedOneWithoutProfilesInput
@@ -715,6 +739,7 @@ export type profilesUncheckedCreateWithoutFavorite_quizzesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
   watch_histories?: Prisma.watch_historiesUncheckedCreateNestedManyWithoutProfilesInput
@@ -743,6 +768,7 @@ export type profilesUpdateWithoutFavorite_quizzesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
   users?: Prisma.users_metadataUpdateOneRequiredWithoutProfilesNestedInput
@@ -759,6 +785,7 @@ export type profilesUncheckedUpdateWithoutFavorite_quizzesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
   watch_histories?: Prisma.watch_historiesUncheckedUpdateManyWithoutProfilesNestedInput
@@ -771,6 +798,7 @@ export type profilesCreateWithoutLikesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
   users: Prisma.users_metadataCreateNestedOneWithoutProfilesInput
@@ -787,6 +815,7 @@ export type profilesUncheckedCreateWithoutLikesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
   watch_histories?: Prisma.watch_historiesUncheckedCreateNestedManyWithoutProfilesInput
@@ -815,6 +844,7 @@ export type profilesUpdateWithoutLikesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
   users?: Prisma.users_metadataUpdateOneRequiredWithoutProfilesNestedInput
@@ -831,6 +861,7 @@ export type profilesUncheckedUpdateWithoutLikesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
   watch_histories?: Prisma.watch_historiesUncheckedUpdateManyWithoutProfilesNestedInput
@@ -843,6 +874,7 @@ export type profilesCreateWithoutReportsInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
@@ -859,6 +891,7 @@ export type profilesUncheckedCreateWithoutReportsInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   watch_histories?: Prisma.watch_historiesUncheckedCreateNestedManyWithoutProfilesInput
@@ -887,6 +920,7 @@ export type profilesUpdateWithoutReportsInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
@@ -903,6 +937,7 @@ export type profilesUncheckedUpdateWithoutReportsInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   watch_histories?: Prisma.watch_historiesUncheckedUpdateManyWithoutProfilesNestedInput
@@ -915,6 +950,7 @@ export type profilesCreateWithoutUsersInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
@@ -930,6 +966,7 @@ export type profilesUncheckedCreateWithoutUsersInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
@@ -969,6 +1006,7 @@ export type profilesCreateWithoutWatch_historiesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
   grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
@@ -985,6 +1023,7 @@ export type profilesUncheckedCreateWithoutWatch_historiesInput = {
   is_active?: boolean
   created_at?: Date | string
   coins?: number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutProfilesInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
   likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
   reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
@@ -1013,6 +1052,7 @@ export type profilesUpdateWithoutWatch_historiesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
@@ -1029,9 +1069,86 @@ export type profilesUncheckedUpdateWithoutWatch_historiesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
+}
+
+export type profilesCreateWithoutFavorite_channelsInput = {
+  id?: string
+  profile_name: string
+  avatar_url?: string | null
+  is_active?: boolean
+  created_at?: Date | string
+  coins?: number | null
+  favorite_quizzes?: Prisma.favorite_quizzesCreateNestedManyWithoutProfilesInput
+  likes?: Prisma.likesCreateNestedManyWithoutProfilesInput
+  grades: Prisma.gradesCreateNestedOneWithoutProfilesInput
+  users: Prisma.users_metadataCreateNestedOneWithoutProfilesInput
+  reports?: Prisma.reportsCreateNestedManyWithoutProfilesInput
+  watch_histories?: Prisma.watch_historiesCreateNestedManyWithoutProfilesInput
+}
+
+export type profilesUncheckedCreateWithoutFavorite_channelsInput = {
+  id?: string
+  user_id: string
+  grade_id: string
+  profile_name: string
+  avatar_url?: string | null
+  is_active?: boolean
+  created_at?: Date | string
+  coins?: number | null
+  favorite_quizzes?: Prisma.favorite_quizzesUncheckedCreateNestedManyWithoutProfilesInput
+  likes?: Prisma.likesUncheckedCreateNestedManyWithoutProfilesInput
+  reports?: Prisma.reportsUncheckedCreateNestedManyWithoutProfilesInput
+  watch_histories?: Prisma.watch_historiesUncheckedCreateNestedManyWithoutProfilesInput
+}
+
+export type profilesCreateOrConnectWithoutFavorite_channelsInput = {
+  where: Prisma.profilesWhereUniqueInput
+  create: Prisma.XOR<Prisma.profilesCreateWithoutFavorite_channelsInput, Prisma.profilesUncheckedCreateWithoutFavorite_channelsInput>
+}
+
+export type profilesUpsertWithoutFavorite_channelsInput = {
+  update: Prisma.XOR<Prisma.profilesUpdateWithoutFavorite_channelsInput, Prisma.profilesUncheckedUpdateWithoutFavorite_channelsInput>
+  create: Prisma.XOR<Prisma.profilesCreateWithoutFavorite_channelsInput, Prisma.profilesUncheckedCreateWithoutFavorite_channelsInput>
+  where?: Prisma.profilesWhereInput
+}
+
+export type profilesUpdateToOneWithWhereWithoutFavorite_channelsInput = {
+  where?: Prisma.profilesWhereInput
+  data: Prisma.XOR<Prisma.profilesUpdateWithoutFavorite_channelsInput, Prisma.profilesUncheckedUpdateWithoutFavorite_channelsInput>
+}
+
+export type profilesUpdateWithoutFavorite_channelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
+  likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
+  grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
+  users?: Prisma.users_metadataUpdateOneRequiredWithoutProfilesNestedInput
+  reports?: Prisma.reportsUpdateManyWithoutProfilesNestedInput
+  watch_histories?: Prisma.watch_historiesUpdateManyWithoutProfilesNestedInput
+}
+
+export type profilesUncheckedUpdateWithoutFavorite_channelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  user_id?: Prisma.StringFieldUpdateOperationsInput | string
+  grade_id?: Prisma.StringFieldUpdateOperationsInput | string
+  profile_name?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
+  likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
+  reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
+  watch_histories?: Prisma.watch_historiesUncheckedUpdateManyWithoutProfilesNestedInput
 }
 
 export type profilesCreateManyGradesInput = {
@@ -1051,6 +1168,7 @@ export type profilesUpdateWithoutGradesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   users?: Prisma.users_metadataUpdateOneRequiredWithoutProfilesNestedInput
@@ -1066,6 +1184,7 @@ export type profilesUncheckedUpdateWithoutGradesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
@@ -1099,6 +1218,7 @@ export type profilesUpdateWithoutUsersInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUpdateManyWithoutProfilesNestedInput
   grades?: Prisma.gradesUpdateOneRequiredWithoutProfilesNestedInput
@@ -1114,6 +1234,7 @@ export type profilesUncheckedUpdateWithoutUsersInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   coins?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutProfilesNestedInput
   favorite_quizzes?: Prisma.favorite_quizzesUncheckedUpdateManyWithoutProfilesNestedInput
   likes?: Prisma.likesUncheckedUpdateManyWithoutProfilesNestedInput
   reports?: Prisma.reportsUncheckedUpdateManyWithoutProfilesNestedInput
@@ -1136,6 +1257,7 @@ export type profilesUncheckedUpdateManyWithoutUsersInput = {
  */
 
 export type ProfilesCountOutputType = {
+  favorite_channels: number
   favorite_quizzes: number
   likes: number
   reports: number
@@ -1143,6 +1265,7 @@ export type ProfilesCountOutputType = {
 }
 
 export type ProfilesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  favorite_channels?: boolean | ProfilesCountOutputTypeCountFavorite_channelsArgs
   favorite_quizzes?: boolean | ProfilesCountOutputTypeCountFavorite_quizzesArgs
   likes?: boolean | ProfilesCountOutputTypeCountLikesArgs
   reports?: boolean | ProfilesCountOutputTypeCountReportsArgs
@@ -1157,6 +1280,13 @@ export type ProfilesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
    * Select specific fields to fetch from the ProfilesCountOutputType
    */
   select?: Prisma.ProfilesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProfilesCountOutputType without action
+ */
+export type ProfilesCountOutputTypeCountFavorite_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.favorite_channelsWhereInput
 }
 
 /**
@@ -1197,6 +1327,7 @@ export type profilesSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   is_active?: boolean
   created_at?: boolean
   coins?: boolean
+  favorite_channels?: boolean | Prisma.profiles$favorite_channelsArgs<ExtArgs>
   favorite_quizzes?: boolean | Prisma.profiles$favorite_quizzesArgs<ExtArgs>
   likes?: boolean | Prisma.profiles$likesArgs<ExtArgs>
   grades?: boolean | Prisma.gradesDefaultArgs<ExtArgs>
@@ -1245,6 +1376,7 @@ export type profilesSelectScalar = {
 
 export type profilesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "user_id" | "grade_id" | "profile_name" | "avatar_url" | "is_active" | "created_at" | "coins", ExtArgs["result"]["profiles"]>
 export type profilesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  favorite_channels?: boolean | Prisma.profiles$favorite_channelsArgs<ExtArgs>
   favorite_quizzes?: boolean | Prisma.profiles$favorite_quizzesArgs<ExtArgs>
   likes?: boolean | Prisma.profiles$likesArgs<ExtArgs>
   grades?: boolean | Prisma.gradesDefaultArgs<ExtArgs>
@@ -1265,6 +1397,7 @@ export type profilesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $profilesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "profiles"
   objects: {
+    favorite_channels: Prisma.$favorite_channelsPayload<ExtArgs>[]
     favorite_quizzes: Prisma.$favorite_quizzesPayload<ExtArgs>[]
     likes: Prisma.$likesPayload<ExtArgs>[]
     grades: Prisma.$gradesPayload<ExtArgs>
@@ -1675,6 +1808,7 @@ readonly fields: profilesFieldRefs;
  */
 export interface Prisma__profilesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  favorite_channels<T extends Prisma.profiles$favorite_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.profiles$favorite_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$favorite_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorite_quizzes<T extends Prisma.profiles$favorite_quizzesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.profiles$favorite_quizzesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$favorite_quizzesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   likes<T extends Prisma.profiles$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.profiles$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$likesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   grades<T extends Prisma.gradesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.gradesDefaultArgs<ExtArgs>>): Prisma.Prisma__gradesClient<runtime.Types.Result.GetResult<Prisma.$gradesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -2116,6 +2250,30 @@ export type profilesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many profiles to delete.
    */
   limit?: number
+}
+
+/**
+ * profiles.favorite_channels
+ */
+export type profiles$favorite_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the favorite_channels
+   */
+  select?: Prisma.favorite_channelsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the favorite_channels
+   */
+  omit?: Prisma.favorite_channelsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.favorite_channelsInclude<ExtArgs> | null
+  where?: Prisma.favorite_channelsWhereInput
+  orderBy?: Prisma.favorite_channelsOrderByWithRelationInput | Prisma.favorite_channelsOrderByWithRelationInput[]
+  cursor?: Prisma.favorite_channelsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Favorite_channelsScalarFieldEnum | Prisma.Favorite_channelsScalarFieldEnum[]
 }
 
 /**

@@ -133,3 +133,8 @@ export type watch_histories = Prisma.watch_historiesModel
  * This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
  */
 export type deleted_videos = Prisma.deleted_videosModel
+/**
+ * Model favorite_channels
+ * This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+ */
+export type favorite_channels = Prisma.favorite_channelsModel

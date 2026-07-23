@@ -171,6 +171,7 @@ export type channelsWhereInput = {
   thumbnail_url?: Prisma.JsonNullableFilter<"channels">
   created_at?: Prisma.DateTimeFilter<"channels"> | Date | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
+  favorite_channels?: Prisma.Favorite_channelsListRelationFilter
 }
 
 export type channelsOrderByWithRelationInput = {
@@ -179,6 +180,7 @@ export type channelsOrderByWithRelationInput = {
   thumbnail_url?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   channel_assignments?: Prisma.channel_assignmentsOrderByRelationAggregateInput
+  favorite_channels?: Prisma.favorite_channelsOrderByRelationAggregateInput
 }
 
 export type channelsWhereUniqueInput = Prisma.AtLeast<{
@@ -190,6 +192,7 @@ export type channelsWhereUniqueInput = Prisma.AtLeast<{
   thumbnail_url?: Prisma.JsonNullableFilter<"channels">
   created_at?: Prisma.DateTimeFilter<"channels"> | Date | string
   channel_assignments?: Prisma.Channel_assignmentsListRelationFilter
+  favorite_channels?: Prisma.Favorite_channelsListRelationFilter
 }, "id">
 
 export type channelsOrderByWithAggregationInput = {
@@ -218,6 +221,7 @@ export type channelsCreateInput = {
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutChannelsInput
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUncheckedCreateInput = {
@@ -226,6 +230,7 @@ export type channelsUncheckedCreateInput = {
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutChannelsInput
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUpdateInput = {
@@ -234,6 +239,7 @@ export type channelsUpdateInput = {
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutChannelsNestedInput
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsUncheckedUpdateInput = {
@@ -242,6 +248,7 @@ export type channelsUncheckedUpdateInput = {
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutChannelsNestedInput
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsCreateManyInput = {
@@ -303,11 +310,26 @@ export type channelsUpdateOneRequiredWithoutChannel_assignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.channelsUpdateToOneWithWhereWithoutChannel_assignmentsInput, Prisma.channelsUpdateWithoutChannel_assignmentsInput>, Prisma.channelsUncheckedUpdateWithoutChannel_assignmentsInput>
 }
 
+export type channelsCreateNestedOneWithoutFavorite_channelsInput = {
+  create?: Prisma.XOR<Prisma.channelsCreateWithoutFavorite_channelsInput, Prisma.channelsUncheckedCreateWithoutFavorite_channelsInput>
+  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutFavorite_channelsInput
+  connect?: Prisma.channelsWhereUniqueInput
+}
+
+export type channelsUpdateOneRequiredWithoutFavorite_channelsNestedInput = {
+  create?: Prisma.XOR<Prisma.channelsCreateWithoutFavorite_channelsInput, Prisma.channelsUncheckedCreateWithoutFavorite_channelsInput>
+  connectOrCreate?: Prisma.channelsCreateOrConnectWithoutFavorite_channelsInput
+  upsert?: Prisma.channelsUpsertWithoutFavorite_channelsInput
+  connect?: Prisma.channelsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.channelsUpdateToOneWithWhereWithoutFavorite_channelsInput, Prisma.channelsUpdateWithoutFavorite_channelsInput>, Prisma.channelsUncheckedUpdateWithoutFavorite_channelsInput>
+}
+
 export type channelsCreateWithoutChannel_assignmentsInput = {
   id: string
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
+  favorite_channels?: Prisma.favorite_channelsCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsUncheckedCreateWithoutChannel_assignmentsInput = {
@@ -315,6 +337,7 @@ export type channelsUncheckedCreateWithoutChannel_assignmentsInput = {
   name: string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
+  favorite_channels?: Prisma.favorite_channelsUncheckedCreateNestedManyWithoutChannelsInput
 }
 
 export type channelsCreateOrConnectWithoutChannel_assignmentsInput = {
@@ -338,6 +361,7 @@ export type channelsUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorite_channels?: Prisma.favorite_channelsUpdateManyWithoutChannelsNestedInput
 }
 
 export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
@@ -345,6 +369,55 @@ export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  favorite_channels?: Prisma.favorite_channelsUncheckedUpdateManyWithoutChannelsNestedInput
+}
+
+export type channelsCreateWithoutFavorite_channelsInput = {
+  id: string
+  name: string
+  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  channel_assignments?: Prisma.channel_assignmentsCreateNestedManyWithoutChannelsInput
+}
+
+export type channelsUncheckedCreateWithoutFavorite_channelsInput = {
+  id: string
+  name: string
+  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  channel_assignments?: Prisma.channel_assignmentsUncheckedCreateNestedManyWithoutChannelsInput
+}
+
+export type channelsCreateOrConnectWithoutFavorite_channelsInput = {
+  where: Prisma.channelsWhereUniqueInput
+  create: Prisma.XOR<Prisma.channelsCreateWithoutFavorite_channelsInput, Prisma.channelsUncheckedCreateWithoutFavorite_channelsInput>
+}
+
+export type channelsUpsertWithoutFavorite_channelsInput = {
+  update: Prisma.XOR<Prisma.channelsUpdateWithoutFavorite_channelsInput, Prisma.channelsUncheckedUpdateWithoutFavorite_channelsInput>
+  create: Prisma.XOR<Prisma.channelsCreateWithoutFavorite_channelsInput, Prisma.channelsUncheckedCreateWithoutFavorite_channelsInput>
+  where?: Prisma.channelsWhereInput
+}
+
+export type channelsUpdateToOneWithWhereWithoutFavorite_channelsInput = {
+  where?: Prisma.channelsWhereInput
+  data: Prisma.XOR<Prisma.channelsUpdateWithoutFavorite_channelsInput, Prisma.channelsUncheckedUpdateWithoutFavorite_channelsInput>
+}
+
+export type channelsUpdateWithoutFavorite_channelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  channel_assignments?: Prisma.channel_assignmentsUpdateManyWithoutChannelsNestedInput
+}
+
+export type channelsUncheckedUpdateWithoutFavorite_channelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  thumbnail_url?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  channel_assignments?: Prisma.channel_assignmentsUncheckedUpdateManyWithoutChannelsNestedInput
 }
 
 
@@ -354,10 +427,12 @@ export type channelsUncheckedUpdateWithoutChannel_assignmentsInput = {
 
 export type ChannelsCountOutputType = {
   channel_assignments: number
+  favorite_channels: number
 }
 
 export type ChannelsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | ChannelsCountOutputTypeCountChannel_assignmentsArgs
+  favorite_channels?: boolean | ChannelsCountOutputTypeCountFavorite_channelsArgs
 }
 
 /**
@@ -377,6 +452,13 @@ export type ChannelsCountOutputTypeCountChannel_assignmentsArgs<ExtArgs extends 
   where?: Prisma.channel_assignmentsWhereInput
 }
 
+/**
+ * ChannelsCountOutputType without action
+ */
+export type ChannelsCountOutputTypeCountFavorite_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.favorite_channelsWhereInput
+}
+
 
 export type channelsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -384,6 +466,7 @@ export type channelsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   thumbnail_url?: boolean
   created_at?: boolean
   channel_assignments?: boolean | Prisma.channels$channel_assignmentsArgs<ExtArgs>
+  favorite_channels?: boolean | Prisma.channels$favorite_channelsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channels"]>
 
@@ -411,6 +494,7 @@ export type channelsSelectScalar = {
 export type channelsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "thumbnail_url" | "created_at", ExtArgs["result"]["channels"]>
 export type channelsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel_assignments?: boolean | Prisma.channels$channel_assignmentsArgs<ExtArgs>
+  favorite_channels?: boolean | Prisma.channels$favorite_channelsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type channelsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -420,6 +504,7 @@ export type $channelsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "channels"
   objects: {
     channel_assignments: Prisma.$channel_assignmentsPayload<ExtArgs>[]
+    favorite_channels: Prisma.$favorite_channelsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -821,6 +906,7 @@ readonly fields: channelsFieldRefs;
 export interface Prisma__channelsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   channel_assignments<T extends Prisma.channels$channel_assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.channels$channel_assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$channel_assignmentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  favorite_channels<T extends Prisma.channels$favorite_channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.channels$favorite_channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$favorite_channelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1268,6 +1354,30 @@ export type channels$channel_assignmentsArgs<ExtArgs extends runtime.Types.Exten
   take?: number
   skip?: number
   distinct?: Prisma.Channel_assignmentsScalarFieldEnum | Prisma.Channel_assignmentsScalarFieldEnum[]
+}
+
+/**
+ * channels.favorite_channels
+ */
+export type channels$favorite_channelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the favorite_channels
+   */
+  select?: Prisma.favorite_channelsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the favorite_channels
+   */
+  omit?: Prisma.favorite_channelsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.favorite_channelsInclude<ExtArgs> | null
+  where?: Prisma.favorite_channelsWhereInput
+  orderBy?: Prisma.favorite_channelsOrderByWithRelationInput | Prisma.favorite_channelsOrderByWithRelationInput[]
+  cursor?: Prisma.favorite_channelsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Favorite_channelsScalarFieldEnum | Prisma.Favorite_channelsScalarFieldEnum[]
 }
 
 /**

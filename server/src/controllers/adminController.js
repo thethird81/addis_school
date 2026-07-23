@@ -256,6 +256,7 @@ const getChannels = async (req, res) => {
       include: {
         channel_assignments: {
           select: {
+            id: true,
             grade_id: true,
             subject_id: true,
           },
@@ -683,10 +684,8 @@ const assignChannelToPosition = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields: channel_id, grade_id" });
     }
 
-    // Subject is required for channel assignment
-    if (!subject_id) {
-      return res.status(400).json({ error: "Missing required field: subject_id is required for channel assignment" });
-    }
+    // Subject is optional - null means grade-level assignment (advert)
+    // When subject_id is provided, it must be valid
 
     const assignment = await prisma.channel_assignments.create({
       data: {

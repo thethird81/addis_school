@@ -11,6 +11,8 @@ import {
   deleteVideo,
   removeFromWatchHistory,
   getAdvertVideos,
+  getAdvertVideosFromFavoriteChannels,
+  getAdvertVideosByChannel,
   searchYouTubeVideos,
   getCurriculumTree,
   bulkDeleteVideoAssignments,
@@ -26,6 +28,8 @@ router.get("/workspace/subcontents/:subcontentId", getWorkspaceVideosBySubconten
 router.get("/grade/:gradeId", getVideosByGrade);
 router.get("/channel/:channelId", getVideosByChannel);
 router.get("/adverts/:gradeId", getAdvertVideos);
+router.get("/adverts/favorite-channels/:profileId", getAdvertVideosFromFavoriteChannels);
+router.get("/adverts/channel/:channelId", getAdvertVideosByChannel);
 router.get("/curriculum/tree", getCurriculumTree);
 router.get("/:id", getVideoById);
 router.post("/save", saveVideos);

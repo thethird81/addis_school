@@ -4,6 +4,7 @@ import { ChannelWorkspaceToolbar } from "./ChannelWorkspaceToolbar";
 import { ChannelStagingZone } from "./ChannelStagingZone";
 import { ChannelLiveVideoZone } from "./ChannelLiveVideoZone";
 import { ChannelSearchModal } from "./ChannelSearchModal";
+import { ChannelAssignmentGuardrailModal } from "./ChannelAssignmentGuardrailModal";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useChannelVideoWorkspace } from "@/contexts/ChannelVideoWorkspaceContext";
 
@@ -31,6 +32,7 @@ export function ChannelVideoWorkspace({ channelId, channelName }: ChannelVideoWo
 
       {/* Modals */}
       <ChannelSearchModal />
+      <ChannelAssignmentGuardrailModal />
       <ConfirmDialog
         isOpen={isConfirmDialogOpen}
         onClose={closeConfirmDialog}

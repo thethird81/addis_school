@@ -507,6 +507,178 @@ const getAdvertVideos = async (req, res) => {
   }
 };
 
+const getAdvertVideosFromFavoriteChannels = async (req, res) => {
+  try {
+    const { profileId } = req.params;
+
+    if (!profileId) {
+      return safeJsonResponse(res, 400, { error: "profileId is required" });
+    }
+
+    // Get profile to fetch grade_id
+    const profile = await prisma.profiles.findUnique({
+      where: { id: profileId },
+      select: { grade_id: true },
+    });
+
+    if (!profile) {
+      return safeJsonResponse(res, 404, { error: "Profile not found" });
+    }
+
+    // Get all favorite channel IDs for this profile
+    const favoriteChannels = await prisma.favorite_channels.findMany({
+      where: { profile_id: profileId },
+      select: { channel_id: true },
+    });
+
+    if (!favoriteChannels.length) {
+      return safeJsonResponse(res, 200, []);
+    }
+
+    const channelIds = favoriteChannels.map(fc => fc.channel_id);
+
+    // Fetch videos with duration > 120s from favorite channels
+    const videos = await prisma.videos.findMany({
+      where: {
+        channel_id: { in: channelIds },
+        duration: { gte: 120 },
+        reports: {
+          none: {
+            profile_id: profileId,
+          },
+        },
+      },
+    });
+
+    if (!videos.length) {
+      return safeJsonResponse(res, 200, []);
+    }
+
+    const videoIds = videos.map(v => v.id);
+
+    // Get assignments for these videos
+    const assignments = await prisma.video_assignments.findMany({
+      where: {
+        video_id: { in: videoIds },
+        grade_id: profile.grade_id,
+      },
+      include: {
+        subjects: true,
+      },
+    });
+
+    const assignmentMap = {};
+    for (const a of assignments) {
+      assignmentMap[a.video_id] = a;
+    }
+
+    const formattedVideos = videos.map((video) => {
+      const assignment = assignmentMap[video.id];
+      return {
+        videoId: video.id,
+        title: video.title,
+        thumbnails: video.thumbnails,
+        publishedAt: video.published_at,
+        channelTitle: video.channel_title,
+        channelId: video.channel_id,
+        duration: video.duration,
+        viewCount: formatViewCount(video.view_count),
+        locator: assignment
+          ? {
+              grade_id: assignment.grade_id,
+              subject_id: assignment.subject_id,
+              content_id: assignment.content_id,
+              subcontent_id: assignment.subcontent_id,
+              channel_id: video.channel_id,
+              subject_name: assignment.subjects?.name || null,
+            }
+          : null,
+      };
+    });
+
+    return safeJsonResponse(res, 200, formattedVideos);
+  } catch (err) {
+    console.error("Error fetching advert videos from favorite channels:", err);
+    return safeJsonResponse(res, 500, { message: "Server error" });
+  }
+};
+
+const getAdvertVideosByChannel = async (req, res) => {
+  try {
+    const { channelId } = req.params;
+    const { profileId } = req.query;
+
+    if (!channelId) {
+      return safeJsonResponse(res, 400, { error: "channelId is required" });
+    }
+
+    // Fetch videos with duration > 120s from the specific channel
+    const videos = await prisma.videos.findMany({
+      where: {
+        channel_id: channelId,
+        duration: { lt: 150 },
+        ...(profileId && {
+          reports: {
+            none: {
+              profile_id: profileId,
+            },
+          },
+        }),
+      },
+    });
+
+    if (!videos.length) {
+      return safeJsonResponse(res, 200, []);
+    }
+
+    const videoIds = videos.map(v => v.id);
+
+    // Get assignments for these videos
+    const assignments = await prisma.video_assignments.findMany({
+      where: {
+        video_id: { in: videoIds },
+      },
+      include: {
+        subjects: true,
+      },
+    });
+
+    const assignmentMap = {};
+    for (const a of assignments) {
+      assignmentMap[a.video_id] = a;
+    }
+
+    const formattedVideos = videos.map((video) => {
+      const assignment = assignmentMap[video.id];
+      return {
+        videoId: video.id,
+        title: video.title,
+        thumbnails: video.thumbnails,
+        publishedAt: video.published_at,
+        channelTitle: video.channel_title,
+        channelId: video.channel_id,
+        duration: video.duration,
+        viewCount: formatViewCount(video.view_count),
+        locator: assignment
+          ? {
+              grade_id: assignment.grade_id,
+              subject_id: assignment.subject_id,
+              content_id: assignment.content_id,
+              subcontent_id: assignment.subcontent_id,
+              channel_id: video.channel_id,
+              subject_name: assignment.subjects?.name || null,
+            }
+          : null,
+      };
+    });
+
+    return safeJsonResponse(res, 200, formattedVideos);
+  } catch (err) {
+    console.error("Error fetching advert videos by channel:", err);
+    return safeJsonResponse(res, 500, { message: "Server error" });
+  }
+};
+
 // Search YouTube API for videos
 const searchYouTubeVideos = async (req, res) => {
   try {
@@ -737,6 +909,8 @@ export {
   saveVideos,
   removeFromWatchHistory,
   getAdvertVideos,
+  getAdvertVideosFromFavoriteChannels,
+  getAdvertVideosByChannel,
   searchYouTubeVideos,
   getCurriculumTree,
   bulkDeleteVideoAssignments,

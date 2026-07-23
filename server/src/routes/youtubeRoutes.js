@@ -8,16 +8,19 @@ const router = express.Router();
 router.use(authMiddleware, restrictTo('admin'));
 
 // Fetch videos by channel
-// Body: { type?: "advert" | "curricular", isAdvert?: boolean, query?: string }
+// Body: { type: "latest" | "popular" | "keyword", query?: string, duration?: string | null, maxResults?: number }
 router.post("/channel/:channelId", async (req, res) => {
   try {
     const { channelId } = req.params;
-    const { isAdvert, query, type } = req.body;
+    const { type, query, duration, maxResults } = req.body;
 
-    // Use explicit type if provided, otherwise fall back to isAdvert
-    const resolvedType = type || (isAdvert ? "advert" : "curricular");
-
-    const videos = await searchChannels({ channelId, type: resolvedType, query });
+    const videos = await searchChannels({ 
+      channelId, 
+      type, 
+      query, 
+      duration,
+      maxResults
+    });
     
     res.status(200).json(videos);
   } catch (error) {
@@ -27,16 +30,21 @@ router.post("/channel/:channelId", async (req, res) => {
 });
 
 // Fetch videos by search term (curriculum search)
-// Body: { searchTerm: string }
+// Body: { searchTerm: string, durations?: string[], maxResults?: number }
 router.post("/search", async (req, res) => {
   try {
-    const { searchTerm } = req.body;
-console.log("Received search request with searchTerm:", searchTerm);
+    const { searchTerm, durations, maxResults } = req.body;
+    console.log("Received search request with searchTerm:", searchTerm);
+    
     if (!searchTerm || !searchTerm.trim()) {
       return res.status(400).json({ error: "Missing required field: searchTerm" });
     }
 
-    const videos = await searchCurriculum({ query: searchTerm });
+    const videos = await searchCurriculum({ 
+      query: searchTerm,
+      durations,
+      maxResults
+    });
     
     res.status(200).json(videos);
   } catch (error) {

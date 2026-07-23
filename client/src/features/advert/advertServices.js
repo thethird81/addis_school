@@ -17,14 +17,16 @@ import { getAdvertVideos, setAdvertVideos } from '../store/profileStore.js';
  * @returns {Promise<Array>} Array of advert video objects.
  */
 export async function fetchAdvertVideos(gradeId, profileId) {
-  if (!gradeId || !profileId) {
-    console.warn('[advertServices] No gradeId or profileId provided.');
+  if (!profileId) {
+    console.warn('[advertServices] No profileId provided.');
     return [];
   }
 
   const accessToken = localStorage.getItem('accessToken');
   const baseUrl = getBaseUrl();
-  const url = `${baseUrl}/api/v1/videos/adverts/${encodeURIComponent(gradeId)}?profileId=${encodeURIComponent(profileId)}`;
+  
+  // Fetch advert videos from favorite channels
+  const url = `${baseUrl}/api/v1/videos/adverts/favorite-channels/${encodeURIComponent(profileId)}`;
 
   try {
     const headers = { 'Content-Type': 'application/json' };
@@ -34,22 +36,22 @@ export async function fetchAdvertVideos(gradeId, profileId) {
 
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      console.error('[advertServices] Failed to fetch adverts:', response.statusText);
+      console.error('[advertServices] Failed to fetch adverts from favorite channels:', response.statusText);
       return [];
     }
 
     const data = await response.json();
     if (!Array.isArray(data) || data.length === 0) {
-      console.log('[advertServices] No advert videos found for grade:', gradeId);
+      console.log('[advertServices] No advert videos found from favorite channels for profile:', profileId);
       return [];
     }
 
     // Cache in IndexedDB via profileStore
     await setAdvertVideos(profileId, gradeId, data);
-    console.log(`[advertServices] Cached ${data.length} advert videos for profile ${profileId}, grade ${gradeId}`);
+    console.log(`[advertServices] Cached ${data.length} advert videos from favorite channels for profile ${profileId}`);
     return data;
   } catch (error) {
-    console.error('[advertServices] Error fetching advert videos:', error);
+    console.error('[advertServices] Error fetching advert videos from favorite channels:', error);
     return [];
   }
 }
@@ -110,4 +112,45 @@ export async function ensureAdvertVideos(gradeId, profileId) {
   // Not cached — fetch from backend
   console.log('[advertServices] No cached adverts for grade', gradeId, '— fetching from backend...');
   return await fetchAdvertVideos(gradeId, profileId);
+}
+
+/**
+ * Fetch advert videos for a specific channel.
+ * @param {string} channelId - The channel ID.
+ * @param {string} profileId - The profile ID (to exclude reported videos).
+ * @returns {Promise<Array>} Array of advert video objects.
+ */
+export async function fetchAdvertVideosByChannel(channelId, profileId) {
+  if (!channelId) {
+    console.warn('[advertServices] No channelId provided.');
+    return [];
+  }
+
+  const accessToken = localStorage.getItem('accessToken');
+  const baseUrl = getBaseUrl();
+  const url = `${baseUrl}/api/v1/videos/adverts/channel/${encodeURIComponent(channelId)}?profileId=${encodeURIComponent(profileId || '')}`;
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      console.error('[advertServices] Failed to fetch adverts by channel:', response.statusText);
+      return [];
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data) || data.length === 0) {
+      console.log('[advertServices] No advert videos found for channel:', channelId);
+      return [];
+    }
+
+    return data;
+  } catch (error) {
+    console.error('[advertServices] Error fetching advert videos by channel:', error);
+    return [];
+  }
 }

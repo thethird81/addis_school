@@ -126,27 +126,29 @@ export function VideoCard({
   };
 
   return (
-    <Card className={`overflow-hidden transition-all duration-300 ease-in-out hover:shadow-md ${className}`}>
+    <Card className={`  w-full max-w-[320px] overflow-hidden transition-all duration-300 ease-in-out hover:shadow-md ${className}`}>
       {/* 1. Thumbnail Container - centered horizontally, flush to the top edge, with overlays */}
       <div className="flex justify-center">
         <div
           className="relative aspect-video w-full max-w-full cursor-pointer overflow-hidden bg-gray-100"
           onClick={handleThumbnailClick}
         >
-          {!imageError ? (
-            <Image
-              src={thumbnailUrl}
-              alt={video.title}
-              fill
-              className="object-cover"
-              onError={() => setImageError(true)}
-              unoptimized
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gray-900">
-              <Play className="h-12 w-12 text-gray-400" />
-            </div>
-          )}
+        <div className="relative w-full max-w-[320px] aspect-video overflow-hidden rounded-lg">
+  {!imageError ? (
+    <Image
+      src={thumbnailUrl}
+      alt={video.title}
+      fill
+      className="object-cover"
+      onError={() => setImageError(true)}
+      unoptimized
+    />
+  ) : (
+    <div className="flex h-full w-full items-center justify-center bg-gray-900">
+      <Play className="h-12 w-12 text-gray-400" />
+    </div>
+  )}
+</div>
 
           {/* Overlay: duration bottom-left, view count bottom-right */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-1.5">

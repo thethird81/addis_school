@@ -1,10 +1,41 @@
 import { prisma } from "../config/db.js";
 
 /**
- * Checks if an error is a quota exceeded error
- * @param {Object} errorData - The error object from YouTube API
- * @returns {boolean} True if quota exceeded
+ * Filters out videos that already exist in the database
+ * @param {Array} videos - Array of video objects
+ * @returns {Promise<Array>} Array of videos not in database
  */
+const filterNewVideos = async (videos) => {
+  if (!videos || videos.length === 0) {
+    return [];
+  }
+
+  try {
+    const videoIds = videos.map(v => v.videoId);
+    
+    // Get all existing video IDs from database
+    const existingVideos = await prisma.videos.findMany({
+      where: { id: { in: videoIds } },
+      select: { id: true },
+    });
+    
+    const existingVideoIds = new Set(existingVideos.map(v => v.id));
+    
+    // Filter out videos that already exist
+    const newVideos = videos.filter(v => !existingVideoIds.has(v.videoId));
+    
+    console.log(`Deduplication: ${videos.length} total, ${existingVideoIds.size} existing, ${newVideos.length} new`);
+    
+    return newVideos;
+  } catch (error) {
+    console.error("Error in filterNewVideos:", error);
+    // Return all videos if deduplication fails (graceful fallback)
+    return videos;
+  }
+};
+
+/**
+ * Checks if an error is a quota exceeded error
 const isQuotaExceeded = (errorData) => {
   if (!errorData || !errorData.error) return false;
   
@@ -100,13 +131,14 @@ const fetchVideoDetailsBulk = async (videoIds) => {
 };
 
 /**
- * Searches for curriculum videos (medium and long duration)
+ * Searches for curriculum videos with optional duration filters
  * @param {Object} params - Search parameters
- * @param {string} params.query - Search query
+ * @param {string} params.query - Search query (required)
+ * @param {string[]} [params.durations=[]] - Array of durations to search: 'short', 'medium', 'long'
  * @param {number} [params.maxResults=25] - Target number of unique videos
  * @returns {Promise<Array>} Array of formatted video objects
  */
-const searchCurriculum = async ({ query, maxResults = 25 }) => {
+const searchCurriculum = async ({ query, durations = [], maxResults = 25 }) => {
   try {
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
     if (!YOUTUBE_API_KEY) {
@@ -119,66 +151,78 @@ const searchCurriculum = async ({ query, maxResults = 25 }) => {
 
     const uniqueVideoIds = new Set();
 
-    // Search 1: Medium duration videos (4-20 minutes)
-    const searchUrlMedium =
-      `https://www.googleapis.com/youtube/v3/search` +
-      `?part=snippet&type=video&maxResults=50` +
-      `&q=${encodeURIComponent(query)}` +
-      `&videoDuration=medium` +
-      `&key=${YOUTUBE_API_KEY}`;
+    // Determine search strategy based on durations
+    // If no durations specified or all durations specified, do a single search without duration filter
+    const allDurations = ['short', 'medium', 'long'];
+    const shouldSearchAll = durations.length === 0 || durations.length === 3;
 
-    const responseMedium = await fetch(searchUrlMedium);
-    const dataMedium = await responseMedium.json();
+    if (shouldSearchAll) {
+      // Single search without duration filter (most efficient)
+      const searchUrl =
+        `https://www.googleapis.com/youtube/v3/search` +
+        `?part=snippet&type=video&maxResults=50` +
+        `&q=${encodeURIComponent(query)}` +
+        `&key=${YOUTUBE_API_KEY}`;
 
-    if (!responseMedium.ok) {
-      console.error("YouTube API error (medium duration):", dataMedium);
-      
-      if (isQuotaExceeded(dataMedium)) {
-        throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
-      }
-      
-      throw new Error(`YouTube API error: ${dataMedium.error?.message || "Unknown error"}`);
-    }
+      const response = await fetch(searchUrl);
+      const data = await response.json();
 
-    if (dataMedium.items && dataMedium.items.length > 0) {
-      dataMedium.items.forEach((item) => {
-        if (item.id && item.id.kind === "youtube#video") {
-          uniqueVideoIds.add(item.id.videoId);
+      if (!response.ok) {
+        console.error("YouTube API error (curriculum search):", data);
+        
+        if (isQuotaExceeded(data)) {
+          throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
         }
-      });
-    }
-
-    // Search 2: Long duration videos (>20 minutes)
-    const searchUrlLong =
-      `https://www.googleapis.com/youtube/v3/search` +
-      `?part=snippet&type=video&maxResults=50` +
-      `&q=${encodeURIComponent(query)}` +
-      `&videoDuration=long` +
-      `&key=${YOUTUBE_API_KEY}`;
-
-    const responseLong = await fetch(searchUrlLong);
-    const dataLong = await responseLong.json();
-
-    if (!responseLong.ok) {
-      console.error("YouTube API error (long duration):", dataLong);
-      
-      if (isQuotaExceeded(dataLong)) {
-        throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
+        
+        throw new Error(`YouTube API error: ${data.error?.message || "Unknown error"}`);
       }
-      
-      throw new Error(`YouTube API error: ${dataLong.error?.message || "Unknown error"}`);
-    }
 
-    if (dataLong.items && dataLong.items.length > 0) {
-      dataLong.items.forEach((item) => {
-        if (item.id && item.id.kind === "youtube#video") {
-          uniqueVideoIds.add(item.id.videoId);
+      if (data.items && data.items.length > 0) {
+        data.items.forEach((item) => {
+          if (item.id && item.id.kind === "youtube#video") {
+            uniqueVideoIds.add(item.id.videoId);
+          }
+        });
+      }
+    } else {
+      // Parallel searches for specific durations (1-2 durations)
+      const searchPromises = durations.map(duration => {
+        const searchUrl =
+          `https://www.googleapis.com/youtube/v3/search` +
+          `?part=snippet&type=video&maxResults=50` +
+          `&q=${encodeURIComponent(query)}` +
+          `&videoDuration=${duration}` +
+          `&key=${YOUTUBE_API_KEY}`;
+
+        return fetch(searchUrl).then(response => {
+          if (!response.ok) {
+            return response.json().then(data => {
+              console.error(`YouTube API error (${duration} duration):`, data);
+              if (isQuotaExceeded(data)) {
+                throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
+              }
+              throw new Error(`YouTube API error: ${data.error?.message || "Unknown error"}`);
+            });
+          }
+          return response.json();
+        });
+      });
+
+      const results = await Promise.all(searchPromises);
+
+      results.forEach(data => {
+        if (data.items && data.items.length > 0) {
+          data.items.forEach((item) => {
+            if (item.id && item.id.kind === "youtube#video") {
+              uniqueVideoIds.add(item.id.videoId);
+            }
+          });
         }
       });
     }
 
     // Limit to target maxResults
-    const limitedVideoIds = Array.from(uniqueVideoIds).slice(0, 50);
+    const limitedVideoIds = Array.from(uniqueVideoIds).slice(0, maxResults);
 
     if (limitedVideoIds.length === 0) {
       return [];
@@ -187,7 +231,10 @@ const searchCurriculum = async ({ query, maxResults = 25 }) => {
     // Fetch full video details
     const videos = await fetchVideoDetailsBulk(limitedVideoIds);
 
-    return videos;
+    // Filter out videos that already exist in database
+    const newVideos = await filterNewVideos(videos);
+
+    return newVideos;
   } catch (error) {
     console.error("Error in searchCurriculum:", error);
     throw error;
@@ -195,15 +242,16 @@ const searchCurriculum = async ({ query, maxResults = 25 }) => {
 };
 
 /**
- * Searches for channel videos
+ * Searches for channel videos with optional duration filters
  * @param {Object} params - Search parameters
  * @param {string} params.channelId - YouTube channel ID
- * @param {string} [params.type='advert'] - Type of search ('advert' or other)
+ * @param {string} [params.type='latest'] - Type of search ('latest', 'popular', 'keyword')
  * @param {string} [params.query] - Optional search query
+ * @param {string|null} [params.duration] - Single duration filter: 'short', 'medium', 'long', or null
  * @param {number} [params.maxResults=50] - Maximum number of results
  * @returns {Promise<Array>} Array of formatted video objects
  */
-const searchChannels = async ({ channelId, type = "advert", query, maxResults = 50 }) => {
+const searchChannels = async ({ channelId, type = "latest", query, duration, maxResults = 50 }) => {
   try {
     const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
     if (!YOUTUBE_API_KEY) {
@@ -216,78 +264,75 @@ const searchChannels = async ({ channelId, type = "advert", query, maxResults = 
 
     const uniqueVideoIds = new Set();
 
-    // Search 1: Fetch from uploads playlist
-    // Convert channelId to uploads playlist ID (replace 'C' with 'U' in second position)
-    const uploadsPlaylistId = "UU" + channelId.substring(2);
-    const playlistUrl =
-      `https://www.googleapis.com/youtube/v3/playlistItems` +
-      `?part=snippet&playlistId=${encodeURIComponent(uploadsPlaylistId)}` +
-      `&maxResults=50&key=${YOUTUBE_API_KEY}`;
+    // Determine search strategy based on type
+    if (type === "latest") {
+      // Latest Uploads: Use uploads playlist
+      const uploadsPlaylistId = "UU" + channelId.substring(2);
+      const playlistUrl =
+        `https://www.googleapis.com/youtube/v3/playlistItems` +
+        `?part=snippet&playlistId=${encodeURIComponent(uploadsPlaylistId)}` +
+        `&maxResults=50&key=${YOUTUBE_API_KEY}`;
 
-    const playlistResponse = await fetch(playlistUrl);
-    const playlistData = await playlistResponse.json();
+      const playlistResponse = await fetch(playlistUrl);
+      const playlistData = await playlistResponse.json();
 
-    if (!playlistResponse.ok) {
-      console.error("YouTube API error fetching playlist:", playlistData);
-      
-      if (isQuotaExceeded(playlistData)) {
-        throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
-      }
-      
-      throw new Error(`YouTube API error: ${playlistData.error?.message || "Unknown error"}`);
-    }
-
-    if (playlistData.items && playlistData.items.length > 0) {
-      // Extract video IDs from playlist items
-      playlistData.items.forEach((item) => {
-        const videoId = item.snippet?.resourceId?.videoId;
-        if (videoId) {
-          uniqueVideoIds.add(videoId);
+      if (!playlistResponse.ok) {
+        console.error("YouTube API error fetching playlist:", playlistData);
+        
+        if (isQuotaExceeded(playlistData)) {
+          throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
         }
-      });
+        
+        throw new Error(`YouTube API error: ${playlistData.error?.message || "Unknown error"}`);
+      }
+
+      if (playlistData.items && playlistData.items.length > 0) {
+        playlistData.items.forEach((item) => {
+          const videoId = item.snippet?.resourceId?.videoId;
+          if (videoId) {
+            uniqueVideoIds.add(videoId);
+          }
+        });
+      }
+    } else if (type === "popular" || type === "keyword") {
+      // Popular/Keyword: Search channel with optional query
+      let searchUrl =
+        `https://www.googleapis.com/youtube/v3/search` +
+        `?part=snippet&type=video&maxResults=${maxResults}` +
+        `&channelId=${encodeURIComponent(channelId)}` +
+        `&key=${YOUTUBE_API_KEY}`;
+
+      // Add query for keyword search
+      if (type === "keyword" && query && query.trim()) {
+        searchUrl += `&q=${encodeURIComponent(query.trim())}`;
+      }
+
+      // Add duration filter if specified
+      if (duration) {
+        searchUrl += `&videoDuration=${duration}`;
+      }
+
+      const searchResponse = await fetch(searchUrl);
+      const searchData = await searchResponse.json();
+
+      if (!searchResponse.ok) {
+        console.error(`YouTube API error searching channels (${type}):`, searchData);
+        
+        if (isQuotaExceeded(searchData)) {
+          throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
+        }
+        
+        throw new Error(`YouTube API error: ${searchData.error?.message || "Unknown error"}`);
+      }
+
+      if (searchData.items && searchData.items.length > 0) {
+        searchData.items.forEach((item) => {
+          if (item.id && item.id.kind === "youtube#video") {
+            uniqueVideoIds.add(item.id.videoId);
+          }
+        });
+      }
     }
-
-    // // Search 2: Regular channel search
-    // // Build search URL based on type
-    // let searchUrl =
-    //   `https://www.googleapis.com/youtube/v3/search` +
-    //   `?part=snippet&type=video&maxResults=${maxResults}` +
-    //   `&channelId=${encodeURIComponent(channelId)}` +
-    //   `&key=${YOUTUBE_API_KEY}`;
-
-    // // Add videoDuration=short only for advert type
-    // if (type === "advert") {
-    //   searchUrl += `&videoDuration=short`;
-    // }
-    //  if (type === "curricular") {
-    //   searchUrl += `&videoDuration=long`;
-    // }
-    // // Add query if provided
-    // if (query && query.trim()) {
-    //   searchUrl += `&q=${encodeURIComponent(query)}`;
-    // }
-
-    // const response = await fetch(searchUrl);
-    // const data = await response.json();
-
-    // if (!response.ok) {
-    //   console.error("YouTube API error searching channels:", data);
-      
-    //   if (isQuotaExceeded(data)) {
-    //     throw new Error('YouTube API quota exceeded. Please try again later or increase your quota limit.');
-    //   }
-      
-    //   throw new Error(`YouTube API error: ${data.error?.message || "Unknown error"}`);
-    // }
-
-    // if (data.items && data.items.length > 0) {
-    //   // Collect unique video IDs from search
-    //   data.items.forEach((item) => {
-    //     if (item.id && item.id.kind === "youtube#video") {
-    //       uniqueVideoIds.add(item.id.videoId);
-    //     }
-    //   });
-    // }
 
     const videoIds = Array.from(uniqueVideoIds);
 
@@ -298,7 +343,18 @@ const searchChannels = async ({ channelId, type = "advert", query, maxResults = 
     // Fetch full video details with duration and view count
     const videos = await fetchVideoDetailsBulk(videoIds);
 
-    return videos;
+    // For 'popular' type, sort by view count (descending) and limit to maxResults
+    let resultVideos = videos;
+    if (type === 'popular') {
+      resultVideos = videos
+        .sort((a, b) => b.viewCount - a.viewCount)
+        .slice(0, maxResults);
+    }
+
+    // Filter out videos that already exist in database
+    const newVideos = await filterNewVideos(resultVideos);
+
+    return newVideos;
   } catch (error) {
     console.error("Error in searchChannels:", error);
     throw error;

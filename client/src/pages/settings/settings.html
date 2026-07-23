@@ -22,10 +22,6 @@
       <div class="sliding-text" style="display:none;">
         ከኬጂ - 6ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 6. Join Us Now!
       </div>
-      <div class="settings-toggle">
-        <button class="toggle-btn active" id="quizTabBtn">Quiz</button>
-        <button class="toggle-btn" id="profileTabBtn">Profile</button>
-      </div>
     </div>
     <div class="nav-right flex-div">
       <button class="btn" id="joinUs" style="display:none;">Join Us!</button>
@@ -41,102 +37,186 @@
     </div>
   </nav>
 
-  
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div id="sidebarContent" style="display:none"></div>
-    <div class="signin-signup">
-      <div class="container-register" id="signup" style="display:none;">
-        <h1 class="form-title">Register</h1>
-        <button class="btn" id="openFullSignUpBtn">Create Account</button>
-        <div class="links">
-          <p>Already Have Account ?</p>
-          <button id="signInButton">Sign In</button>
-        </div>
-      </div>
-
-      <div class="container-register" id="signIn">
-        <h1 class="form-title">Sign In</h1>
-        <form method="post" action="">
-          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
-
-          <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="email" placeholder="Email" required>
-          </div>
-          <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Password" required>
-          </div>
-          <p class="recover" id="resendVerification" style="display:none;">
-            <a href="#">Resend varification</a>
-          </p>
-          <p class="recover">
-            <a href="#" id="forgotPasswordLink">Forgot Password</a>
-          </p>
-          <button class="btn" id="submitSignIn">Sign In</button>
-        </form>
-        <!-- <p class="or">
-                    ----------{{#if isAfterLogin}} 
-                    <div class="container-register" id="signup" style="display:none;">
-                      <h1 class="form-title"><|fim_middle|><|fim_middle|>itureglobalsardiStateToPropsension<|fim_middle|><|fim_middle|><|fim_middle|>fov先锋illes<|fim_middle|>婆婆<|fim_middle|>vielling ediidUser Icon">
-                  </p>
-                  <div class="icons">
-                    <i class="fab fa-google" id="googleSignInButton"></i>
-                    <i class="fab fa-facebook"></i>
-                  </div> -->
-        <div class="links">
-          <p>Don't have account yet?</p>
-          <button id="signUpButton">Sign Up</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="user-sidebar focus-zone" id="userSidebar" data-nav="list">
-    <p>User Menu</p>
-    <ul>
-      <li class="userSidebar-item item" tabindex="0" id="aboutUs">About Us</li>
-      <li class="userSidebar-item item" tabindex="0" id="settings">Settings</li>
-      <li class="userSidebar-item item" tabindex="0" id="contactUs">Contact Us</li>
-      <li class="userSidebar-item item" tabindex="0" id="changeGrade">Change Grade</li>
+  <!-- Main Content Area -->
+  <div class="settings-main-content">
     
-       <li class="userSidebar-item item" tabindex="0" id="logout">Logout</li>
-    </ul>
-  </div>
-  <!-- Quiz Settings View -->
-  <div id="quizSettingsView" class="subcontent-selection">
-    <h2>Quiz Settings</h2>
-
-    <!-- Error message container -->
-    <div id="errorMessage" class="error-message" style="display:none;"></div>
-
-    <!-- Tab Buttons -->
-    <div class="quiz-tabs">
-      <button class="quiz-tab-btn active" id="favoritesTabBtn">⭐ Favorites</button>
-      <button class="quiz-tab-btn" id="remainingTabBtn">📚 Remaining</button>
+    <!-- Settings Navigation Tabs -->
+    <div class="settings-nav-tabs">
+      <button class="settings-tab-btn active" data-section="profile">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </button>
+      <button class="settings-tab-btn" data-section="quiz">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Quiz</span>
+      </button>
+      <button class="settings-tab-btn" data-section="channels">
+        <i class="fas fa-tv"></i>
+        <span>Channels</span>
+      </button>
     </div>
 
-    <!-- Quiz Cards Container -->
-    <div id="quiz-cards-container"></div>
+    <!-- Profile Settings View -->
+    <div id="profileSettingsView" class="settings-section active">
+      <h2>Profile Settings</h2>
 
-    <!-- Save Button -->
-    <button id="saveFavoritesBtn" class="save-favorites-btn" disabled>Save Changes</button>
-  </div>
+      <!-- Error message container -->
+      <div id="profileErrorMessage" class="error-message" style="display:none;"></div>
 
-  <!-- Profile Settings View -->
-  <div id="profileSettingsView" class="subcontent-selection" style="display:none;">
-    <h2>Profile Settings</h2>
+      <!-- Add Child Button -->
+      <button id="addChildBtn" class="btn-add-child">+ Add Child</button>
 
-    <!-- Error message container -->
-    <div id="profileErrorMessage" class="error-message" style="display:none;"></div>
+      <!-- Profiles List -->
+      <div id="profilesListContainer" class="profiles-list"></div>
+    </div>
 
-    <!-- Add Child Button -->
-    <button id="addChildBtn" class="btn-add-child">+ Add Child</button>
+    <!-- Quiz Settings View -->
+    <div id="quizSettingsView" class="settings-section" style="display:none;">
+      <h2>Quiz Settings</h2>
 
-    <!-- Profiles List -->
-    <div id="profilesListContainer" class="profiles-list"></div>
+      <!-- Error message container -->
+      <div id="errorMessage" class="error-message" style="display:none;"></div>
+
+      <!-- Favorited Quizzes Collapsible Table -->
+      <div class="quiz-table-section collapsible-section">
+        <div class="collapsible-header" data-target="favoritesTableContainer">
+          <div class="header-content">
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            <h3>⭐ Favorited Quizzes</h3>
+            <span class="quiz-count" id="favoritesCount">(0)</span>
+          </div>
+        </div>
+        <div class="collapsible-content" id="favoritesTableContainer">
+          <div class="table-filter">
+            <input type="text" id="favoritesFilter" class="filter-input" placeholder="🔍 Filter quizzes by name...">
+          </div>
+          <div class="quiz-table-wrapper">
+            <table class="quiz-table">
+              <thead>
+                <tr>
+                  <th class="col-star">⭐</th>
+                  <th class="col-title">Quiz Title</th>
+                </tr>
+              </thead>
+              <tbody id="favoritesTableBody">
+                <!-- Favorited quizzes will be rendered here -->
+              </tbody>
+            </table>
+            <div id="favoritesNoData" class="no-data-message" style="display:none;">
+              No favorited quizzes yet. Browse quizzes and click ⭐ to add favorites!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remaining Quizzes Collapsible Table -->
+      <div class="quiz-table-section collapsible-section">
+        <div class="collapsible-header" data-target="remainingTableContainer">
+          <div class="header-content">
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            <h3>📚 Remaining Quizzes</h3>
+            <span class="quiz-count" id="remainingCount">(0)</span>
+          </div>
+        </div>
+        <div class="collapsible-content" id="remainingTableContainer">
+          <div class="table-filter">
+            <input type="text" id="remainingFilter" class="filter-input" placeholder="🔍 Filter quizzes by name...">
+          </div>
+          <div class="quiz-table-wrapper">
+            <table class="quiz-table">
+              <thead>
+                <tr>
+                  <th class="col-star">⭐</th>
+                  <th class="col-title">Quiz Title</th>
+                </tr>
+              </thead>
+              <tbody id="remainingTableBody">
+                <!-- Remaining quizzes will be rendered here -->
+              </tbody>
+            </table>
+            <div id="remainingNoData" class="no-data-message" style="display:none;">
+              All quizzes are favorited! 🎉
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <button id="saveFavoritesBtn" class="save-favorites-btn" disabled>Save Changes</button>
+    </div>
+
+    <!-- Channels Settings View -->
+    <div id="channelsSettingsView" class="settings-section" style="display:none;">
+      <h2>Channel Settings</h2>
+
+      <!-- Error message container -->
+      <div id="channelErrorMessage" class="error-message" style="display:none;"></div>
+
+      <!-- Favorite Channels Collapsible Table -->
+      <div class="quiz-table-section collapsible-section">
+        <div class="collapsible-header" data-target="favoriteChannelsTableContainer">
+          <div class="header-content">
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            <h3>⭐ Favorite Channels</h3>
+            <span class="quiz-count" id="favoriteChannelsCount">(0)</span>
+          </div>
+        </div>
+        <div class="collapsible-content" id="favoriteChannelsTableContainer">
+          <div class="table-filter">
+            <input type="text" id="favoriteChannelsFilter" class="filter-input" placeholder="🔍 Filter channels by name...">
+          </div>
+          <div class="quiz-table-wrapper">
+            <table class="quiz-table">
+              <thead>
+                <tr>
+                  <th class="col-star">⭐</th>
+                  <th class="col-channel">Channel</th>
+                </tr>
+              </thead>
+              <tbody id="favoriteChannelsTableBody">
+                <!-- Favorite channels will be rendered here -->
+              </tbody>
+            </table>
+            <div id="favoriteChannelsNoData" class="no-data-message" style="display:none;">
+              No favorite channels yet. Browse channels and click ⭐ to add favorites!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remaining Channels Collapsible Table -->
+      <div class="quiz-table-section collapsible-section">
+        <div class="collapsible-header" data-target="remainingChannelsTableContainer">
+          <div class="header-content">
+            <i class="fas fa-chevron-down chevron-icon"></i>
+            <h3>📺 All Channels</h3>
+            <span class="quiz-count" id="remainingChannelsCount">(0)</span>
+          </div>
+        </div>
+        <div class="collapsible-content" id="remainingChannelsTableContainer">
+          <div class="table-filter">
+            <input type="text" id="remainingChannelsFilter" class="filter-input" placeholder="🔍 Filter channels by name...">
+          </div>
+          <div class="quiz-table-wrapper">
+            <table class="quiz-table">
+              <thead>
+                <tr>
+                  <th class="col-star">⭐</th>
+                  <th class="col-channel">Channel</th>
+                </tr>
+              </thead>
+              <tbody id="remainingChannelsTableBody">
+                <!-- Remaining channels will be rendered here -->
+              </tbody>
+            </table>
+            <div id="remainingChannelsNoData" class="no-data-message" style="display:none;">
+              All channels are favorited! 🎉
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Add/Edit Child Modal -->

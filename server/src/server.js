@@ -21,6 +21,7 @@ import searchRoutes from './routes/searchRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import youtubeRoutes from './routes/youtubeRoutes.js';
 import favoritesQuizRoutes from './routes/favoritesQuizRoutes.js';
+import favoritesChannelsRoutes from './routes/favoritesChannelsRoutes.js';
 import avatarRoutes from './routes/avatarRoutes.js';
 import videoRoutes from './routes/videoRoutes.js';
 config(); // Load environment variables from .env file
@@ -57,6 +58,7 @@ app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/admin/youtube", youtubeRoutes);
 app.use("/api/v1/favorites", favoritesQuizRoutes);
+app.use("/api/v1/favorites/channels", favoritesChannelsRoutes);
 app.use("/api/v1/avatar", avatarRoutes);
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });

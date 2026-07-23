@@ -44,20 +44,21 @@ model grades {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
-  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id          String             @db.Uuid
-  grade_id         String             @db.Uuid
-  profile_name     String             @db.VarChar(100)
-  avatar_url       String?
-  is_active        Boolean            @default(true)
-  created_at       DateTime           @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  coins            Int?               @default(30) @db.SmallInt
-  favorite_quizzes favorite_quizzes[]
-  likes            likes[]
-  grades           grades             @relation(fields: [grade_id], references: [id], onUpdate: NoAction)
-  users            users_metadata     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  reports          reports[]
-  watch_histories  watch_histories[]
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String              @db.Uuid
+  grade_id          String              @db.Uuid
+  profile_name      String              @db.VarChar(100)
+  avatar_url        String?
+  is_active         Boolean             @default(true)
+  created_at        DateTime            @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  coins             Int?                @default(30) @db.SmallInt
+  favorite_channels favorite_channels[]
+  favorite_quizzes  favorite_quizzes[]
+  likes             likes[]
+  grades            grades              @relation(fields: [grade_id], references: [id], onUpdate: NoAction)
+  users             users_metadata      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reports           reports[]
+  watch_histories   watch_histories[]
 
   @@unique([user_id, profile_name], map: "unique_profile_per_user")
   @@index([user_id], map: "idx_profiles_user")
@@ -152,6 +153,7 @@ model channels {
   thumbnail_url       Json?
   created_at          DateTime              @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   channel_assignments channel_assignments[]
+  favorite_channels   favorite_channels[]
 
   @@schema("public")
 }
@@ -451,6 +453,20 @@ model deleted_videos {
 // model webauthn_credentials {
 // @@schema("auth")
 // }
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model favorite_channels {
+  profile_id String   @db.Uuid
+  channel_id String   @db.VarChar(100)
+  created_at DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  channels   channels @relation(fields: [channel_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_favorite_channels_channel")
+  profiles   profiles @relation(fields: [profile_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_favorite_channels_profile")
+
+  @@id([profile_id, channel_id])
+  @@index([channel_id], map: "idx_favorite_channels_channel")
+  @@index([profile_id], map: "idx_favorite_channels_profile")
+  @@schema("public")
+}
 
 enum subscription_tier {
   free

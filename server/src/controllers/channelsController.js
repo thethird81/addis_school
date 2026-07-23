@@ -121,4 +121,67 @@ const getSubjectChannelsByGrade = async (req, res) => {
   }
 };
 
-export { getChannelsByGrade, getSubjectChannelsByGrade };
+const getAdvertChannelsByGrade = async (req, res) => {
+  try {
+    const { gradeId } = req.params;
+
+    // Fetch all channel assignments for the grade with subject information
+    const channelAssignments = await prisma.channel_assignments.findMany({
+      where: { 
+        grade_id: gradeId,
+        
+      },
+      include: {
+        subjects: {
+          select: {
+            name: true,
+          },
+        },
+        channels: {
+          select: {
+            id: true,
+            name: true,
+            thumbnail_url: true,
+          },
+        },
+      },
+    });
+
+    if (!channelAssignments.length) {
+      return res.status(404).json({ error: "No channel assignments found for this grade" });
+    }
+
+    // Filter out Entertainment subject and collect unique channels
+    const channelMap = new Map();
+
+    channelAssignments.forEach((ca) => {
+      // Exclude Entertainment subject, include everything else
+      if (ca.subjects && ca.subjects.name === "Entertainment") {
+        return; // Skip Entertainment
+      }
+      
+      // Include all other channels (including those with null subject names)
+      if (ca.channels) {
+        if (!channelMap.has(ca.channels.id)) {
+          channelMap.set(ca.channels.id, {
+            ...ca.channels,
+          });
+        }
+      }
+    });
+
+    const channels = Array.from(channelMap.values());
+
+    if (!channels.length) {
+      return res.status(404).json({ error: "No advert channels found for this grade" });
+    }
+
+    console.log("Fetched advert channels for grade:", gradeId, channels);
+    res.status(200).json(channels);
+  } catch (error) {
+    console.error("Error fetching advert channels by grade:", error);
+    res.status(500).json({ error: "Failed to fetch advert channels" });
+  }
+};
+
+export { getChannelsByGrade, getSubjectChannelsByGrade, getAdvertChannelsByGrade };

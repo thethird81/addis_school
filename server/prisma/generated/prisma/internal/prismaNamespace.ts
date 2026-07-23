@@ -401,7 +401,8 @@ export const ModelName = {
   users_metadata: 'users_metadata',
   video_assignments: 'video_assignments',
   watch_histories: 'watch_histories',
-  deleted_videos: 'deleted_videos'
+  deleted_videos: 'deleted_videos',
+  favorite_channels: 'favorite_channels'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "channel_assignments" | "likes" | "quiz_assignments" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos"
+    modelProps: "contents" | "grades" | "profiles" | "questions" | "quizzes" | "subcontents" | "subjects" | "videos" | "channels" | "favorite_quizzes" | "channel_assignments" | "likes" | "quiz_assignments" | "reports" | "users_metadata" | "video_assignments" | "watch_histories" | "deleted_videos" | "favorite_channels"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1753,6 +1754,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    favorite_channels: {
+      payload: Prisma.$favorite_channelsPayload<ExtArgs>
+      fields: Prisma.favorite_channelsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.favorite_channelsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.favorite_channelsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        findFirst: {
+          args: Prisma.favorite_channelsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.favorite_channelsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        findMany: {
+          args: Prisma.favorite_channelsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>[]
+        }
+        create: {
+          args: Prisma.favorite_channelsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        createMany: {
+          args: Prisma.favorite_channelsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.favorite_channelsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>[]
+        }
+        delete: {
+          args: Prisma.favorite_channelsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        update: {
+          args: Prisma.favorite_channelsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        deleteMany: {
+          args: Prisma.favorite_channelsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.favorite_channelsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.favorite_channelsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>[]
+        }
+        upsert: {
+          args: Prisma.favorite_channelsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$favorite_channelsPayload>
+        }
+        aggregate: {
+          args: Prisma.Favorite_channelsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFavorite_channels>
+        }
+        groupBy: {
+          args: Prisma.favorite_channelsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Favorite_channelsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.favorite_channelsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Favorite_channelsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1989,6 +2064,15 @@ export const Deleted_videosScalarFieldEnum = {
 } as const
 
 export type Deleted_videosScalarFieldEnum = (typeof Deleted_videosScalarFieldEnum)[keyof typeof Deleted_videosScalarFieldEnum]
+
+
+export const Favorite_channelsScalarFieldEnum = {
+  profile_id: 'profile_id',
+  channel_id: 'channel_id',
+  created_at: 'created_at'
+} as const
+
+export type Favorite_channelsScalarFieldEnum = (typeof Favorite_channelsScalarFieldEnum)[keyof typeof Favorite_channelsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2291,6 +2375,7 @@ export type GlobalOmitConfig = {
   video_assignments?: Prisma.video_assignmentsOmit
   watch_histories?: Prisma.watch_historiesOmit
   deleted_videos?: Prisma.deleted_videosOmit
+  favorite_channels?: Prisma.favorite_channelsOmit
 }
 
 /* Types for Logging */

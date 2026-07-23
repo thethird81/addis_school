@@ -105,18 +105,18 @@
 
     /* Legacy fallback */
     background: rgb(24, 165, 95);
-    background: -moz-linear-gradient(135deg, #860397, #ffa94d);
-    background: -webkit-linear-gradient(135deg, #860397, #ffa94d);
-    background: linear-gradient(135deg, #860397, #ffa94d);
+    background: -moz-linear-gradient(135deg, #860397, #ff4dff);
+    background: -webkit-linear-gradient(135deg, #860397, #ff4dff);
+    background: linear-gradient(135deg, #860397, #ff4dff);
 
     color: #ffffff;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 700;
     font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
 
     border: 3px solid rgba(255, 255, 255, 0.25);
     cursor: pointer;
-    padding: 14px 16px;
+    padding: 8px;
     margin: 6px 0;
     border-radius: 16px;
     text-align: left;
@@ -133,9 +133,9 @@
 .collapsible:hover {
     /* Legacy fallback */
     background: #5a2d7a;
-    background: -moz-linear-gradient(135deg, #ff8585, #ffb86c);
-    background: -webkit-linear-gradient(135deg, #ff8585, #ffb86c);
-    background: linear-gradient(135deg, #ff8585, #ffb86c);
+    background: -moz-linear-gradient(135deg, #e67fee, #6f1676);
+    background: -webkit-linear-gradient(135deg, #e67fee, #6f1676);
+    background: linear-gradient(135deg, #e67fee, #6f1676);
 
     transform: scale(1.03) translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
@@ -164,7 +164,7 @@
 
 /* ===== Subunit Items (Subcontents & Channels inside subjects) ===== */
 .subunits {
-    padding: 10px 16px 10px 28px;
+    padding: 8px;
 
     /* Legacy fallback */
     background: #5a2a7a;
@@ -175,7 +175,7 @@
     color: #ffffff;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.12);
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 600;
     font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
     margin-top: 5px;
@@ -215,7 +215,7 @@
 /* ===== Action Buttons (Liked Videos, Last Watched, Channels) ===== */
 .favorite-videos-btn {
     width: 100%;
-    padding: 14px 16px;
+    padding: 8px;
     margin: 6px 0;
 
     /* Legacy fallback */
@@ -225,7 +225,7 @@
     background: linear-gradient(135deg, #22011b, #ff6b6b);
 
     color: #ffffff;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     font-family: 'Poppins', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
 
@@ -237,7 +237,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
 
     /* Legacy fallback shadow */
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);

@@ -6,6 +6,8 @@ import { getGradeName, refresh } from '../../utils/sharedFunctions.js';
 import '../../components/navbar/navbar.js';
 import '../../components/loading-spinner/loading-spinner.css';
 import '../../components/loading-spinner/loading-spinner.js';
+import { addAdvertVideos, removeAdvertVideosByChannel, clearAdvertVideos } from '../../features/store/profileStore.js';
+import { fetchAdvertVideosByChannel } from '../../features/advert/advertServices.js';
 
 const BASE_URL = getBaseUrl();
 
@@ -66,17 +68,31 @@ if (!activeProfile) {
 }
 
 // DOM references
-const quizCardsContainer = document.getElementById("quiz-cards-container");
 const errorMessageEl = document.getElementById("errorMessage");
 const saveBtn = document.getElementById("saveFavoritesBtn");
-const favoritesTabBtn = document.getElementById("favoritesTabBtn");
-const remainingTabBtn = document.getElementById("remainingTabBtn");
+const favoritesFilter = document.getElementById("favoritesFilter");
+const remainingFilter = document.getElementById("remainingFilter");
+const favoritesTableBody = document.getElementById("favoritesTableBody");
+const remainingTableBody = document.getElementById("remainingTableBody");
+const favoritesCount = document.getElementById("favoritesCount");
+const remainingCount = document.getElementById("remainingCount");
+const favoritesNoData = document.getElementById("favoritesNoData");
+const remainingNoData = document.getElementById("remainingNoData");
 
-// Settings toggle
-const quizTabBtn = document.getElementById("quizTabBtn");
-const profileTabBtn = document.getElementById("profileTabBtn");
-const quizSettingsView = document.getElementById("quizSettingsView");
-const profileSettingsView = document.getElementById("profileSettingsView");
+// Settings tab elements
+const settingsTabBtns = document.querySelectorAll(".settings-tab-btn");
+const settingsSections = document.querySelectorAll(".settings-section");
+
+// Channel settings elements
+const favoriteChannelsTableBody = document.getElementById("favoriteChannelsTableBody");
+const remainingChannelsTableBody = document.getElementById("remainingChannelsTableBody");
+const favoriteChannelsCount = document.getElementById("favoriteChannelsCount");
+const remainingChannelsCount = document.getElementById("remainingChannelsCount");
+const favoriteChannelsNoData = document.getElementById("favoriteChannelsNoData");
+const remainingChannelsNoData = document.getElementById("remainingChannelsNoData");
+const favoriteChannelsFilter = document.getElementById("favoriteChannelsFilter");
+const remainingChannelsFilter = document.getElementById("remainingChannelsFilter");
+const channelErrorMessage = document.getElementById("channelErrorMessage");
 
 // Profile settings elements
 const profilesListContainer = document.getElementById("profilesListContainer");
@@ -111,8 +127,15 @@ let isUploadingAvatar = false;
 
 // Array to store quiz objects: { id, title, isFavorite }
 let quizStateArray = [];
-// Current filter: 'favorites' | 'remaining'
-let currentFilter = 'favorites';
+// Current filter for each table
+let favoritesFilterText = '';
+let remainingFilterText = '';
+
+// Array to store channel objects: { id, name, thumbnailUrl, isFavorite }
+let channelStateArray = [];
+// Current filter for each channel table
+let favoriteChannelsFilterText = '';
+let remainingChannelsFilterText = '';
 
 // ─── API helpers ────────────────────────────────────────────────────────────
 
@@ -181,6 +204,30 @@ async function removeFavorite(profileId, quizId) {
 
 async function fetchQuizHierarchy(gradeId) {
   return fetchWithAuth(`${BASE_URL}/api/v1/sidebar/quizzes/${gradeId}`);
+}
+
+// ─── Channels API calls ─────────────────────────────────────────────────────
+
+async function fetchFavoriteChannels(profileId) {
+  return fetchWithAuth(`${BASE_URL}/api/v1/favorites/channels/${profileId}`);
+}
+
+async function addFavoriteChannel(profileId, channelId) {
+  return fetchWithAuth(`${BASE_URL}/api/v1/favorites/channels/add`, {
+    method: "POST",
+    body: JSON.stringify({ profileId, channelId }),
+  });
+}
+
+async function removeFavoriteChannel(profileId, channelId) {
+  return fetchWithAuth(
+    `${BASE_URL}/api/v1/favorites/channels/${profileId}/${channelId}`,
+    { method: "DELETE" }
+  );
+}
+
+async function fetchChannelsByGrade(gradeId) {
+  return fetchWithAuth(`${BASE_URL}/api/v1/channels/grade/${gradeId}/advert-channels`);
 }
 
 // ─── Profiles API calls ─────────────────────────────────────────────────────
@@ -288,153 +335,395 @@ async function fetchGrades() {
 function updateSaveButtonState() {
   if (!saveBtn) return;
   const hasChanges = quizStateArray.some(q => {
-    const card = document.querySelector(`.quiz-card[data-id="${q.id}"]`);
-    return card && card.dataset.pending === 'true';
+    const row = document.querySelector(`tr[data-id="${q.id}"]`);
+    return row && row.dataset.pending === 'true';
   });
   saveBtn.disabled = !hasChanges;
 }
 
-// ─── Render Quiz Cards ──────────────────────────────────────────────────────
+// ─── Render Quiz Tables ─────────────────────────────────────────────────────
 
-function renderQuizCards() {
-  quizCardsContainer.innerHTML = "";
+function renderQuizTables() {
+  renderQuizTable(favoritesTableBody, quizStateArray.filter(q => q.isFavorite), favoritesFilterText, favoritesNoData);
+  renderQuizTable(remainingTableBody, quizStateArray.filter(q => !q.isFavorite), remainingFilterText, remainingNoData);
+  
+  // Update counts
+  const favCount = quizStateArray.filter(q => q.isFavorite).length;
+  const remCount = quizStateArray.filter(q => !q.isFavorite).length;
+  favoritesCount.textContent = `(${favCount})`;
+  remainingCount.textContent = `(${remCount})`;
+}
 
-  // Filter quizzes based on current filter
-  let filteredQuizzes = [];
-  if (currentFilter === 'favorites') {
-    filteredQuizzes = quizStateArray.filter(q => q.isFavorite);
-  } else {
-    filteredQuizzes = quizStateArray.filter(q => !q.isFavorite);
+function renderQuizTable(tableBody, quizzes, filterText, noDataElement) {
+  tableBody.innerHTML = "";
+  
+  // Filter quizzes by name
+  let filteredQuizzes = quizzes;
+  if (filterText) {
+    filteredQuizzes = quizzes.filter(q => 
+      q.title.toLowerCase().includes(filterText.toLowerCase())
+    );
   }
-
+  
   // Show message if no quizzes
   if (filteredQuizzes.length === 0) {
-    const message = document.createElement("div");
-    message.className = "no-quizzes-message";
-    message.textContent = currentFilter === 'favorites' 
-      ? "No favorited quizzes yet. Browse quizzes and click ⭐ to add favorites!"
-      : "All quizzes are favorited! 🎉";
-    quizCardsContainer.appendChild(message);
+    noDataElement.style.display = 'block';
     return;
+  } else {
+    noDataElement.style.display = 'none';
   }
-
-  // Create card for each filtered quiz
+  
+  // Create row for each quiz
   filteredQuizzes.forEach((quiz) => {
-    const card = createQuizCard(quiz);
-    quizCardsContainer.appendChild(card);
+    const row = createQuizTableRow(quiz);
+    tableBody.appendChild(row);
   });
 }
 
-function createQuizCard(quiz) {
-  const card = document.createElement("div");
-  card.className = "quiz-card";
-  card.dataset.id = quiz.id;
-  card.dataset.pending = "false";
-
+function createQuizTableRow(quiz) {
+  const row = document.createElement("tr");
+  row.dataset.id = quiz.id;
+  row.dataset.pending = "false";
+  
+  const starCell = document.createElement("td");
+  starCell.className = "col-star";
+  
   const toggleBtn = document.createElement("button");
-  toggleBtn.className = "favorite-toggle-btn";
+  toggleBtn.className = "star-toggle-btn";
   toggleBtn.dataset.id = quiz.id;
   toggleBtn.innerHTML = `<span class="star-icon">${quiz.isFavorite ? '⭐' : '☆'}</span>`;
   toggleBtn.title = quiz.isFavorite ? "Remove from favorites" : "Add to favorites";
-
+  
+  starCell.appendChild(toggleBtn);
+  
+  const titleCell = document.createElement("td");
+  titleCell.className = "col-title";
   const titleSpan = document.createElement("span");
-  titleSpan.className = "quiz-title";
+  titleSpan.className = "quiz-title-cell";
   titleSpan.textContent = quiz.title;
+  titleCell.appendChild(titleSpan);
+  
+  row.appendChild(starCell);
+  row.appendChild(titleCell);
+  
+  return row;
+}
 
-  card.appendChild(toggleBtn);
-  card.appendChild(titleSpan);
+// ─── Render Channel Tables ──────────────────────────────────────────────────
 
-  return card;
+function renderChannelTables() {
+  renderChannelTable(favoriteChannelsTableBody, channelStateArray.filter(c => c.isFavorite), favoriteChannelsFilterText, favoriteChannelsNoData);
+  renderChannelTable(remainingChannelsTableBody, channelStateArray.filter(c => !c.isFavorite), remainingChannelsFilterText, remainingChannelsNoData);
+  
+  // Update counts
+  const favCount = channelStateArray.filter(c => c.isFavorite).length;
+  const remCount = channelStateArray.filter(c => !c.isFavorite).length;
+  favoriteChannelsCount.textContent = `(${favCount})`;
+  remainingChannelsCount.textContent = `(${remCount})`;
+}
+
+function renderChannelTable(tableBody, channels, filterText, noDataElement) {
+  tableBody.innerHTML = "";
+  
+  // Filter channels by name
+  let filteredChannels = channels;
+  if (filterText) {
+    filteredChannels = channels.filter(c => 
+      c.name.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }
+  
+  // Show message if no channels
+  if (filteredChannels.length === 0) {
+    noDataElement.style.display = 'block';
+    return;
+  } else {
+    noDataElement.style.display = 'none';
+  }
+  
+  // Create row for each channel
+  filteredChannels.forEach((channel) => {
+    const row = createChannelTableRow(channel);
+    tableBody.appendChild(row);
+  });
+}
+
+function createChannelTableRow(channel) {
+  const row = document.createElement("tr");
+  row.dataset.id = channel.id;
+  row.dataset.pending = "false";
+  
+  const starCell = document.createElement("td");
+  starCell.className = "col-star";
+  
+  const toggleBtn = document.createElement("button");
+  toggleBtn.className = "star-toggle-btn";
+  toggleBtn.dataset.id = channel.id;
+  toggleBtn.innerHTML = `<span class="star-icon">${channel.isFavorite ? '⭐' : '☆'}</span>`;
+  toggleBtn.title = channel.isFavorite ? "Remove from favorites" : "Add to favorites";
+  
+  starCell.appendChild(toggleBtn);
+  
+  const channelCell = document.createElement("td");
+  channelCell.className = "col-channel";
+  
+  // Add thumbnail before channel name
+  const thumbnailSpan = document.createElement("span");
+  thumbnailSpan.className = "channel-thumbnail-cell";
+  
+  // Handle thumbnail_url (can be object or string)
+  let thumbUrl = '';
+  if (channel.thumbnailUrl) {
+    if (typeof channel.thumbnailUrl === 'object' && channel.thumbnailUrl !== null) {
+      thumbUrl = channel.thumbnailUrl.url || '';
+    } else {
+      thumbUrl = channel.thumbnailUrl;
+    }
+  }
+  
+  if (thumbUrl) {
+    const thumbImg = document.createElement("img");
+    thumbImg.src = thumbUrl;
+    thumbImg.alt = channel.name;
+    thumbImg.className = "channel-thumbnail";
+    thumbnailSpan.appendChild(thumbImg);
+  } else {
+    thumbnailSpan.innerHTML = '<span class="channel-thumbnail-placeholder">📺</span>';
+  }
+  
+  const nameSpan = document.createElement("span");
+  nameSpan.className = "channel-name-cell";
+  nameSpan.textContent = channel.name;
+  
+  channelCell.appendChild(thumbnailSpan);
+  channelCell.appendChild(nameSpan);
+  
+  row.appendChild(starCell);
+  row.appendChild(channelCell);
+  
+  return row;
 }
 
 // ─── Event Delegation for Star Toggle ───────────────────────────────────────
 
-function setupEventDelegation() {
-  quizCardsContainer.addEventListener("click", async (e) => {
-    // Check if click originated from a favorite toggle button
-    const toggleBtn = e.target.closest('.favorite-toggle-btn');
-    if (!toggleBtn) return;
+function setupTableEventDelegation() {
+  // Use event delegation on quiz table bodies
+  [favoritesTableBody, remainingTableBody].forEach(tableBody => {
+    tableBody.addEventListener("click", async (e) => {
+      const toggleBtn = e.target.closest('.star-toggle-btn');
+      if (!toggleBtn) return;
 
-    const quizId = toggleBtn.dataset.id;
-    const quiz = quizStateArray.find(q => q.id === quizId);
-    if (!quiz) return;
+      const quizId = toggleBtn.dataset.id;
+      const quiz = quizStateArray.find(q => q.id === quizId);
+      if (!quiz) return;
 
-    const card = document.querySelector(`.quiz-card[data-id="${quizId}"]`);
-    const wasFavorite = quiz.isFavorite;
-    const willBeFavorite = !wasFavorite;
+      const row = document.querySelector(`tr[data-id="${quizId}"]`);
+      const wasFavorite = quiz.isFavorite;
+      const willBeFavorite = !wasFavorite;
 
-    // 1. Optimistic UI Update: Toggle star immediately
-    quiz.isFavorite = willBeFavorite;
-    toggleBtn.innerHTML = `<span class="star-icon">${willBeFavorite ? '⭐' : '☆'}</span>`;
-    toggleBtn.title = willBeFavorite ? "Remove from favorites" : "Add to favorites";
+      // 1. Optimistic UI Update: Toggle star immediately
+      quiz.isFavorite = willBeFavorite;
+      toggleBtn.innerHTML = `<span class="star-icon">${willBeFavorite ? '⭐' : '☆'}</span>`;
+      toggleBtn.title = willBeFavorite ? "Remove from favorites" : "Add to favorites";
 
-    // 2. Check if card should fade out (if it no longer matches the current filter)
-    const shouldFadeOut = currentFilter === 'favorites' && !willBeFavorite ||
-                          currentFilter === 'remaining' && willBeFavorite;
+      // 2. Re-render both tables to reflect the change
+      renderQuizTables();
 
-    if (shouldFadeOut && card) {
-      card.classList.add('fading-out');
-      
-      // Wait for fade-out animation before re-rendering
-      setTimeout(() => {
-        renderQuizCards();
-      }, 200);
-    } else if (!shouldFadeOut) {
-      // If staying in view, just update the button
-      // No need to re-render
-    }
-
-    // 3. Backend sync
-    try {
-      const profileId = activeProfile.id;
-      if (willBeFavorite) {
-        await addFavorite(profileId, quizId);
-      } else {
-        await removeFavorite(profileId, quizId);
+      // 3. Backend sync
+      try {
+        const profileId = activeProfile.id;
+        if (willBeFavorite) {
+          await addFavorite(profileId, quizId);
+        } else {
+          await removeFavorite(profileId, quizId);
+        }
+        
+        // Mark as not pending on success
+        if (row) {
+          row.dataset.pending = "false";
+        }
+        updateSaveButtonState();
+      } catch (error) {
+        console.error("Failed to toggle favorite:", error);
+        
+        // 4. Revert optimistic update on error
+        quiz.isFavorite = wasFavorite;
+        toggleBtn.innerHTML = `<span class="star-icon">${wasFavorite ? '⭐' : '☆'}</span>`;
+        toggleBtn.title = wasFavorite ? "Remove from favorites" : "Add to favorites";
+        
+        // Re-render to show correct state
+        renderQuizTables();
+        
+        // Show fallback alert notification
+        alert("Failed to update favorite. Please try again.");
+        updateSaveButtonState();
       }
-      
-      // Mark as not pending on success
-      if (card) {
-        card.dataset.pending = "false";
+    });
+  });
+
+  // Use event delegation on channel table bodies
+  [favoriteChannelsTableBody, remainingChannelsTableBody].forEach(tableBody => {
+    tableBody.addEventListener("click", async (e) => {
+      const toggleBtn = e.target.closest('.star-toggle-btn');
+      if (!toggleBtn) return;
+
+      const channelId = toggleBtn.dataset.id;
+      const channel = channelStateArray.find(c => c.id === channelId);
+      if (!channel) return;
+
+      const row = document.querySelector(`tr[data-id="${channelId}"]`);
+      const wasFavorite = channel.isFavorite;
+      const willBeFavorite = !wasFavorite;
+
+      // 1. Optimistic UI Update: Toggle star immediately
+      channel.isFavorite = willBeFavorite;
+      toggleBtn.innerHTML = `<span class="star-icon">${willBeFavorite ? '⭐' : '☆'}</span>`;
+      toggleBtn.title = willBeFavorite ? "Remove from favorites" : "Add to favorites";
+
+      // 2. Re-render both tables to reflect the change
+      renderChannelTables();
+
+      // 3. Backend sync and IndexedDB update
+      try {
+        const profileId = activeProfile.id;
+        const gradeId = activeProfile.grade_id;
+        
+        if (willBeFavorite) {
+          await addFavoriteChannel(profileId, channelId);
+          
+          // Fetch advert videos for this channel and add to IndexedDB
+          const channelVideos = await fetchAdvertVideosByChannel(channelId, profileId);
+          if (channelVideos.length > 0) {
+            await addAdvertVideos(profileId, gradeId, channelVideos);
+            console.log(`[settings] Added ${channelVideos.length} advert videos from channel ${channelId} to IndexedDB`);
+          }
+        } else {
+          await removeFavoriteChannel(profileId, channelId);
+          
+          // Remove this channel's videos from IndexedDB
+          await removeAdvertVideosByChannel(profileId, gradeId, channelId);
+          console.log(`[settings] Removed advert videos from channel ${channelId} from IndexedDB`);
+          
+          // Check if there are any remaining favorite channels
+          const remainingFavorites = channelStateArray.filter(c => c.isFavorite);
+          if (remainingFavorites.length === 0) {
+            // No favorite channels left, clear all advert videos
+            await clearAdvertVideos(profileId, gradeId);
+            console.log(`[settings] No favorite channels remaining, cleared all advert videos from IndexedDB`);
+          }
+        }
+        
+        // Mark as not pending on success
+        if (row) {
+          row.dataset.pending = "false";
+        }
+      } catch (error) {
+        console.error("Failed to toggle channel favorite:", error);
+        
+        // 4. Revert optimistic update on error
+        channel.isFavorite = wasFavorite;
+        toggleBtn.innerHTML = `<span class="star-icon">${wasFavorite ? '⭐' : '☆'}</span>`;
+        toggleBtn.title = wasFavorite ? "Remove from favorites" : "Add to favorites";
+        
+        // Re-render to show correct state
+        renderChannelTables();
+        
+        // Show fallback alert notification
+        alert("Failed to update channel favorite. Please try again.");
       }
-      updateSaveButtonState();
-    } catch (error) {
-      console.error("Failed to toggle favorite:", error);
+    });
+  });
+}
+
+// ─── Filter Functionality ───────────────────────────────────────────────────
+
+function setupFilters() {
+  favoritesFilter.addEventListener("input", (e) => {
+    favoritesFilterText = e.target.value.trim();
+    renderQuizTable(favoritesTableBody, quizStateArray.filter(q => q.isFavorite), favoritesFilterText, favoritesNoData);
+  });
+
+  remainingFilter.addEventListener("input", (e) => {
+    remainingFilterText = e.target.value.trim();
+    renderQuizTable(remainingTableBody, quizStateArray.filter(q => !q.isFavorite), remainingFilterText, remainingNoData);
+  });
+
+  // Channel filters
+  favoriteChannelsFilter.addEventListener("input", (e) => {
+    favoriteChannelsFilterText = e.target.value.trim();
+    renderChannelTable(favoriteChannelsTableBody, channelStateArray.filter(c => c.isFavorite), favoriteChannelsFilterText, favoriteChannelsNoData);
+  });
+
+  remainingChannelsFilter.addEventListener("input", (e) => {
+    remainingChannelsFilterText = e.target.value.trim();
+    renderChannelTable(remainingChannelsTableBody, channelStateArray.filter(c => !c.isFavorite), remainingChannelsFilterText, remainingChannelsNoData);
+  });
+}
+
+// ─── Collapsible Sections ───────────────────────────────────────────────────
+
+function setupCollapsibleSections() {
+  const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+  
+  collapsibleHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const targetId = header.dataset.target;
+      const content = document.getElementById(targetId);
+      const isOpen = content.classList.contains('open');
       
-      // 4. Revert optimistic update on error
-      quiz.isFavorite = wasFavorite;
-      toggleBtn.innerHTML = `<span class="star-icon">${wasFavorite ? '⭐' : '☆'}</span>`;
-      toggleBtn.title = wasFavorite ? "Remove from favorites" : "Add to favorites";
+      // Close all other sections
+      document.querySelectorAll('.collapsible-content').forEach(c => {
+        c.classList.remove('open');
+      });
+      document.querySelectorAll('.collapsible-header').forEach(h => {
+        h.classList.remove('open');
+      });
       
-      // Remove fade-out class if it was added
-      if (card) {
-        card.classList.remove('fading-out');
+      // Toggle current section
+      if (!isOpen) {
+        content.classList.add('open');
+        header.classList.add('open');
       }
-      
-      // Re-render to show correct state
-      renderQuizCards();
-      
-      // Show fallback alert notification
-      alert("Failed to update favorite. Please try again.");
-      updateSaveButtonState();
-    }
+    });
   });
 }
 
 // ─── Tab Switching ──────────────────────────────────────────────────────────
 
-function switchToFavoritesTab() {
-  currentFilter = 'favorites';
-  favoritesTabBtn.classList.add('active');
-  remainingTabBtn.classList.remove('active');
-  renderQuizCards();
+function switchToTab(sectionName) {
+  // Update tab active state
+  settingsTabBtns.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.section === sectionName) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Update section visibility
+  settingsSections.forEach(section => {
+    section.classList.remove('active');
+    section.style.display = 'none';
+  });
+  
+  const targetSection = document.getElementById(`${sectionName}SettingsView`);
+  if (targetSection) {
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
+  }
+  
+  // Load profiles if switching to profile section
+  if (sectionName === 'profile') {
+    loadProfiles();
+  }
 }
 
-function switchToRemainingTab() {
-  currentFilter = 'remaining';
-  remainingTabBtn.classList.add('active');
-  favoritesTabBtn.classList.remove('active');
-  renderQuizCards();
+function setupTabs() {
+  settingsTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const section = btn.dataset.section;
+      switchToTab(section);
+    });
+  });
 }
 
 // ─── Profile rendering ──────────────────────────────────────────────────────
@@ -690,23 +979,6 @@ function handleCropCancel() {
   childAvatarInput.value = "";
 }
 
-// ─── Settings toggle ────────────────────────────────────────────────────────
-
-function switchToQuizTab() {
-  quizTabBtn.classList.add("active");
-  profileTabBtn.classList.remove("active");
-  quizSettingsView.style.display = "block";
-  profileSettingsView.style.display = "none";
-}
-
-function switchToProfileTab() {
-  profileTabBtn.classList.add("active");
-  quizTabBtn.classList.remove("active");
-  profileSettingsView.style.display = "block";
-  quizSettingsView.style.display = "none";
-  loadProfiles();
-}
-
 // ─── Load profiles ──────────────────────────────────────────────────────────
 
 async function loadProfiles() {
@@ -769,17 +1041,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Wire up tab buttons
-  if (favoritesTabBtn && remainingTabBtn) {
-    favoritesTabBtn.addEventListener("click", switchToFavoritesTab);
-    remainingTabBtn.addEventListener("click", switchToRemainingTab);
-  }
-
-  // Settings toggle
-  if (quizTabBtn && profileTabBtn) {
-    quizTabBtn.addEventListener("click", switchToQuizTab);
-    profileTabBtn.addEventListener("click", switchToProfileTab);
-  }
+  // Setup tab switching
+  setupTabs();
+  
+  // Setup collapsible sections
+  setupCollapsibleSections();
+  
+  // Setup filters
+  setupFilters();
+  
+  // Setup event delegation for star toggles
+  setupTableEventDelegation();
 
   // Profile modal events
   if (addChildBtn) {
@@ -867,17 +1139,42 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    // Setup event delegation
-    setupEventDelegation();
-
-    // Initial render
-    renderQuizCards();
+    // Initial render of quiz tables
+    renderQuizTables();
     updateSaveButtonState();
   } catch (error) {
     console.error("Error loading settings:", error);
     showError(
       errorMessageEl,
       "Failed to load quiz data. Please check your connection and try again."
+    );
+  }
+
+  // Load channel data
+  try {
+    clearError(channelErrorMessage);
+
+    const [channels, favoriteChannels] = await Promise.all([
+      fetchChannelsByGrade(gradeId),
+      fetchFavoriteChannels(profileId),
+    ]);
+
+    // Build channel state array
+    const favoriteChannelIds = new Set(favoriteChannels.map((fc) => fc.channelId));
+    channelStateArray = channels.map((channel) => ({
+      id: channel.id,
+      name: channel.name,
+      thumbnailUrl: channel.thumbnail_url,
+      isFavorite: favoriteChannelIds.has(channel.id),
+    }));
+
+    // Initial render of channel tables
+    renderChannelTables();
+  } catch (error) {
+    console.error("Error loading channels:", error);
+    showError(
+      channelErrorMessage,
+      "Failed to load channel data. Please check your connection and try again."
     );
   }
 });

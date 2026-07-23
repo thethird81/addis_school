@@ -88,13 +88,13 @@ export function LiveVideoZone() {
     <div className="space-y-4">
       {/* Toolbar */}
       <div className="flex items-center justify-between border-b pb-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
           <h2 className="text-lg font-semibold">Live Database Entries</h2>
           <span className="text-sm text-gray-500">
             {liveVideos.length} video{liveVideos.length !== 1 ? "s" : ""}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="sm"

@@ -46,6 +46,11 @@ interface ChannelVideoWorkspaceState {
   // Search results
   searchResults: VideoData[];
   searchLoading: boolean;
+  
+  // Assignment guardrail
+  isAssignmentGuardrailOpen: boolean;
+  hasAssignments: boolean;
+  assignmentCheckLoading: boolean;
 }
 
 interface ChannelVideoWorkspaceActions {
@@ -57,6 +62,7 @@ interface ChannelVideoWorkspaceActions {
   addToStaging: (videos: VideoData[]) => void;
   removeFromStaging: (videoId: string) => void;
   clearStaging: () => void;
+  bulkRemoveFromStaging: (videoIds: string[]) => void;
   commitStaging: () => Promise<void>;
   
   // Live videos actions
@@ -97,6 +103,10 @@ interface ChannelVideoWorkspaceActions {
     variant?: "default" | "destructive";
   }) => void;
   closeConfirmDialog: () => void;
+  
+  // Assignment guardrail actions
+  checkAndOpenSearchModal: () => Promise<void>;
+  closeAssignmentGuardrail: () => void;
 }
 
 type ChannelVideoWorkspaceContextType = ChannelVideoWorkspaceState & ChannelVideoWorkspaceActions;
@@ -165,6 +175,11 @@ export function ChannelVideoWorkspaceProvider({
   const [searchResults, setSearchResults] = useState<VideoData[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   
+  // Assignment guardrail state
+  const [isAssignmentGuardrailOpen, setIsAssignmentGuardrailOpen] = useState(false);
+  const [hasAssignments, setHasAssignments] = useState(true);
+  const [assignmentCheckLoading, setAssignmentCheckLoading] = useState(false);
+  
   // Function to update search results (called by SearchModal)
   const updateSearchResults = useCallback((results: VideoData[]) => {
     setSearchResults(results);
@@ -230,6 +245,7 @@ export function ChannelVideoWorkspaceProvider({
   
   const removeFromStaging = useCallback((videoId: string) => {
     setStagedVideos(prev => prev.filter(v => v.videoId !== videoId));
+    setSearchResults(prev => prev.filter(v => v.videoId !== videoId));
     setSelectedStagedIds(prev => {
       const next = new Set(prev);
       next.delete(videoId);
@@ -239,6 +255,12 @@ export function ChannelVideoWorkspaceProvider({
   
   const clearStaging = useCallback(() => {
     setStagedVideos([]);
+    setSelectedStagedIds(new Set());
+  }, []);
+  
+  const bulkRemoveFromStaging = useCallback((videoIds: string[]) => {
+    setStagedVideos(prev => prev.filter(v => !videoIds.includes(v.videoId)));
+    setSearchResults(prev => prev.filter(v => !videoIds.includes(v.videoId)));
     setSelectedStagedIds(new Set());
   }, []);
   
@@ -592,6 +614,47 @@ export function ChannelVideoWorkspaceProvider({
     toggleLiveSelection(activeVideoId);
   }, [activeVideoId, toggleLiveSelection]);
   
+  const closeAssignmentGuardrail = useCallback(() => {
+    setIsAssignmentGuardrailOpen(false);
+  }, []);
+  
+  const checkAndOpenSearchModal = useCallback(async () => {
+    if (!channelId) return;
+    
+    setAssignmentCheckLoading(true);
+    try {
+      const token = getToken();
+      const response = await fetch(`${API_BASE}/admin/channels/${channelId}/assignments`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const assignments = await response.json();
+        const hasAnyAssignments = Array.isArray(assignments) && assignments.length > 0;
+        setHasAssignments(hasAnyAssignments);
+        
+        if (hasAnyAssignments) {
+          // Channel has assignments, proceed to search modal
+          setIsSearchModalOpen(true);
+        } else {
+          // No assignments, show guardrail modal
+          setIsAssignmentGuardrailOpen(true);
+        }
+      } else {
+        // Error fetching, show search modal anyway
+        setIsSearchModalOpen(true);
+      }
+    } catch (err) {
+      console.error('Error checking channel assignments:', err);
+      // On error, allow the search modal to open
+      setIsSearchModalOpen(true);
+    } finally {
+      setAssignmentCheckLoading(false);
+    }
+  }, [channelId, getToken]);
+  
   const value: ChannelVideoWorkspaceContextType = {
     // State
     channelId,
@@ -614,6 +677,9 @@ export function ChannelVideoWorkspaceProvider({
     successMessage,
     searchResults,
     searchLoading,
+    isAssignmentGuardrailOpen,
+    hasAssignments,
+    assignmentCheckLoading,
     
     // Actions
     setChannel,
@@ -621,6 +687,7 @@ export function ChannelVideoWorkspaceProvider({
     addToStaging,
     removeFromStaging,
     clearStaging,
+    bulkRemoveFromStaging,
     commitStaging,
     fetchLiveVideos,
     deleteVideoAssignment,
@@ -643,6 +710,8 @@ export function ChannelVideoWorkspaceProvider({
     clearSuccessMessage: () => setSuccessMessage(null),
     saveSearchResults,
     updateSearchResults,
+    checkAndOpenSearchModal,
+    closeAssignmentGuardrail,
   };
   
   return (

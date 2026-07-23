@@ -1,7 +1,7 @@
 "use client";
 
 import { VideoWorkspaceProvider } from "@/contexts/VideoWorkspaceContext";
-import { CurriculumTree } from "@/components/video-workspace/CurriculumTree";
+import { CurriculumDropdowns } from "@/components/video-workspace/CurriculumDropdowns";
 import { WorkspaceToolbar } from "@/components/video-workspace/WorkspaceToolbar";
 import { StagingZone } from "@/components/video-workspace/StagingZone";
 import { LiveVideoZone } from "@/components/video-workspace/LiveVideoZone";
@@ -18,22 +18,14 @@ function VideoWorkspaceContent() {
 
   return (
     <div className="flex min-h-screen w-full">
-      {/* Curriculum Tree Sidebar */}
-      <aside className="w-80 border-r bg-white flex-shrink-0">
-        <div className="p-4 border-b">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-            Curriculum Navigation
-          </h2>
-        </div>
-        <div className="p-4 overflow-y-auto">
-          <CurriculumTree />
-        </div>
-      </aside>
-
-      {/* Main Workspace Area */}
+      {/* Main Workspace Area - Full Width */}
       <main className="flex-1 overflow-auto">
         <div className="p-6">
-          <WorkspaceToolbar />
+          {/* Header with Dropdowns and Toolbar */}
+          <div className="flex items-center justify-between border-b pb-4">
+            <CurriculumDropdowns />
+            <WorkspaceToolbar />
+          </div>
           
           <div className="mt-6 space-y-6">
             {/* Zone A: Staging Buffer */}

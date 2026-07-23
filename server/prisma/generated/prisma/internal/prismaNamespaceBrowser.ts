@@ -68,7 +68,8 @@ export const ModelName = {
   users_metadata: 'users_metadata',
   video_assignments: 'video_assignments',
   watch_histories: 'watch_histories',
-  deleted_videos: 'deleted_videos'
+  deleted_videos: 'deleted_videos',
+  favorite_channels: 'favorite_channels'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -284,6 +285,15 @@ export const Deleted_videosScalarFieldEnum = {
 } as const
 
 export type Deleted_videosScalarFieldEnum = (typeof Deleted_videosScalarFieldEnum)[keyof typeof Deleted_videosScalarFieldEnum]
+
+
+export const Favorite_channelsScalarFieldEnum = {
+  profile_id: 'profile_id',
+  channel_id: 'channel_id',
+  created_at: 'created_at'
+} as const
+
+export type Favorite_channelsScalarFieldEnum = (typeof Favorite_channelsScalarFieldEnum)[keyof typeof Favorite_channelsScalarFieldEnum]
 
 
 export const SortOrder = {

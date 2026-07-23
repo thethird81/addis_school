@@ -246,6 +246,70 @@ export async function clearAdvertVideos(profileId, gradeId) {
   });
 }
 
+export async function addAdvertVideos(profileId, gradeId, newVideos) {
+  if (!profileId || !gradeId || !Array.isArray(newVideos) || newVideos.length === 0) return;
+  const db = await openDB();
+  return new Promise((resolve) => {
+    const tx = db.transaction('advert', 'readwrite');
+    const store = tx.objectStore('advert');
+    const getReq = store.get(profileId);
+    
+    getReq.onsuccess = () => {
+      const existing = getReq.result || { profileId, videosByGrade: {} };
+      existing.videosByGrade = existing.videosByGrade || {};
+      
+      const currentVideos = existing.videosByGrade[gradeId] || [];
+      
+      // Add only new videos (avoid duplicates by videoId)
+      const existingIds = new Set(currentVideos.map(v => v.videoId));
+      const uniqueNewVideos = newVideos.filter(v => !existingIds.has(v.videoId));
+      
+      if (uniqueNewVideos.length > 0) {
+        existing.videosByGrade[gradeId] = [...currentVideos, ...uniqueNewVideos];
+        store.put(existing);
+      }
+    };
+    
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => resolve();
+  });
+}
+
+export async function removeAdvertVideosByChannel(profileId, gradeId, channelId) {
+  if (!profileId || !gradeId || !channelId) return;
+  const db = await openDB();
+  return new Promise((resolve) => {
+    const tx = db.transaction('advert', 'readwrite');
+    const store = tx.objectStore('advert');
+    const getReq = store.get(profileId);
+    
+    getReq.onsuccess = () => {
+      const existing = getReq.result;
+      if (existing && existing.videosByGrade && existing.videosByGrade[gradeId]) {
+        // Filter out videos from the removed channel
+        existing.videosByGrade[gradeId] = existing.videosByGrade[gradeId].filter(
+          v => v.channelId !== channelId
+        );
+        
+        // If no videos left for this grade, remove the grade entry
+        if (existing.videosByGrade[gradeId].length === 0) {
+          delete existing.videosByGrade[gradeId];
+        }
+        
+        // If no grades left, delete the entire entry
+        if (Object.keys(existing.videosByGrade).length === 0) {
+          store.delete(profileId);
+        } else {
+          store.put(existing);
+        }
+      }
+    };
+    
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => resolve();
+  });
+}
+
 /* =========================================================
    CHANNELS
    ========================================================= */

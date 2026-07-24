@@ -119,28 +119,58 @@ const getVideosByGrade = async (req, res) => {
     const { gradeId } = req.params;
     const { profileId } = req.query;
 
-    const assignments = await prisma.$queryRaw`
-      SELECT * FROM get_videos_by_grade(
-        ${gradeId}::uuid,
-        ${profileId ? profileId : null}::uuid
-      );
-    `;
+    const where = {
+      grade_id: gradeId,
+      subject_id: {
+        not: null,
+      },
+      videos: {
+        duration: {
+          gte: 120,
+        },
+      },
+    };
+
+    if (profileId) {
+      where.videos = {
+        duration: {
+          gte: 120,
+        },
+        reports: {
+          none: {
+            profile_id: profileId,
+          },
+        },
+      };
+    }
+
+    const assignments = await prisma.video_assignments.findMany({
+      where,
+      include: {
+        videos: true,
+        subjects: true,
+      },
+    });
+
+    if (!assignments.length) {
+      return safeJsonResponse(res, 404, { message: "No videos found" });
+    }
 
     const formattedVideos = assignments.map((a) => ({
-      videoId: a.id,
-      title: a.title,
-      thumbnails: a.thumbnails,
-      publishedAt: a.published_at,
-      channelTitle: a.channel_title,
-      duration: a.duration,
-      viewCount: formatViewCount(a.view_count),
+      videoId: a.videos.id,
+      title: a.videos.title,
+      thumbnails: a.videos.thumbnails,
+      publishedAt: a.videos.published_at,
+      channelTitle: a.videos.channel_title,
+      duration: a.videos.duration,
+      viewCount: formatViewCount(a.videos.view_count),
       locator: {
         grade_id: a.grade_id,
         subject_id: a.subject_id,
         content_id: a.content_id,
         subcontent_id: a.subcontent_id,
-        channel_id: a.channel_id,
-        subject_name: a.subject_name || null,
+        channel_id: a.videos.channel_id,
+        subject_name: a.subjects?.name || null,
       },
     }));
 

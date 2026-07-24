@@ -1,6 +1,13 @@
 import "./settings.css";
 import '../../styles/navbar.css';
-import '../../styles/sidebar.css';
+
+import '../../styles/user-sidebar.css';
+
+
+import '../../features/search/search.js';
+
+
+
 import { getBaseUrl } from "../../utils/path.js";
 import { getGradeName, refresh } from '../../utils/sharedFunctions.js';
 import '../../components/navbar/navbar.js';
@@ -147,6 +154,7 @@ async function fetchWithAuth(url, options = {}) {
   const token = getAccessToken();
   let response = await fetch(url, {
     ...options,
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -165,6 +173,7 @@ async function fetchWithAuth(url, options = {}) {
     // retry original request with new access token
     response = await fetch(url, {
       ...options,
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${newAccessToken}`,

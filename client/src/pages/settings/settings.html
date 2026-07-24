@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <nav class="flex-div">
+ <nav class="flex-div">
     <div class="nav-left flex-div">
       <img class="menu-icon" src="<%= require('@assets/images/menu.png') %>" alt="Menu Icon">
       <img class="logo" src="<%= require('@assets/images/addisschool.png') %>"
@@ -21,6 +21,18 @@
     <div class="nav-middle flex-div">
       <div class="sliding-text" style="display:none;">
         ከኬጂ - 6ኛ ክፍል የተመረጡ ቪዲዮዎች! አሁኑኑ ይቀላቀሉ! ☆ Carefully Selected Videos From KG - Grade 6. Join Us Now!
+      </div>
+      <div class="search-small">
+        <img class="search-icon" src="<%= require('@assets/images/search.png') %>" alt="Search Icon">
+      </div>
+
+      <div class="search-box flex-div">
+        <img class="black-back-arrow" src="<%= require('@assets/images/black-back-arrow.png') %>" alt="">
+        <input type="text" id="searchBar" placeholder="Search" />
+        <!-- Search Results Dropdown -->
+        <div id="searchResults" class="results-dropdown">
+          <ul id="resultsList"></ul>
+        </div>
       </div>
     </div>
     <div class="nav-right flex-div">
@@ -31,12 +43,78 @@
           <img id="coinIcon" class="coin-icon" src="<%= require('@assets/images/coin.png') %>" alt="Coin Icon">
           <span id="coinCount">0</span>
         </div>
-        <span class="user-name" id="userNameDisplay"></span>
+        <span id="userNameDisplay"></span>
         <img id="userIcon" class="userIcon" src="<%= require('@assets/images/user-icon.png') %>" alt="User Icon">
+
+
       </div>
     </div>
   </nav>
 
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div id="sidebarContent" style="display:none"></div>
+    <div class="signin-signup">
+      <div class="container-register" id="signup" style="display:none;">
+        <h1 class="form-title">Register</h1>
+        <button class="btn" id="openFullSignUpBtn">Create Account</button>
+        <div class="links">
+          <p>Already Have Account ?</p>
+          <button id="signInButton">Sign In</button>
+        </div>
+      </div>
+
+      <div class="container-register" id="signIn">
+        <h1 class="form-title">Sign In</h1>
+        <form method="post" action="">
+          <div id="signInMessage" class="messageDiv" style="display:none;"></div>
+
+          <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <p class="recover" id="resendVerification" style="display:none;">
+            <a href="#">Resend varification</a>
+          </p>
+          <p class="recover">
+            <a href="#" id="forgotPasswordLink">Forgot Password</a>
+          </p>
+          <button class="btn" id="submitSignIn">Sign In</button>
+        </form>
+        <!-- <p class="or">
+                    ----------{{#if isAfterLogin}} 
+                    <div class="container-register" id="signup" style="display:none;">
+                      <h1 class="form-title"><|fim_middle|><|fim_middle|>itureglobalsardiStateToPropsension<|fim_middle|><|fim_middle|><|fim_middle|>fov先锋illes<|fim_middle|>婆婆<|fim_middle|>vielling ediidUser Icon">
+                  </p>
+                  <div class="icons">
+                    <i class="fab fa-google" id="googleSignInButton"></i>
+                    <i class="fab fa-facebook"></i>
+                  </div> -->
+        <div class="links">
+          <p>Don't have account yet?</p>
+          <button id="signUpButton">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="user-sidebar focus-zone" id="userSidebar" data-nav="list">
+    <p>User Menu</p>
+    <ul>
+      <li class="userSidebar-item item" tabindex="0" id="aboutUs">About Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="settings">Settings</li>
+      <li class="userSidebar-item item" tabindex="0" id="takeQuiz">📝 Take Quiz</li>
+      <li class="userSidebar-item item" tabindex="0" id="contactUs">Contact Us</li>
+      <li class="userSidebar-item item" tabindex="0" id="changeGrade">Change Grade</li>
+    
+       <li class="userSidebar-item item" tabindex="0" id="logout">Logout</li>
+    </ul>
+  </div>
   <!-- Main Content Area -->
   <div class="settings-main-content">
     

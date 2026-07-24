@@ -6,7 +6,6 @@ import '../features/auth/authStatus.js';
 import '../features/videos/home-page/homePageVideoList.js';
 import '../features/quiz/quizTaker.js';
 import '../styles/index.css';
-import '../styles/navbar.css';
 import '../styles/responsive.css';
 import '../styles/video-list.css';
 

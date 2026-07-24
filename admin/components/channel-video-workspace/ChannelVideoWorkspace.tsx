@@ -15,6 +15,11 @@ interface ChannelVideoWorkspaceProps {
 
 export function ChannelVideoWorkspace({ channelId, channelName }: ChannelVideoWorkspaceProps) {
   const { isConfirmDialogOpen, confirmDialogConfig, closeConfirmDialog } = useChannelVideoWorkspace();
+  const { stagedVideos, searchResults } = useChannelVideoWorkspace();
+
+  // Determine which zone to show (exclusive visibility)
+  const showStagingZone = stagedVideos.length > 0 || searchResults.length > 0;
+  const showLiveZone = !showStagingZone;
   
   return (
     <div className="flex flex-col h-full">
@@ -23,11 +28,11 @@ export function ChannelVideoWorkspace({ channelId, channelName }: ChannelVideoWo
       
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {/* Zone A: Staging Buffer */}
-        <ChannelStagingZone />
+        {/* Zone A: Staging Buffer - Only shown when there are staged or search results */}
+        {showStagingZone && <ChannelStagingZone />}
         
-        {/* Zone B: Live Database Entries */}
-        <ChannelLiveVideoZone />
+        {/* Zone B: Live Database Entries - Only shown when no staged/search results */}
+        {showLiveZone && <ChannelLiveVideoZone />}
       </div>
 
       {/* Modals */}

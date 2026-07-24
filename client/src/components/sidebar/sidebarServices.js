@@ -246,16 +246,10 @@ var renderSubjects = function(subjects) {
                            
                             localStorage.removeItem("isAfterLogin");
 
-                            // if (window.location.pathname === basePath + "play-video.html") {
-                            //     localStorage.setItem("isFromPlayVideoPageSidebarClicked", "true");
-                            //     localStorage.setItem("videoList", JSON.stringify(videos));
-                            //     window.location.href = basePath + "index.html";
-                            // } else {
-                            //     updateVideoListLazyHome(videos, true);
-                            // }
-
-                             localStorage.setItem("videoList", JSON.stringify(videos));
-                                updateVideoListLazyHome(videos, true);
+                            localStorage.setItem("videoList", JSON.stringify(videos));
+                            
+                            // Always redirect to index.html to properly display the videos
+                            window.location.href = basePath + "index.html";
                         })
                         ["catch"](function(err) { // ['catch'] is safer for old IE keywords
                             console.error("Error resolving videos on click:", err);

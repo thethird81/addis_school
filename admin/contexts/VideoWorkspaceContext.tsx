@@ -81,6 +81,7 @@ interface VideoWorkspaceActions {
   addToStaging: (videos: VideoData[]) => void;
   removeFromStaging: (videoId: string) => void;
   clearStaging: () => void;
+  bulkRemoveFromStaging: (videoIds: string[]) => void;
   commitStaging: () => Promise<void>;
   
   // Live videos actions
@@ -274,6 +275,7 @@ export function VideoWorkspaceProvider({ children }: { children: ReactNode }) {
 
   const removeFromStaging = useCallback((videoId: string) => {
     setStagedVideos(prev => prev.filter(v => v.videoId !== videoId));
+    setSearchResults(prev => prev.filter(v => v.videoId !== videoId));
     setSelectedStagedIds(prev => {
       const next = new Set(prev);
       next.delete(videoId);
@@ -283,6 +285,13 @@ export function VideoWorkspaceProvider({ children }: { children: ReactNode }) {
 
   const clearStaging = useCallback(() => {
     setStagedVideos([]);
+    setSearchResults([]);
+    setSelectedStagedIds(new Set());
+  }, []);
+
+  const bulkRemoveFromStaging = useCallback((videoIds: string[]) => {
+    setStagedVideos(prev => prev.filter(v => !videoIds.includes(v.videoId)));
+    setSearchResults(prev => prev.filter(v => !videoIds.includes(v.videoId)));
     setSelectedStagedIds(new Set());
   }, []);
 
@@ -633,6 +642,7 @@ export function VideoWorkspaceProvider({ children }: { children: ReactNode }) {
     addToStaging,
     removeFromStaging,
     clearStaging,
+    bulkRemoveFromStaging,
     commitStaging,
     fetchLiveVideos,
     deleteVideoAssignment,

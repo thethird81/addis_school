@@ -14,6 +14,7 @@ export function StagingZone() {
     stagedError,
     removeFromStaging,
     clearStaging,
+    bulkRemoveFromStaging,
     commitStaging,
     // Search state
     searchResults,
@@ -79,17 +80,17 @@ export function StagingZone() {
   }, [removeFromStaging]);
 
   const handleBulkRemove = useCallback(() => {
-    const idsToRemove = new Set(selectedVideoIds);
+    const idsToRemove = [...selectedVideoIds];
 
     // Start fade-out on selected cards
     setRemovingIds(new Set(selectedVideoIds));
 
     setTimeout(() => {
-      idsToRemove.forEach((id) => removeFromStaging(id));
+      bulkRemoveFromStaging(idsToRemove);
       setSelectedVideoIds([]);
       setRemovingIds(new Set());
     }, 250);
-  }, [selectedVideoIds, removeFromStaging]);
+  }, [selectedVideoIds, bulkRemoveFromStaging]);
 
   const handleBulkRemoveAll = useCallback(() => {
     // Start fade-out on all cards
@@ -159,15 +160,27 @@ export function StagingZone() {
         </div>
         <div className="flex items-center gap-2">
           {searchResults.length > 0 ? (
-            <Button
-              size="sm"
-              onClick={saveSearchResults}
-              disabled={searchLoading}
-              className="gap-1"
-            >
-              <Save className="h-4 w-4" />
-              {searchLoading ? "Saving..." : "Save to Database"}
-            </Button>
+            <>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleBulkRemove}
+                disabled={selectedVideoIds.length === 0}
+                className="gap-1"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete Selected ({selectedVideoIds.length})
+              </Button>
+              <Button
+                size="sm"
+                onClick={saveSearchResults}
+                disabled={searchLoading}
+                className="gap-1"
+              >
+                <Save className="h-4 w-4" />
+                {searchLoading ? "Saving..." : "Save to Database"}
+              </Button>
+            </>
           ) : (
             <>
               <Button

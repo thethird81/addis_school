@@ -15,6 +15,11 @@ import { useRouter } from "next/navigation";
 
 function VideoWorkspaceContent() {
   const { isConfirmDialogOpen, confirmDialogConfig, closeConfirmDialog } = useVideoWorkspace();
+  const { stagedVideos, searchResults } = useVideoWorkspace();
+
+  // Determine which zone to show (exclusive visibility)
+  const showStagingZone = stagedVideos.length > 0 || searchResults.length > 0;
+  const showLiveZone = !showStagingZone;
 
   return (
     <div className="flex min-h-screen w-full">
@@ -28,11 +33,11 @@ function VideoWorkspaceContent() {
           </div>
           
           <div className="mt-6 space-y-6">
-            {/* Zone A: Staging Buffer */}
-            <StagingZone />
+            {/* Zone A: Staging Buffer - Only shown when there are staged or search results */}
+            {showStagingZone && <StagingZone />}
             
-            {/* Zone B: Live Database Entries */}
-            <LiveVideoZone />
+            {/* Zone B: Live Database Entries - Only shown when no staged/search results */}
+            {showLiveZone && <LiveVideoZone />}
           </div>
         </div>
       </main>
